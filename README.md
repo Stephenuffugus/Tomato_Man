@@ -1,5 +1,7 @@
 # 🍅 TOMATO MAN
 
+![Tomato Man — a sunburnt tomato stranded in the dunes](thumbnail.png)
+
 > The sun is death. Shade is the only ground you can stand on — and it **moves** as the sun sweeps the sky. Sweep through the shadows, gather the aloe, beat the heat, and don't get burned.
 
 A single-file, mobile-first, top-down action-platformer. Hero: **Tomato Man** (named by Penny, who kept calling her sunburnt dad "tomato man"). No build step, no dependencies — just open the HTML file.

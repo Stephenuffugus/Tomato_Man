@@ -19,7 +19,10 @@
 <meta name="twitter:description" content="The sun is death. Shade is the only ground — and it moves. Dash the shadows, gather aloe, don't get burned.">
 <meta name="twitter:image" content="https://stephenuffugus.github.io/Tomato_Man/thumbnail.png">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%8D%85</text></svg>">
-<link rel="apple-touch-icon" href="thumbnail.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Tomato Man">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
   :root{
     --paper:#fff6e6; --ink:#23314a; --tomato:#e8332a; --leaf:#4fb56a; --beam:#ffd23f;
@@ -1105,6 +1108,12 @@ $('resetSave').onclick=()=>{ if(confirm('Reset ALL progress, aloe and unlocks?')
 loadAssets(); resize(); updateWallet(); buildWorldMap(); showScreen('title'); requestAnimationFrame(frame);
 window.__TM={save,LEVELS,WORLDS,genLevel,startLevel,frame,P,keys,winLevel,burn,_run:()=>run,_mode:()=>mode}; // debug hook
 })();
+</script>
+<script>
+/* register service worker for offline play + standalone install */
+if ('serviceWorker' in navigator) {
+  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
 </script>
 </body>
 </html>

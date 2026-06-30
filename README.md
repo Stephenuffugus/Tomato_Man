@@ -10,7 +10,7 @@ A single-file, mobile-first, top-down action-platformer. Hero: **Tomato Man** (n
 
 **Live:** **https://stephenuffugus.github.io/Tomato_Man/** *(once GitHub Pages is on — repo Settings → Pages → Deploy from branch → `main` / root)*
 
-Or open **[`index.html`](index.html)** locally in any modern browser (works great on a phone — add it to your home screen).
+**Install it** — Tomato Man is a full PWA: use your browser's *Install* button / *Add to Home Screen* and it runs standalone, fullscreen, and **works offline**. Each game in the studio is independently installable, so you can grab just this one. Or open **[`index.html`](index.html)** locally in any modern browser.
 
 - **Move** — left thumb (floating joystick) or WASD / arrows
 - **DASH** — cross a thin sun sliver (but it burns you *fast* in the open). Space.

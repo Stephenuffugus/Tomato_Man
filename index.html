@@ -6,6 +6,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b1626">
 <title>TOMATO MAN</title>
+<meta name="description" content="The sun is death, shade is the only ground — and it moves. Dash through sweeping shadows, gather aloe, beat the heat, and don't get burned. A single-file action-platformer.">
+<meta property="og:title" content="Tomato Man">
+<meta property="og:description" content="The sun is death. Shade is the only ground — and it moves. Dash the shadows, gather aloe, don't get burned.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%8D%85</text></svg>">
 <style>
   :root{
     --paper:#fff6e6; --ink:#23314a; --tomato:#e8332a; --leaf:#4fb56a; --beam:#ffd23f;
@@ -107,14 +112,14 @@
 <canvas id="game"></canvas>
 
 <!-- wallet (persistent on menus) -->
-<div id="wallet" class="wallet"><span class="ic">☀️</span><span id="walletN">0</span></div>
+<div id="wallet" class="wallet"><span class="ic">🌿</span><span id="walletN">0</span></div>
 
 <!-- ===== in-game HUD ===== -->
 <div id="play-ui" class="hidden">
   <div id="heatWrap" class="panel"><div class="lbl" id="heatLbl">Exposure</div><div id="heatBar"><div id="heatFill"></div></div></div>
   <div id="topRight" class="panel">
     <div><b id="timeT">0.0</b>s</div>
-    <div id="beamRun">☀️ <span id="beamRunN">0</span></div>
+    <div id="beamRun">🌿 <span id="beamRunN">0</span></div>
     <div id="deathT" style="opacity:.8">burns 0</div>
   </div>
   <div id="pauseBtn">II</div>
@@ -132,7 +137,7 @@
 <!-- ===== TITLE ===== -->
 <div id="title" class="overlay center show">
   <h1 class="logo">TOMATO<span class="two">MAN</span></h1>
-  <div class="tag">The sun is death. Shade is the only ground. Sweep through the shadows, grab the sunbeams, beat the heat — and don't get burned.</div>
+  <div class="tag">The sun is death. Shade is the only ground. Sweep through the shadows, gather the aloe, beat the heat — and don't get burned.</div>
   <div class="menuCol">
     <button class="big-btn green" id="tPlay">PLAY</button>
     <button class="ghost-btn" id="tDaily">📅 Daily Challenge</button>
@@ -143,7 +148,7 @@
       <button class="ghost-btn" id="tSet">⚙︎</button>
     </div>
   </div>
-  <div class="hintline">Left thumb moves • DASH crosses a thin sliver (but burns you fast in the open) • SHADE drops safe ground • SPF = brief immunity • ride clouds & cart-shadows • collect ☀️ sunbeams in the light to spend in the shop.</div>
+  <div class="hintline">Left thumb moves • DASH crosses a thin sliver (but burns you fast in the open) • SHADE drops safe ground • SPF = brief immunity • ride clouds & cart-shadows • dash out for 🌿 aloe in the light to spend in the shop.</div>
 </div>
 
 <!-- ===== WORLD MAP ===== -->
@@ -191,8 +196,8 @@
 <!-- ===== SHOP ===== -->
 <div id="shop" class="overlay">
   <div class="backRow"><div class="iconbtn" id="shopBack">‹</div></div>
-  <h2 class="title">☀️ Sunbeam Shop</h2>
-  <div class="sub2" id="shopWallet">0 sunbeams</div>
+  <h2 class="title">🌿 Aloe Shop</h2>
+  <div class="sub2" id="shopWallet">0 aloe</div>
   <div class="tabs">
     <button class="tab on" data-tab="upgrades">Upgrades</button>
     <button class="tab" data-tab="consumables">Boosts</button>
@@ -410,7 +415,7 @@ const UPGRADES=[
   {id:'hot_streak',name:'Hot Streak',desc:'Wider combo window, faster notches, higher cap.',prices:[130,300,620],eff:t=>['—','+window','notch /2','cap x4'][t]},
   {id:'packed_parasols',name:'Packed Parasols',desc:'+1 starting SHADE per tier.',prices:[80,190,400],eff:t=>'+'+t+' shade'},
   {id:'sunscreen_stash',name:'Sunscreen Stash',desc:'+1 starting SPF (T3: SPF lasts longer).',prices:[100,240,500],eff:t=>'+'+t+' spf'+(t>=3?' · 3.0s':'')},
-  {id:'beam_magnet',name:'Beam Magnet',desc:'Bigger sunbeam pickup radius.',prices:[70,160,340],eff:t=>'reach '+[24,30,38,46][t]},
+  {id:'beam_magnet',name:'Aloe Magnet',desc:'Bigger aloe pickup radius.',prices:[70,160,340],eff:t=>'reach '+[24,30,38,46][t]},
   {id:'second_wind',name:'Second Wind',desc:'Longer mercy window after a burn.',prices:[90,210,440],eff:t=>'grace '+[0.4,1.1,1.5,1.9][t]+'s'},
 ];
 const CONSUMABLES=[
@@ -418,7 +423,7 @@ const CONSUMABLES=[
   {id:'spf_sample',name:'SPF Sample',desc:'+1 SPF next run',price:20,cap:3},
   {id:'ice_cube',name:'Ice Cube',desc:'+1 ICE WATER next run',price:25,cap:2},
   {id:'siesta',name:'Siesta',desc:'Sun 40% slower for 6s after each spawn',price:20,cap:2},
-  {id:'magnet_pop',name:'Magnet Pop',desc:'Double beam pickup radius all run',price:30,cap:2},
+  {id:'magnet_pop',name:'Magnet Pop',desc:'Double aloe pickup radius all run',price:30,cap:2},
   {id:'cooler_box',name:'Cooler Box',desc:'Revive in place & keep your combo (1×)',price:40,cap:1},
 ];
 const COSMETICS=[
@@ -741,7 +746,7 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
       b.got=true; run.beamsGot++; run.combo++; run.comboT=comboWindow();
       const mult=comboMult(run.combo), near=P.exp>55?2:1, val=Math.round(ECON.beamValue*mult*near);
       run.beamScore+=val; run.comboMax=Math.max(run.comboMax,mult);
-      SFX.beam(run.combo); spawnParts(b.x,b.y,10,'255,210,63',130,0.6);
+      SFX.beam(run.combo); spawnParts(b.x,b.y,10,'140,240,180',130,0.6);
       if(near>1) toast('SIZZLE! ×2','#ffd23f'); else if(mult>1) showCombo(mult); } }
   run.comboT-=dt; if(run.comboT<=0&&run.combo>0){ run.combo=Math.max(0,run.combo-comboNotch()); run.comboT=run.combo>0?comboWindow():0; }
   for(const p of run.pops){ if(!p.got && dist(P.x,P.y,p.x,p.y)<26+P.r){ p.got=true; P.dashCd=0; P.dashStock++; SFX.pop();
@@ -775,7 +780,7 @@ function winLevel(){ mode='win'; const L=run.L; SFX.win(); stopMusic(); freeze=0
   const noDeath=run.deaths===0, underPar=run.t<=L.par;
   const medal=(noDeath&&underPar)?'🥇':(noDeath||underPar)?'🥈':'🥉';
   const score=(noDeath?1:0)+(underPar?1:0)+1; // 1..3 stars
-  // ---- earn sunbeams ----
+  // ---- earn aloe ----
   let earn=ECON.levelComplete + run.beamScore;
   if(noDeath) earn+=ECON.noBurn; if(underPar) earn+=ECON.underPar;
   let first=false; const id=endless?'endless':levelId(L,li);
@@ -793,8 +798,8 @@ function winLevel(){ mode='win'; const L=run.L; SFX.win(); stopMusic(); freeze=0
   $('winTitle').textContent=endless?'NICE RUN':'YOU MADE IT';
   $('winMedal').textContent=medal;
   $('winTime').textContent=`Time ${run.t.toFixed(1)}s  (par ${L.par}s) ${underPar?'✓':''}`;
-  $('winDeaths').textContent=`Burns ${run.deaths} ${noDeath?'— flawless ✓':''}  ·  ☀️ ${run.beamsGot}${run.comboMax>1?'  ·  best x'+run.comboMax:''}`;
-  $('winEarn').innerHTML=`<div class="earnLine">+ ${earn} sunbeams ☀️</div>`+(first?`<div class="earnLine">first clear bonus!</div>`:'');
+  $('winDeaths').textContent=`Burns ${run.deaths} ${noDeath?'— flawless ✓':''}  ·  🌿 ${run.beamsGot}${run.comboMax>1?'  ·  best x'+run.comboMax:''}`;
+  $('winEarn').innerHTML=`<div class="earnLine">+ ${earn} aloe 🌿</div>`+(first?`<div class="earnLine">first clear bonus!</div>`:'');
   $('winNext').style.display=(!endless && nextLevelIndex()!==-1)?'':'none';
   $('play-ui').classList.add('hidden'); showScreen('win'); updateWallet();
 }
@@ -862,9 +867,9 @@ function render(){ const inPlay=(screen==='play');
     ctx.fillStyle='#9a5a2a'; ctx.fillRect(x-2,y+6+bob,4,12);
     ctx.fillStyle='rgba(255,255,255,.5)'; ctx.fillRect(x-5,y-13+bob,3,12); }
 
-  // beams (sunbeam currency)
+  // aloe (currency pickups)
   for(const b of run.beams){ if(b.got) continue; const pulse=0.6+0.4*Math.sin(b.t*4);
-    ctx.fillStyle=`rgba(255,210,63,${0.6+0.4*pulse})`; star(b.x+ox,b.y+oy,12*pulse,5);
+    ctx.fillStyle=`rgba(140,240,180,${0.6+0.4*pulse})`; star(b.x+ox,b.y+oy,12*pulse,5);
     ctx.fillStyle='rgba(255,255,255,.9)'; ctx.beginPath(); ctx.arc(b.x+ox,b.y+oy,4,0,TAU); ctx.fill(); }
 
   // checkpoints
@@ -969,7 +974,7 @@ function showScreen(name){ screen=name||'play';
   updateWallet();
 }
 function stopMusicMaybe(name){ if(name==='title'||name==='map'||name==='shop'||name==='builder'||name==='settings'||name==='levels') stopMusic(); }
-function updateWallet(){ $('walletN').textContent=save.beams; const sw=$('shopWallet'); if(sw) sw.textContent=save.beams+' sunbeams'; }
+function updateWallet(){ $('walletN').textContent=save.beams; const sw=$('shopWallet'); if(sw) sw.textContent=save.beams+' aloe'; }
 
 // world unlocking: world w unlocked if previous world has >=1 cleared level (or w==0)
 function worldUnlocked(w){ if(w===0) return true; const prev=levelsOfWorld(w-1); return prev.some(o=>save.stars[levelId(o.L,o.i)]); }
@@ -1016,7 +1021,7 @@ function buildShop(){ updateWallet(); const grid=$('shopGrid'); grid.innerHTML='
     grid.appendChild(c); }); }
 }
 function card(title,sub,price,cant){ const c=document.createElement('div'); c.className='card hascost'+(cant?' cant':'');
-  c.innerHTML=`${title}<small>${sub}</small><span class="price">${typeof price==='number'?'☀️'+price:price}</span>`; return c; }
+  c.innerHTML=`${title}<small>${sub}</small><span class="price">${typeof price==='number'?'🌿'+price:price}</span>`; return c; }
 
 /* ----- builder ----- */
 let buildTab='body';
@@ -1085,7 +1090,7 @@ function syncSettings(){ $('swSfx').classList.toggle('on',save.settings.sfx); $(
 $('swSfx').onclick=()=>{ save.settings.sfx=!save.settings.sfx; persist(); syncSettings(); SFX.click(); };
 $('swMusic').onclick=()=>{ save.settings.music=!save.settings.music; persist(); syncSettings(); if(!save.settings.music)stopMusic(); };
 $('swReduce').onclick=()=>{ save.settings.reduce=!save.settings.reduce; persist(); syncSettings(); };
-$('resetSave').onclick=()=>{ if(confirm('Reset ALL progress, sunbeams and unlocks?')){ save=clone(DEF_SAVE); persist(); updateWallet(); syncSettings(); toast('progress reset'); } };
+$('resetSave').onclick=()=>{ if(confirm('Reset ALL progress, aloe and unlocks?')){ save=clone(DEF_SAVE); persist(); updateWallet(); syncSettings(); toast('progress reset'); } };
 
 /* ===================== BOOT ===================== */
 loadAssets(); resize(); updateWallet(); buildWorldMap(); showScreen('title'); requestAnimationFrame(frame);

@@ -50,7 +50,7 @@
   #lvlFlash small{display:block;font-size:13px;font-weight:700;opacity:.85;margin-top:6px;line-height:1.5;}
   #toast{position:fixed;left:0;right:0;top:42%;text-align:center;font-size:32px;font-weight:900;
     color:var(--tomato);opacity:0;pointer-events:none;text-shadow:0 3px 0 #7a140f;letter-spacing:.05em;}
-  #btns{position:absolute;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);
+  #btns{position:absolute;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 92px);
     display:flex;flex-direction:column;gap:10px;pointer-events:auto;align-items:flex-end;}
   .btn{width:66px;height:66px;border-radius:50%;border:3px solid rgba(255,255,255,.5);background:rgba(35,49,74,.62);
     color:#fff;font-weight:900;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
@@ -590,6 +590,18 @@ function safeAt(px,py){ if(run.screenT>0||run.darkT>0) return true;
   for(const cl of run.clouds) if(dist(px,py,cl.x,cl.y)<cl.r) return true;
   for(const p of run.popups) if(dist(px,py,p.x,p.y)<p.r) return true;
   return false; }
+// Solid awnings: stop the player from walking through the 'R' caster blocks (circle-vs-rect, slides along faces).
+function collideWalls(){ const ws=run.walls; if(!ws||!ws.length) return; const r=P.r;
+  for(let pass=0;pass<2;pass++) for(const w of ws){
+    const cx=clamp(P.x,w.x,w.x+w.w), cy=clamp(P.y,w.y,w.y+w.h);
+    let dx=P.x-cx, dy=P.y-cy, d2=dx*dx+dy*dy;
+    if(d2>=r*r) continue;
+    if(d2>1e-4){ const d=Math.sqrt(d2),nx=dx/d,ny=dy/d; P.x+=nx*(r-d); P.y+=ny*(r-d);
+      const vn=P.vx*nx+P.vy*ny; if(vn<0){ P.vx-=vn*nx; P.vy-=vn*ny; } }            // push out + kill inward velocity (slide)
+    else { const l=P.x-w.x, ri=w.x+w.w-P.x, t=P.y-w.y, b=w.y+w.h-P.y, m=Math.min(l,ri,t,b); // center inside: pop nearest face
+      if(m===l){ P.x=w.x-r; if(P.vx>0)P.vx=0; } else if(m===ri){ P.x=w.x+w.w+r; if(P.vx<0)P.vx=0; }
+      else if(m===t){ P.y=w.y-r; if(P.vy>0)P.vy=0; } else { P.y=w.y+w.h+r; if(P.vy<0)P.vy=0; } } }
+  P.x=clamp(P.x,r,run.L.worldW-r); P.y=clamp(P.y,r,run.L.worldH-r); }
 
 /* ===================== RUNTIME ===================== */
 let screen='title';   // title|map|levels|play|win|pause|shop|builder|settings
@@ -618,6 +630,9 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
         cp:{x:L.checkpoints[0][0],y:L.checkpoints[0][1]}, cpHit:[],
         charges:{shade:ch.shade,spf:ch.spf,ice:ch.ice},
         coolerBox: !!save.loadout.cooler_box, siesta: !!save.loadout.siesta, magnet: !!save.loadout.magnet_pop, spawnAt:0, feel };
+  // make the orange 'R' awnings solid — but never the ones the player spawns / respawns / exits on (start, exit, checkpoints)
+  run.walls=(L.casters||[]).filter(c=>c[0]==='R').map(c=>({x:c[1],y:c[2],w:c[3],h:c[4]}))
+    .filter(w=>![L.start,L.exit,...(L.checkpoints||[])].some(p=>p[0]>w.x-18&&p[0]<w.x+w.w+18&&p[1]>w.y-18&&p[1]<w.y+w.h+18));
   P.x=L.start[0]; P.y=L.start[1]; P.vx=0;P.vy=0; P.exp=0; P.face=-Math.PI/2; P.dashT=0; P.dashCd=0; P.dashStock=0; P.sx=1;P.sy=1;
   cam.x=clamp(P.x-W/2,0,Math.max(0,L.worldW-W)); cam.y=clamp(P.y-H/2,0,Math.max(0,L.worldH-H));
   // consume loadout (single-use boosts)
@@ -710,6 +725,7 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
   P.x=clamp(P.x+P.vx*dt,P.r,L.worldW-P.r); P.y=clamp(P.y+P.vy*dt,P.r,L.worldH-P.r);
   if(run.wind){ let wx=run.wind.ax||0; if(run.wind.gust) wx+=run.wind.gust.amp*Math.sin(run.t*TAU/run.wind.gust.period);
     P.x=clamp(P.x+wx*dt,P.r,L.worldW-P.r); P.y=clamp(P.y+(run.wind.ay||0)*dt,P.r,L.worldH-P.r); } // steady lean-against drift
+  collideWalls(); // awnings are solid — go around them
   P.dashCd=Math.max(0,P.dashCd-dt);
   if(dashBuf>0){ dashBuf-=dt; if(P.dashCd<=0||P.dashStock>0) doDash(); }
   // squash/stretch ease back

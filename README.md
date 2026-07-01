@@ -19,11 +19,13 @@ A single-file, mobile-first, top-down action-platformer. Hero: **Tomato Man** (n
 - **ICE** — briefly slow the sun's sweep to reposition (worlds 3+). F.
 - **Pause** — Esc.
 
-Collect **🌿 Aloe** — but only while standing **in the sun** (risk = reward). Chain pickups without burning to build a **Fresh Streak** multiplier.
+Collect **🌿 Aloe** — the green stars **glow when the sun lights them**; grab a glowing one for shop money (a dim star is asleep in shade). Chain pickups without burning to build a **Fresh Streak** multiplier.
+
+New to it? The title screen has a **How to Play** legend, and a first-run coach teaches each mechanic the moment it first matters.
 
 ## 🎮 What's in it
 
-- **5 worlds × 4 hand-built levels (20 total)** + an endless **Shadow Run** + a **Daily Challenge** (same seed for everyone each day, with streaks).
+- **26 hand-built levels across 5 worlds** — every one verified solvable by a physics-replay simulator (a verbatim port of the engine that pathfinds around the solid awnings) — plus an endless **Shadow Run** and a **Daily Challenge** (same seed for everyone each day, with streaks). Solid awnings you must route *around* make several levels real "looks-impossible-until-you-see-it" puzzles: **The Moat** (no natural shade crosses the sand, so you drop your own and island-hop it), **High Sun Gaps** (shadows only join when the sun stands straight up), and **The Long Dark** (a blackout maze you cross only while the eclipse blinks on).
   1. **Morning Tide** — long forgiving shadows; learn the sweep, the dash, dropping shade, riding clouds.
   2. **Midday Blaze** — short shadows, hot sand, patrolling cart-shadows, popsicles, SPF economy.
   3. **Tide Pools** — wilting awnings (no camping) + ice water (slow the sun).
@@ -49,7 +51,7 @@ The full asset list, style guide, and ready-to-paste Midjourney / ChatGPT / Gemi
 
 Everything lives in `index.html`. Key sections (search the `<script>`):
 
-- `LEVELS` — the 20 levels as plain data (world px, y-down, travel bottom→top). Easy to tune on a phone.
+- `LEVELS` — the 26 levels as plain data (world px, y-down, travel bottom→top). Easy to tune on a phone. New levels are appended (never inserted) so `world_index` save keys stay stable.
 - `genLevel()` — the procedural generator for endless/daily.
 - `computeShade()` / `safeAt()` — the swept-shadow geometry & safety test.
 - `update()` — the sim (movement, mechanics, exposure, pickups, win/burn).

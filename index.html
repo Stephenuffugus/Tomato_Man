@@ -146,6 +146,8 @@
   <div id="heatWrap" class="panel"><div class="lbl" id="heatLbl">Exposure</div><div id="heatBar"><div id="heatFill"></div></div></div>
   <div id="topRight" class="panel">
     <div><b id="timeT">0.0</b>s</div>
+    <div id="bestT" style="opacity:.8;font-size:11px;margin:1px 0 3px">best —</div>
+    <div id="findRun" style="font-size:15px"></div>
     <div id="beamRun">🌿 <span id="beamRunN">0</span></div>
     <div id="deathT" style="opacity:.8">burns 0</div>
   </div>
@@ -306,6 +308,7 @@ const DEF_SAVE={
   beams:0, totalEarned:0, totalBurns:0, levelsCleared:0,
   stars:{},      // levelId -> 0..3
   best:{},       // levelId -> seconds
+  finds:{},      // levelId -> [bool,bool,bool]  collectibles found (persists across runs)
   endlessBest:0, dailyBest:{}, dailyStreak:0, dailyLast:0,
   upgrades:{ thicker_skin:0, big_dash:0, quick_recovery:0, hot_streak:0, packed_parasols:0, sunscreen_stash:0, beam_magnet:0, second_wind:0 },
   cosmetics:{ owned:['tomato'], body:'tomato', hat:'none', trail:'classic' },
@@ -549,7 +552,18 @@ let LEVELS=[
 {"name":"Reef Ferry","sub":"ride the tide-cart, then round the big awning","world":2,"worldW":2200,"worldH":2600,"start":[640,2460],"exit":[1480,300],"sun":{"azC":1.57,"azAmp":0.44,"azSpeed":0.5,"elev":0.72},"shade":2,"spf":0,"ice":1,"par":40,"casters":[["R",460,2400,360,80,440],["U",640,2120,95,1.57,360],["U",640,1840,95,1.57,360],["U",1460,2060,95,1.57,360],["R",1120,1180,620,80,500],["U",1480,720,95,1.57,360],["R",1300,300,360,80,440]],"movers":[{"x":1360,"y":1900,"w":240,"d":60,"sh":440,"vx":-120,"minx":560,"maxx":1560}],"checkpoints":[[640,2460],[640,1700],[1460,1780],[1480,760]],"beams":[[1080,1740],[1748,1300],[900,2050]]},
 {"name":"The Long Dark","sub":"cross the blackout maze while the sun blinks","world":4,"worldW":1900,"worldH":2600,"start":[980,2460],"exit":[980,220],"sun":{"azC":1.57,"azAmp":0.24,"azSpeed":0.5,"elev":1.2,"dark":{"period":4,"dur":2.7}},"shade":2,"spf":1,"ice":0,"par":60,"casters":[["R",800,2400,360,90,470],["R",620,1780,340,90,490],["R",960,1160,340,90,490],["R",620,300,340,90,490],["R",800,150,360,90,460]],"checkpoints":[[980,2460],[790,1660],[1130,1040],[790,460]],"beams":[[1150,2050],[790,1420],[1150,900]]}
 ];
+/* per-world hidden collectibles: 🐚 shells (beach worlds) · 🍦 ice-cream (blaze) · 💎 treasure (dunes/eclipse). 3 per campaign level. */
+const COLLECT=[
+  {emoji:'🐚',name:'Seashell',plural:'Seashells',kind:'shell'},   // W0 Morning Tide
+  {emoji:'🍦',name:'Ice Cream',plural:'Ice Creams',kind:'cone'},  // W1 Midday Blaze
+  {emoji:'🐚',name:'Seashell',plural:'Seashells',kind:'shell'},   // W2 Tide Pools
+  {emoji:'💎',name:'Gem',plural:'Buried Gems',kind:'gem'},        // W3 Dunes at Dusk
+  {emoji:'💎',name:'Gem',plural:'Buried Gems',kind:'gem'},        // W4 Eclipse
+];
+function collectOf(w){ return COLLECT[w%COLLECT.length]; }
+const FINDS={0:[[1620,1788],[1668,1452],[1788,636]],1:[[1620,1860],[1644,1452],[1740,660]],2:[[228,1812],[204,1188],[228,924]],3:[[1692,1932],[516,1524],[468,900]],4:[[1572,1788],[1596,1212],[612,708]],5:[[1404,1860],[612,1332],[1404,828]],6:[[180,1860],[156,1236],[2244,828]],7:[[852,2052],[348,1380],[2364,756]],8:[[1548,1740],[444,1164],[1572,900]],9:[[1644,1860],[1644,1260],[612,660]],10:[[1764,1788],[2244,1260],[2268,900]],11:[[1788,2076],[2244,1356],[2268,1044]],12:[[1812,1644],[1884,1140],[84,636]],13:[[204,1788],[204,1428],[252,636]],14:[[2004,1668],[2004,1188],[2172,660]],15:[[2076,1812],[2340,1212],[2436,948]],16:[[1476,1692],[1476,1116],[1476,780]],17:[[1572,1932],[1572,1380],[1572,660]],18:[[540,1716],[420,1356],[420,636]],19:[[708,2052],[1860,1476],[708,708]],20:[[1332,1524],[1332,1212],[1332,564]],21:[[1212,1836],[1212,1092],[1212,612]],22:[[228,1236],[1188,756],[348,420]],23:[[1284,1260],[276,780],[324,420]],24:[[1908,1908],[1932,1524],[2100,804]],25:[[468,1716],[1428,1212],[1452,924]]};
 function levelId(L,idx){ return WORLDS[L.world].key+'_'+idx; }
+LEVELS.forEach((L,i)=>{ L.finds=FINDS[i]||[]; });
 function levelsOfWorld(w){ return LEVELS.map((L,i)=>({L,i})).filter(o=>o.L.world===w); }
 
 /* ===================== PROCEDURAL GENERATOR (endless / daily) ===================== */
@@ -664,6 +678,9 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
         lunge:L.sun.lunge?{...L.sun.lunge,timer:0,state:'idle',zx:0,zy:0}:null,
         dark:L.sun.dark?{...L.sun.dark,timer:0}:null,
         beams:(L.beams||[]).map(b=>({x:b[0],y:b[1],got:false,t:Math.random()*6})),
+        findId: endless?null:levelId(L,li),
+        finds: endless?[]:(L.finds||[]).map((p,i)=>({x:p[0],y:p[1],i,got:!!((save.finds[levelId(L,li)]||[])[i])})),
+        findsRun:0,
         beamsGot:0, beamScore:0, combo:0, comboT:0, comboMax:0,
         cp:{x:L.checkpoints[0][0],y:L.checkpoints[0][1]}, cpHit:[],
         charges:{shade:ch.shade,spf:ch.spf,ice:ch.ice},
@@ -689,6 +706,15 @@ function showCombo(n){ const c=$('comboTag'); c.textContent='x'+n+' COMBO'; c.st
 
 function spawnParts(x,y,n,col,spd,life){ for(let i=0;i<n;i++){ const a=Math.random()*TAU,s=spd*(0.4+Math.random()*0.6);
   run.parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:life||0.5,t:life||0.5,col,r:2+Math.random()*2}); } }
+function collectFind(fnd){ fnd.got=true; run.findsRun++;
+  const cd=collectOf(run.L.world);
+  let arr=save.finds[run.findId]; if(!arr){ arr=[]; save.finds[run.findId]=arr; } arr[fnd.i]=true;
+  const total=run.finds.length, have=run.finds.filter(f=>f.got).length;
+  addBeams(12);                                                    // bonus aloe per find (addBeams persists)
+  SFX.pop(); spawnParts(fnd.x,fnd.y,14,'255,225,150',140,0.6);
+  if(have>=total){ addBeams(40); toast(cd.emoji+'  all '+total+'! +40 aloe','var(--beam)'); SFX.win(); }
+  else toast(cd.emoji+'  '+cd.name+'!  +12','var(--beam)'); }
+function levelFindCount(id,L){ const arr=save.finds[id]||[]; const n=(L.finds||[]).length; let c=0; for(let i=0;i<n;i++) if(arr[i]) c++; return {have:c,total:n}; }
 
 /* ===================== INPUT ===================== */
 const stick={active:false,id:null,ox:0,oy:0,dx:0,dy:0,max:66}, keys={};
@@ -817,6 +843,8 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
   run.comboT-=dt; if(run.comboT<=0&&run.combo>0){ run.combo=Math.max(0,run.combo-comboNotch()); run.comboT=run.combo>0?comboWindow():0; }
   for(const p of run.pops){ if(!p.got && dist(P.x,P.y,p.x,p.y)<26+P.r){ p.got=true; P.dashCd=0; P.dashStock++; SFX.pop();
       spawnParts(p.x,p.y,10,'120,200,255',120,0.5); toast('+dash','#7fd0ff'); } }
+  // ---- collectibles (seashells / ice-cream / gems — persist across runs) ----
+  for(const fnd of run.finds){ if(!fnd.got && dist(P.x,P.y,fnd.x,fnd.y)<pr+P.r+10) collectFind(fnd); }
 
   // ---- checkpoints / exit ----
   L.checkpoints.forEach((c,idx)=>{ if(!run.cpHit[idx]&&dist(P.x,P.y,c[0],c[1])<70){ run.cpHit[idx]=true; run.cp={x:c[0],y:c[1]}; toast('checkpoint','var(--leaf)'); SFX.checkpoint(); } });
@@ -831,6 +859,10 @@ function updateHUD(onHot){ const f=run.feel;
   $('heatFill').style.background=run.screenT>0?'#7fd0ff':(run.darkT>0?'#9fb0ff':skin(P.exp/100));
   $('heatLbl').textContent=run.graceT>0?'get ready…':(run.screenT>0?'SPF active':(run.darkT>0?'eclipse':(run.slowT>0?'ICE — time slow':(onHot?'HOT SAND':'Exposure'))));
   $('timeT').textContent=run.t.toFixed(1);
+  if(run.findId){ const bt=save.best[run.findId]; $('bestT').style.display=''; $('bestT').textContent=bt?('best '+bt.toFixed(1)+'s'):'best —';
+    const total=run.finds.length, have=run.finds.filter(f=>f.got).length;
+    $('findRun').style.display=total?'':'none'; if(total) $('findRun').textContent=collectOf(run.L.world).emoji+' '+have+'/'+total;
+  } else { $('bestT').style.display='none'; $('findRun').style.display='none'; }
   $('beamRunN').textContent=run.beamsGot;
   $('deathT').textContent='burns '+run.deaths;
   const frac=P.dashCd>0?P.dashCd/f.dashCd:0;
@@ -852,6 +884,8 @@ function winLevel(){ mode='win'; const L=run.L; SFX.win(); stopMusic(); freeze=0
   if(noDeath) earn+=ECON.noBurn; if(underPar) earn+=ECON.underPar;
   let first=false; const id=endless?'endless':levelId(L,li);
   const prevStars=endless?0:(save.stars[id]||0);
+  const prevBest=endless?0:(save.best[id]||0);
+  const isNewBest=!endless && (!prevBest || run.t<prevBest-0.001);
   if(!endless){ first=!save.stars[id]; if(first) earn+=ECON.firstClear;
     const tierBonus=[0,ECON.medalBronze,ECON.medalSilver,ECON.medalGold]; // one-time per newly-reached tier
     for(let t=prevStars+1;t<=score;t++) earn+=tierBonus[t]; }
@@ -864,8 +898,9 @@ function winLevel(){ mode='win'; const L=run.L; SFX.win(); stopMusic(); freeze=0
   // ---- win screen ----
   $('winTitle').textContent=endless?'NICE RUN':'YOU MADE IT';
   $('winMedal').textContent=medal;
-  $('winTime').textContent=`Time ${run.t.toFixed(1)}s  (par ${L.par}s) ${underPar?'✓':''}`;
-  $('winDeaths').textContent=`Burns ${run.deaths} ${noDeath?'— flawless ✓':''}  ·  🌿 ${run.beamsGot}${run.comboMax>1?'  ·  best x'+run.comboMax:''}`;
+  $('winTime').innerHTML=`Time ${run.t.toFixed(1)}s  (par ${L.par}s) ${underPar?'✓':''}`+(isNewBest?`  <span style="color:var(--beam)">🏆 NEW BEST!</span>`:(prevBest?`  ·  <span style="opacity:.7">best ${prevBest.toFixed(1)}s</span>`:''));
+  const fcw = endless?{have:0,total:0}:levelFindCount(id,L);
+  $('winDeaths').innerHTML=`Burns ${run.deaths} ${noDeath?'— flawless ✓':''}  ·  🌿 ${run.beamsGot}${run.comboMax>1?'  ·  x'+run.comboMax:''}`+(fcw.total?`  ·  ${collectOf(L.world).emoji} ${fcw.have}/${fcw.total}${fcw.have>=fcw.total?' ✓':' <span style="opacity:.6">(replay for more)</span>'}`:'');
   $('winEarn').innerHTML=`<div class="earnLine">+ ${earn} aloe 🌿</div>`+(first?`<div class="earnLine">first clear bonus!</div>`:'');
   $('winNext').style.display=(!endless && nextLevelIndex()!==-1)?'':'none';
   $('play-ui').classList.add('hidden'); showScreen('win'); updateWallet();
@@ -963,6 +998,9 @@ function render(){ const inPlay=(screen==='play');
     } else { // dormant bud in shade — visibly "asleep" until the sun reaches it
       ctx.fillStyle='rgba(95,150,115,.55)'; ctx.beginPath(); ctx.arc(x,y,5,0,TAU); ctx.fill();
       ctx.strokeStyle='rgba(130,190,150,.5)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x,y,8.5,0,TAU); ctx.stroke(); } }
+
+  // collectibles (world-themed hidden treasure — shells / ice-cream / gems)
+  for(const fnd of run.finds){ if(fnd.got) continue; drawFindIcon(fnd.x+ox, fnd.y+oy+Math.sin(nowT*3+fnd.x*0.05)*3, collectOf(L.world).kind); }
 
   // checkpoints
   L.checkpoints.forEach((c,i)=>{ const hit=run.cpHit[i]; ctx.strokeStyle=hit?'rgba(79,181,106,.9)':'rgba(255,255,255,.45)'; ctx.lineWidth=3;
@@ -1064,6 +1102,29 @@ function mixRGB(a,b,t){ t=clamp(t,0,1); return [lerp(a[0],b[0],t),lerp(a[1],b[1]
 function rgbStr(a){ return `rgb(${Math.round(a[0])},${Math.round(a[1])},${Math.round(a[2])})`; }
 function star(x,y,r,p){ctx.beginPath();for(let i=0;i<p*2;i++){const a=i*Math.PI/p,rr=i%2?r*0.5:r;const px=x+Math.cos(a)*rr,py=y+Math.sin(a)*rr;i?ctx.lineTo(px,py):ctx.moveTo(px,py);}ctx.closePath();ctx.fill();}
 function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+function drawFindIcon(x,y,kind){
+  const gr=ctx.createRadialGradient(x,y,0,x,y,20); gr.addColorStop(0,'rgba(255,244,190,.5)'); gr.addColorStop(1,'rgba(255,244,190,0)');
+  ctx.fillStyle=gr; ctx.beginPath(); ctx.arc(x,y,20,0,TAU); ctx.fill();
+  ctx.save(); ctx.translate(x,y);
+  if(kind==='shell'){
+    const g=ctx.createLinearGradient(0,-14,0,4); g.addColorStop(0,'#ffd9e0'); g.addColorStop(1,'#f28ab0');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(0,5,13,Math.PI,0,false); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle='rgba(170,70,105,.6)'; ctx.lineWidth=1.4;
+    for(let i=-2;i<=2;i++){ ctx.beginPath(); ctx.moveTo(0,5); ctx.lineTo(i*5.6,-8+Math.abs(i)*1.3); ctx.stroke(); }
+    ctx.fillStyle='#f8bbd0'; ctx.beginPath(); ctx.arc(0,5,3,0,TAU); ctx.fill();
+  } else if(kind==='cone'){
+    ctx.fillStyle='#e0a86a'; ctx.beginPath(); ctx.moveTo(-7,-1); ctx.lineTo(7,-1); ctx.lineTo(0,15); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle='rgba(150,100,50,.5)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(-4,2); ctx.lineTo(2,11); ctx.moveTo(3,2); ctx.lineTo(-1,9); ctx.stroke();
+    ctx.fillStyle='#ffe0ec'; ctx.beginPath(); ctx.arc(-3,-4,6,0,TAU); ctx.arc(4,-4,6,0,TAU); ctx.arc(0,-9,6,0,TAU); ctx.fill();
+    ctx.fillStyle='#e5556f'; ctx.beginPath(); ctx.arc(0,-13,2.3,0,TAU); ctx.fill();
+  } else { // gem
+    const g=ctx.createLinearGradient(0,-11,0,12); g.addColorStop(0,'#c8f2ff'); g.addColorStop(1,'#37b6e0');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.moveTo(0,-11); ctx.lineTo(9,-3); ctx.lineTo(0,12); ctx.lineTo(-9,-3); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.7)'; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(-9,-3); ctx.lineTo(9,-3); ctx.moveTo(0,-11); ctx.lineTo(0,12); ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,.85)'; ctx.beginPath(); ctx.arc(-3.5,-4,1.6,0,TAU); ctx.fill();
+  }
+  ctx.restore();
+}
 function sunToken(lunge){ const m=42,angry=lunge&&lunge.state!=='idle';
   const x=clamp(W/2+Math.cos(run.az)*(W/2-m),m,W-m),y=clamp(H/2+Math.sin(run.az)*(H/2-m),m,H-m);
   // radiant halo
@@ -1121,7 +1182,8 @@ function openWorld(wi){ curWorld=wi; $('lvlWorldName').textContent=WORLDS[wi].na
   levelsOfWorld(wi).forEach(o=>{ const i=o.i,L=o.L; const id=levelId(L,i); const st=save.stars[id]||0; const unlocked=unlockedLevel(i);
     const b=document.createElement('div'); b.className='card'+(unlocked?'':' locked');
     const stars=st?'★'.repeat(st)+'☆'.repeat(3-st):'';
-    b.innerHTML=`${L.name}<small>${L.sub}</small>${unlocked?`<div class="rec">${st?stars:'play ▶'}${save.best[id]?'  ·  '+save.best[id].toFixed(1)+'s':''}</div>`:'<div class="rec">🔒 clear previous</div>'}`;
+    const fc=levelFindCount(id,L); const findStr=fc.total?`  ·  ${collectOf(L.world).emoji} ${fc.have}/${fc.total}${fc.have===fc.total?'✓':''}`:'';
+    b.innerHTML=`${L.name}<small>${L.sub}</small>${unlocked?`<div class="rec">${st?stars:'play ▶'}${save.best[id]?'  ·  '+save.best[id].toFixed(1)+'s':''}${findStr}</div>`:'<div class="rec">🔒 clear previous</div>'}`;
     if(unlocked) b.addEventListener('click',()=>{SFX.click();startLevel(i);});
     grid.appendChild(o.b=b); });
   showScreen('levels'); }
@@ -1185,6 +1247,8 @@ const HOWTO=[
   {i:'🧴',t:'SPF',b:'Tap SPF for a few seconds of total sun-proof. Perfect for sprinting across wide-open light.'},
   {i:'🧊',t:'Ice Water',b:'Tap ICE to slow the sun’s sweep way down — buys you time when the shadows move too fast.'},
   {i:'🌿',t:'Aloe = money',b:'Green stars GLOW when the sun lights them — grab a glowing one to bank aloe for the shop. Dim buds are asleep in the shade; wait for the sun to reach them.'},
+  {i:'🐚',t:'Hidden treasure',b:'Every level hides 3 collectibles — 🐚 shells, 🍦 ice-cream or 💎 gems, depending on the world. The level shows how many you’ve found; grab all 3 to 100% it. Some are tucked away!'},
+  {i:'⏱️',t:'Beat your time',b:'Your best time shows while you play — race yourself. A gold medal needs no burns AND finishing under the target time.'},
   {i:'🚩',t:'Flag & checkpoints',b:'Reach the green flag at the top to win. Ringed dots are checkpoints — touch them so a burn sends you back there, not to the start.'},
   {i:'🔥',t:'Hot sand',b:'Glowing orange patches scorch you even out of direct sun. Don’t linger on them.'},
   {i:'🌥️',t:'Clouds & carts',b:'Cloud and cart shadows drift across the map. Step aboard and let them ferry you over the bright gaps.'},
@@ -1202,6 +1266,7 @@ const TUT=[
   {id:'move', ic:'🕹️', x:'Drag your left thumb to move. The sun cooks you — get into the shadow.', t:()=>run.t<3},
   {id:'shade', ic:'🌑', x:'You’re on shade — safe ground. It slides with the sun, so ride it upward.', t:()=>run.t>1.6 && shadedGeom(P.x,P.y)},
   {id:'aloe', ic:'🌿', x:'A glowing aloe! Dash into the sunlight to grab it, then dash back to shade.', t:()=>run.beams.some(b=>!b.got&&b.lit&&dist(P.x,P.y,b.x,b.y)<230)},
+  {id:'find', ic:'🐚', x:'Hidden treasure! Grab all 3 in a level to 100% it — some are off the beaten path.', t:()=>run.finds.some(f=>!f.got&&dist(P.x,P.y,f.x,f.y)<250)},
   {id:'dash', ic:'💨', x:'Tap DASH to burst across a thin strip of sun.', t:()=>run.t>6},
   {id:'shadeDrop', ic:'⛱️', x:'No shadow ahead? Tap SHADE to drop your own safe ground and inch across.', t:()=>run.charges.shade>0 && run.t>4 && !shadedGeom(P.x,P.y)},
   {id:'checkpoint', ic:'🚩', x:'Checkpoint! Burn now and you respawn right here.', t:()=>run.cpHit.some(Boolean)},

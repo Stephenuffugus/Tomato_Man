@@ -495,6 +495,12 @@ const COSMETICS=[
   {id:'visor',name:'Lifeguard Visor',cat:'hat',price:300,color:'#e8332a',kind:'visor'},
   {id:'umbrella',name:'Umbrella Hat',cat:'hat',price:400,color:'#ff5a7a',kind:'umbrella'},
   {id:'crown',name:'Sun Crown',cat:'hat',price:600,color:'#ffd23f',kind:'crown'},
+  // exclusive hats — earned by 100%-collecting a whole world (not buyable)
+  {id:'shell_crown',name:'Shell Crown',cat:'hat',price:null,earn:0,color:'#f7a8c4',kind:'shell'},
+  {id:'cone_hat',name:'Ice-Cream Hat',cat:'hat',price:null,earn:1,kind:'cone'},
+  {id:'cool_shades',name:'Cool Shades',cat:'hat',price:null,earn:2,color:'#20242c',kind:'shades'},
+  {id:'gem_crown',name:'Gem Crown',cat:'hat',price:null,earn:3,color:'#37b6e0',kind:'gem'},
+  {id:'eclipse_halo',name:'Eclipse Halo',cat:'hat',price:null,earn:4,color:'#b48aff',kind:'eclipse'},
   // dash trails
   {id:'classic',name:'Ember Trail',cat:'trail',price:0,color:'255,180,90'},
   {id:'cool',name:'Cool Trail',cat:'trail',price:60,color:'120,200,255'},
@@ -564,6 +570,10 @@ function collectOf(w){ return COLLECT[w%COLLECT.length]; }
 const FINDS={0:[[1620,1788],[1668,1452],[1788,636]],1:[[1620,1860],[1644,1452],[1740,660]],2:[[228,1812],[204,1188],[228,924]],3:[[1692,1932],[516,1524],[468,900]],4:[[1572,1788],[1596,1212],[612,708]],5:[[1404,1860],[612,1332],[1404,828]],6:[[180,1860],[156,1236],[2244,828]],7:[[852,2052],[348,1380],[2364,756]],8:[[1548,1740],[444,1164],[1572,900]],9:[[1644,1860],[1644,1260],[612,660]],10:[[1764,1788],[2244,1260],[2268,900]],11:[[1788,2076],[2244,1356],[2268,1044]],12:[[1812,1644],[1884,1140],[84,636]],13:[[204,1788],[204,1428],[252,636]],14:[[2004,1668],[2004,1188],[2172,660]],15:[[2076,1812],[2340,1212],[2436,948]],16:[[1476,1692],[1476,1116],[1476,780]],17:[[1572,1932],[1572,1380],[1572,660]],18:[[540,1716],[420,1356],[420,636]],19:[[708,2052],[1860,1476],[708,708]],20:[[1332,1524],[1332,1212],[1332,564]],21:[[1212,1836],[1212,1092],[1212,612]],22:[[228,1236],[1188,756],[348,420]],23:[[1284,1260],[276,780],[324,420]],24:[[1908,1908],[1932,1524],[2100,804]],25:[[468,1716],[1428,1212],[1452,924]]};
 function levelId(L,idx){ return WORLDS[L.world].key+'_'+idx; }
 LEVELS.forEach((L,i)=>{ L.finds=FINDS[i]||[]; });
+const WORLD_REWARD=['shell_crown','cone_hat','cool_shades','gem_crown','eclipse_halo']; // exclusive hat per world
+function worldFindsComplete(w){ const lv=levelsOfWorld(w); if(!lv.length) return false;
+  return lv.every(o=>{ const a=save.finds[levelId(o.L,o.i)]||[]; const n=(o.L.finds||[]).length; if(!n) return false;
+    for(let i=0;i<n;i++) if(!a[i]) return false; return true; }); }
 function levelsOfWorld(w){ return LEVELS.map((L,i)=>({L,i})).filter(o=>o.L.world===w); }
 
 /* ===================== PROCEDURAL GENERATOR (endless / daily) ===================== */
@@ -713,7 +723,12 @@ function collectFind(fnd){ fnd.got=true; run.findsRun++;
   addBeams(12);                                                    // bonus aloe per find (addBeams persists)
   SFX.pop(); spawnParts(fnd.x,fnd.y,14,'255,225,150',140,0.6);
   if(have>=total){ addBeams(40); toast(cd.emoji+'  all '+total+'! +40 aloe','var(--beam)'); SFX.win(); }
-  else toast(cd.emoji+'  '+cd.name+'!  +12','var(--beam)'); }
+  else toast(cd.emoji+'  '+cd.name+'!  +12','var(--beam)');
+  // world 100% → unlock that world's exclusive hat (once)
+  const w=run.L.world, rid=WORLD_REWARD[w];
+  if(rid && !save.cosmetics.owned.includes(rid) && worldFindsComplete(w)){
+    save.cosmetics.owned.push(rid); persist();
+    setTimeout(()=>toast('🏆 WORLD 100%! Unlocked: '+cosmetic(rid).name,'var(--leaf)'),700); SFX.win(); } }
 function levelFindCount(id,L){ const arr=save.finds[id]||[]; const n=(L.finds||[]).length; let c=0; for(let i=0;i<n;i++) if(arr[i]) c++; return {have:c,total:n}; }
 
 /* ===================== INPUT ===================== */
@@ -1090,6 +1105,7 @@ function drawHero(x,y){ const body=cosmetic(save.cosmetics.body), hat=cosmetic(s
   else if(hk==='visor'){ ctx.fillStyle=hc; ctx.fillRect(-10,-P.r-2,20,4); ctx.fillStyle='rgba(255,255,255,.4)'; ctx.fillRect(0,-P.r-2,12,3); }
   else if(hk==='crown'){ ctx.fillStyle=hc; for(let i=-1;i<=1;i++){ctx.beginPath();ctx.moveTo(i*7-3,-P.r-2);ctx.lineTo(i*7,-P.r-10);ctx.lineTo(i*7+3,-P.r-2);ctx.fill();} }
   else if(hk==='umbrella'){ ctx.strokeStyle='#7a5230'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(0,-P.r-9); ctx.lineTo(0,-P.r+1); ctx.stroke(); ctx.fillStyle=hc; ctx.beginPath(); ctx.arc(0,-P.r-9,11,Math.PI,0); ctx.fill(); }
+  else if(EXTRA_HATS.includes(hk)) drawHatExtra(ctx,0,0,P.r,hk,hc);
   ctx.restore();
 }
 const PALE=[255,221,170],PINK=[255,150,130],RED=[225,50,40];
@@ -1125,6 +1141,25 @@ function drawFindIcon(x,y,kind){
   }
   ctx.restore();
 }
+// exclusive hat kinds — drawn relative to a head of radius `hr` centred at (cx,cy) on context `g`
+function drawHatExtra(g,cx,cy,hr,kind,hc){ g.save(); g.translate(cx,cy); const u=hr/14; g.scale(u,u); hc=hc||'#999';
+  if(kind==='shell'){ const grd=g.createLinearGradient(0,-27,0,-14); grd.addColorStop(0,'#ffd9e0'); grd.addColorStop(1,hc);
+    g.fillStyle=grd; g.beginPath(); g.arc(0,-14,12,Math.PI,0); g.closePath(); g.fill();
+    g.strokeStyle='rgba(170,70,105,.5)'; g.lineWidth=1.2; for(let i=-2;i<=2;i++){ g.beginPath(); g.moveTo(0,-14); g.lineTo(i*5,-24+Math.abs(i)); g.stroke(); } }
+  else if(kind==='cone'){ g.fillStyle='#e6b06a'; g.beginPath(); g.moveTo(-6,-12); g.lineTo(6,-12); g.lineTo(0,-23); g.closePath(); g.fill();
+    g.fillStyle='#ffe0ec'; g.beginPath(); g.arc(0,-23,4.5,0,TAU); g.fill(); g.fillStyle='#e5556f'; g.beginPath(); g.arc(0,-27,1.8,0,TAU); g.fill(); }
+  else if(kind==='shades'){ g.fillStyle=hc;
+    g.beginPath(); g.ellipse(-5.5,-3,3.6,3,0,0,TAU); g.fill(); g.beginPath(); g.ellipse(5.5,-3,3.6,3,0,0,TAU); g.fill(); g.fillRect(-2,-4,4,1.6);
+    g.strokeStyle=hc; g.lineWidth=1.4; g.beginPath(); g.moveTo(-9,-3.5); g.lineTo(-13,-4.5); g.moveTo(9,-3.5); g.lineTo(13,-4.5); g.stroke();
+    g.fillStyle='rgba(255,255,255,.4)'; g.beginPath(); g.arc(-6.5,-4,1,0,TAU); g.arc(4.5,-4,1,0,TAU); g.fill(); }
+  else if(kind==='gem'){ const grd=g.createLinearGradient(0,-24,0,-9); grd.addColorStop(0,'#c8f2ff'); grd.addColorStop(1,hc);
+    g.fillStyle=grd; g.beginPath(); g.moveTo(0,-24); g.lineTo(6,-17); g.lineTo(0,-8); g.lineTo(-6,-17); g.closePath(); g.fill();
+    g.strokeStyle='rgba(255,255,255,.6)'; g.lineWidth=1; g.beginPath(); g.moveTo(-6,-17); g.lineTo(6,-17); g.stroke();
+    g.fillStyle='#ffd23f'; g.fillRect(-7,-9,14,2.4); }
+  else if(kind==='eclipse'){ g.strokeStyle='rgba(180,138,255,.4)'; g.lineWidth=6; g.beginPath(); g.ellipse(0,-20,9,3.4,0,0,TAU); g.stroke();
+    g.strokeStyle=hc; g.lineWidth=2.4; g.beginPath(); g.ellipse(0,-20,9,3.4,0,0,TAU); g.stroke(); }
+  g.restore(); }
+const EXTRA_HATS=['shell','cone','shades','gem','eclipse'];
 function sunToken(lunge){ const m=42,angry=lunge&&lunge.state!=='idle';
   const x=clamp(W/2+Math.cos(run.az)*(W/2-m),m,W-m),y=clamp(H/2+Math.sin(run.az)*(H/2-m),m,H-m);
   // radiant halo
@@ -1171,9 +1206,12 @@ function unlockedLevel(i){ const L=LEVELS[i]; const wl=levelsOfWorld(L.world); c
 function buildWorldMap(){ const list=$('worldList'); list.innerHTML='';
   WORLDS.forEach((w,wi)=>{ const unlocked=worldUnlocked(wi); const lv=levelsOfWorld(wi);
     const cleared=lv.filter(o=>save.stars[levelId(o.L,o.i)]).length; const stars=lv.reduce((a,o)=>a+(save.stars[levelId(o.L,o.i)]||0),0);
+    const em=collectOf(wi).emoji; const fTot=lv.reduce((a,o)=>a+((o.L.finds||[]).length),0);
+    const fGot=lv.reduce((a,o)=>{ const arr=save.finds[levelId(o.L,o.i)]||[]; return a+arr.filter(Boolean).length; },0);
+    const done100=unlocked&&worldFindsComplete(wi);
     const c=document.createElement('div'); c.className='worldCard'+(unlocked?'':' locked');
     c.style.background=`linear-gradient(120deg,${w.pal.sky1},${w.pal.accent}55)`;
-    c.innerHTML=`${wi+1}. ${w.name}<span class="wsub">${w.sub}</span><span class="wprog">${unlocked?(cleared+'/'+lv.length+' ✓  ⭐'+stars):'🔒 locked'}</span>`;
+    c.innerHTML=`${wi+1}. ${w.name}<span class="wsub">${w.sub}${unlocked?`  ·  ${em} ${fGot}/${fTot}${done100?' 🏆 hat!':''}`:''}</span><span class="wprog">${unlocked?(cleared+'/'+lv.length+' ✓  ⭐'+stars):'🔒 locked'}</span>`;
     if(unlocked) c.addEventListener('click',()=>{SFX.click();openWorld(wi);});
     list.appendChild(c); }); }
 let curWorld=0;
@@ -1201,10 +1239,14 @@ function buildShop(){ updateWallet(); const grid=$('shopGrid'); grid.innerHTML='
     const c=card(`${k.name}${have?` <span class="badge">×${have} queued</span>`:''}`, k.desc+(full?' · max queued':''), k.price, full||save.beams<k.price);
     if(!full) c.addEventListener('click',()=>{ if(save.beams>=k.price){ save.beams-=k.price; save.loadout[k.id]=have+1; persist(); SFX.buy(); toast('queued for next run!','#9fe0a0'); buildShop(); } else SFX.deny(); });
     grid.appendChild(c); }); }
-  else { COSMETICS.forEach(k=>{ const owned=save.cosmetics.owned.includes(k.id)||k.price===0; const equipped=save.cosmetics[k.cat]===k.id;
-    const c=card(k.name, k.cat, owned?(equipped?'worn':'wear'):k.price, !owned&&save.beams<k.price);
+  else { COSMETICS.forEach(k=>{ const isEarn=k.earn!==undefined;
+    const owned=save.cosmetics.owned.includes(k.id)||k.price===0; const equipped=save.cosmetics[k.cat]===k.id;
+    const label=owned?(equipped?'worn':'wear'):(isEarn?'🔒':k.price);
+    const sub=isEarn&&!owned?('earn: 100% '+WORLDS[k.earn].name):k.cat;
+    const c=card(k.name, sub, label, !owned&&(isEarn||save.beams<k.price));
     c.classList.toggle('owned',owned); c.classList.toggle('equipped',equipped);
     c.addEventListener('click',()=>{ if(equipped) return; if(owned){ save.cosmetics[k.cat]=k.id; persist(); SFX.click(); buildShop(); }
+      else if(isEarn){ SFX.deny(); }
       else if(save.beams>=k.price){ save.beams-=k.price; save.cosmetics.owned.push(k.id); save.cosmetics[k.cat]=k.id; persist(); SFX.buy(); buildShop(); } else SFX.deny(); });
     grid.appendChild(c); }); }
 }
@@ -1214,8 +1256,8 @@ function card(title,sub,price,cant){ const c=document.createElement('div'); c.cl
 /* ----- builder ----- */
 let buildTab='body';
 function buildBuilder(){ const grid=$('buildGrid'); grid.innerHTML='';
-  COSMETICS.filter(k=>k.cat===buildTab).forEach(k=>{ const owned=save.cosmetics.owned.includes(k.id)||k.price===0; const equipped=save.cosmetics[k.cat]===k.id;
-    const c=card(k.name, owned?'':'locked — buy in shop', owned?(equipped?'ON':'wear'):'🔒', false);
+  COSMETICS.filter(k=>k.cat===buildTab).forEach(k=>{ const isEarn=k.earn!==undefined; const owned=save.cosmetics.owned.includes(k.id)||k.price===0; const equipped=save.cosmetics[k.cat]===k.id;
+    const c=card(k.name, owned?'':(isEarn?('🔒 100% '+WORLDS[k.earn].name):'locked — buy in shop'), owned?(equipped?'ON':'wear'):'🔒', false);
     c.classList.toggle('equipped',equipped); c.classList.toggle('locked',!owned);
     if(owned) c.addEventListener('click',()=>{ save.cosmetics[k.cat]=k.id; persist(); SFX.click(); buildBuilder(); drawBuilderPreview(); });
     grid.appendChild(c); });
@@ -1235,6 +1277,7 @@ function drawBuilderPreview(){ const bc=$('builderCanvas'), bx=bc.getContext('2d
   else if(hk==='visor'){ bx.fillStyle=hc; bx.fillRect(cx-44,cy-R-6,88,14); bx.fillStyle='rgba(255,255,255,.4)'; bx.fillRect(cx,cy-R-6,44,10); }
   else if(hk==='crown'){ bx.fillStyle=hc; for(let i=-1;i<=1;i++){bx.beginPath();bx.moveTo(cx+i*30-12,cy-R-4);bx.lineTo(cx+i*30,cy-R-40);bx.lineTo(cx+i*30+12,cy-R-4);bx.fill();} }
   else if(hk==='umbrella'){ bx.strokeStyle='#7a5230'; bx.lineWidth=5; bx.beginPath(); bx.moveTo(cx,cy-R-34); bx.lineTo(cx,cy-R+4); bx.stroke(); bx.fillStyle=hc; bx.beginPath(); bx.arc(cx,cy-R-34,40,Math.PI,0); bx.fill(); }
+  else if(EXTRA_HATS.includes(hk)) drawHatExtra(bx,cx,cy,R,hk,hc);
 }
 
 /* ----- how to play ----- */

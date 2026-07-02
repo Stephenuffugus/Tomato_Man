@@ -136,6 +136,25 @@
 </style>
 </head>
 <body>
+<script>
+/* ===== Sky Wolf Studios embed protocol =====
+   The portal (lucidwinds.com/portal/) frames games with ?embed=1 and
+   listens for {sws:'ready'} and {sws:'close'}.
+   Rules when embedded:
+     - NEVER history.back() or navigate location — an iframe with no
+       history entry goes blank (the black-screen bug).
+     - The in-game back/X returns to the game's OWN menu screen.
+     - Only the menu's explicit exit control calls SWS_EXIT(). */
+(function(){
+  var SWS_EMBED=/[?&]embed=1(&|$)/.test(location.search);
+  window.SWS_EMBED=SWS_EMBED;
+  window.SWS_EXIT=function(){
+    if(SWS_EMBED&&parent!==window){try{parent.postMessage({sws:'close'},'*');}catch(e){} return;}
+    location.href='https://lucidwinds.com/portal/';
+  };
+  if(SWS_EMBED&&parent!==window){try{parent.postMessage({sws:'ready'},'*');}catch(e){}}
+})();
+</script>
 <canvas id="game"></canvas>
 
 <!-- wallet (persistent on menus) -->
@@ -178,6 +197,7 @@
       <button class="ghost-btn" id="tBuild">🍅 Customize</button>
       <button class="ghost-btn" id="tSet">⚙︎</button>
     </div>
+    <button class="ghost-btn" id="tExit" style="font-size:14px;opacity:.8">← All Sky Wolf games</button>
   </div>
   <div class="hintline">The sun is death. Shade is the only ground — and it moves. New here? Tap <b>How to Play</b>.</div>
 </div>
@@ -1340,6 +1360,7 @@ $('tDaily').onclick=()=>{ SFX.click(); startDaily(); };
 $('tEndless').onclick=()=>{ SFX.click(); startEndless(); };
 $('tShop').onclick=()=>go('shop'); $('tBuild').onclick=()=>go('builder'); $('tSet').onclick=()=>go('settings');
 $('tHow').onclick=()=>{ SFX.click(); buildHowto(); showScreen('howto'); };
+$('tExit').onclick=()=>{ SFX.click(); window.SWS_EXIT(); };
 $('howBack').onclick=()=>{ SFX.click(); showScreen('title'); };
 $('howPlay').onclick=()=>{ SFX.click(); go('map'); };
 $('mapBack').onclick=()=>{SFX.click();showScreen('title');}; $('lvlBack').onclick=()=>{SFX.click();buildWorldMap();showScreen('map');};
@@ -1381,8 +1402,10 @@ window.__TM={save,LEVELS,WORLDS,genLevel,startLevel,frame,P,keys,winLevel,burn,_
 })();
 </script>
 <script>
-/* register service worker for offline play + standalone install */
-if ('serviceWorker' in navigator) {
+/* register service worker for offline play + standalone install.
+   Skipped when embedded (?embed=1): a SW registered from inside the portal's
+   iframe scopes onto the host site and serves stale builds. */
+if ('serviceWorker' in navigator && !window.SWS_EMBED) {
   addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 }
 </script>

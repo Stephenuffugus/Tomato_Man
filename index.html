@@ -1321,9 +1321,13 @@ function buildHowto(){ save.seenHowto=true; persist(); const l=$('htList'); if(!
   HOWTO.forEach(c=>{ const d=document.createElement('div'); d.className='htCard';
     d.innerHTML=`<div class="hi">${c.i}</div><div><div class="ht">${c.t}</div><div class="hb">${c.b}</div></div>`; l.appendChild(d); }); }
 
-/* ----- inline coach marks (first-run tutorial, each fires once ever) ----- */
-let coachHideT=0;
-function coach(text,ic){ const c=$('coach'); if(!c) return; c.innerHTML=(ic?`<span class="ic">${ic}</span>`:'')+text; c.classList.add('show'); coachHideT=3.8; }
+/* ----- inline coach marks (first-run tutorial, each fires once ever) -----
+   Jessie 2026-07-15: the marks chained back-to-back — "by the time I was done
+   reading it was into the next pop up & I didn't have a chance to try them."
+   Now each shows longer (5.2s) and a 5s quiet gap of actual play must pass
+   before the next one may fire. */
+let coachHideT=0, coachGapT=0;
+function coach(text,ic){ const c=$('coach'); if(!c) return; c.innerHTML=(ic?`<span class="ic">${ic}</span>`:'')+text; c.classList.add('show'); coachHideT=5.2; }
 function hideCoach(){ const c=$('coach'); if(c) c.classList.remove('show'); coachHideT=0; }
 const TUT=[
   {id:'move', ic:'🕹️', x:'Drag your left thumb to move. The sun cooks you — get into the shadow.', t:()=>run.t<3},
@@ -1343,7 +1347,8 @@ const TUT=[
   {id:'lunge', ic:'😡', x:'The Angry Sun is winding up a lunge — move off the flashing ring!', t:()=>run.lunge&&run.lunge.state==='warn'},
   {id:'eclipse', ic:'🌚', x:'Eclipse! Everything is safe-dark for a moment — sprint!', t:()=>run.darkT>0},
 ];
-function checkTut(dt){ if(coachHideT>0){ coachHideT-=dt; if(coachHideT<=0) hideCoach(); return; }
+function checkTut(dt){ if(coachHideT>0){ coachHideT-=dt; if(coachHideT<=0){ hideCoach(); coachGapT=5.0; } return; }
+  if(coachGapT>0){ if(mode==='play') coachGapT-=dt; return; }   // breathing room to actually TRY the last tip
   if(mode!=='play'||!run) return;
   for(const s of TUT){ if(!save.tut[s.id]){ let ok=false; try{ ok=s.t(); }catch(e){} if(ok){ save.tut[s.id]=true; persist(); coach(s.x,s.ic); break; } } } }
 

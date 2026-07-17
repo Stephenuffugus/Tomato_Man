@@ -770,7 +770,7 @@ function bind(id,fn){const el=$(id); if(!el)return;
 bind('bDash',queueDash); bind('bShade',drop); bind('bScreen',spf); bind('bIce',ice); bind('pauseBtn',togglePause);
 function queueDash(){ if(P.dashCd<=0||P.dashStock>0) doDash(); else dashBuf=run.feel.inputBuffer; }
 function doDash(){ const f=run.feel; if(P.dashStock>0){P.dashStock--;} else { if(P.dashCd>0) return; P.dashCd=f.dashCd; }
-  P.dashT=f.dashDur; dashBuf=0; SFX.dash();
+  P.dashT=f.dashDur; dashBuf=0; run.dashUses=(run.dashUses||0)+1; SFX.dash();
   const mv=mvVec(); if(Math.hypot(mv.x,mv.y)>0.05) P.face=Math.atan2(mv.y,mv.x);
   P.sx=1.4;P.sy=0.7; // stretch along axis
   freeze=Math.max(freeze, save.settings.reduce?0.03:0.045); // dash hitstop — the burst "fires"
@@ -1324,33 +1324,52 @@ function buildHowto(){ save.seenHowto=true; persist(); const l=$('htList'); if(!
 /* ----- inline coach marks (first-run tutorial, each fires once ever) -----
    Jessie 2026-07-15: the marks chained back-to-back — "by the time I was done
    reading it was into the next pop up & I didn't have a chance to try them."
-   Now each shows longer (5.2s) and a 5s quiet gap of actual play must pass
-   before the next one may fire. */
-let coachHideT=0, coachGapT=0;
-function coach(text,ic){ const c=$('coach'); if(!c) return; c.innerHTML=(ic?`<span class="ic">${ic}</span>`:'')+text; c.classList.add('show'); coachHideT=5.2; }
-function hideCoach(){ const c=$('coach'); if(c) c.classList.remove('show'); coachHideT=0; }
+   And 7/16: "have people TRY each of those steps before the next direction
+   pops up." Performable tips now carry a d() done-check: the mark stays up
+   until the player actually does the thing (12s safety timeout so a tip you
+   can't perform right now never wedges the tutorial). Informational tips keep
+   the 5.2s read time. A 5s quiet gap of real play still separates marks. */
+let coachHideT=0, coachGapT=0, coachDone=null, coachSnap=null;
+function coach(text,ic,d){ const c=$('coach'); if(!c) return; c.innerHTML=(ic?`<span class="ic">${ic}</span>`:'')+text; c.classList.add('show');
+  coachDone=d||null;
+  coachSnap={x:(typeof P!=='undefined'?P.x:0), y:(typeof P!=='undefined'?P.y:0),
+             sh:run&&run.charges?run.charges.shade:0, sp:run&&run.charges?run.charges.spf:0,
+             ic2:run&&run.charges?run.charges.ice:0, da:run?(run.dashUses||0):0};
+  coachHideT=d?12:5.2; }
+function hideCoach(){ const c=$('coach'); if(c) c.classList.remove('show'); coachHideT=0; coachDone=null; }
 const TUT=[
-  {id:'move', ic:'🕹️', x:'Drag your left thumb to move. The sun cooks you — get into the shadow.', t:()=>run.t<3},
+  {id:'move', ic:'🕹️', x:'Drag your left thumb to move. The sun cooks you — get into the shadow.', t:()=>run.t<3,
+    d:s=>dist(P.x,P.y,s.x,s.y)>70},
   {id:'shade', ic:'🌑', x:'You’re on shade — safe ground. It slides with the sun, so ride it upward.', t:()=>run.t>1.6 && shadedGeom(P.x,P.y)},
-  {id:'aloe', ic:'🌿', x:'A glowing aloe! Dash into the sunlight to grab it, then dash back to shade.', t:()=>run.beams.some(b=>!b.got&&b.lit&&dist(P.x,P.y,b.x,b.y)<230)},
+  {id:'aloe', ic:'🌿', x:'A glowing aloe! Dash into the sunlight to grab it, then dash back to shade.', t:()=>run.beams.some(b=>!b.got&&b.lit&&dist(P.x,P.y,b.x,b.y)<230),
+    d:()=>run.beams.some(b=>b.got)},
   {id:'find', ic:'🐚', x:'Hidden treasure! Grab all 3 in a level to 100% it — some are off the beaten path.', t:()=>run.finds.some(f=>!f.got&&dist(P.x,P.y,f.x,f.y)<250)},
-  {id:'dash', ic:'💨', x:'Tap DASH to burst across a thin strip of sun.', t:()=>run.t>6},
-  {id:'shadeDrop', ic:'⛱️', x:'No shadow ahead? Tap SHADE to drop your own safe ground and inch across.', t:()=>run.charges.shade>0 && run.t>4 && !shadedGeom(P.x,P.y)},
+  {id:'dash', ic:'💨', x:'Tap DASH to burst across a thin strip of sun.', t:()=>run.t>6,
+    d:s=>(run.dashUses||0)>s.da},
+  {id:'shadeDrop', ic:'⛱️', x:'No shadow ahead? Tap SHADE to drop your own safe ground and inch across.', t:()=>run.charges.shade>0 && run.t>4 && !shadedGeom(P.x,P.y),
+    d:s=>run.charges.shade<s.sh},
   {id:'checkpoint', ic:'🚩', x:'Checkpoint! Burn now and you respawn right here.', t:()=>run.cpHit.some(Boolean)},
   {id:'burn', ic:'🔥', x:'Burned. Keep an eye on the Exposure bar — reach shade before it fills.', t:()=>run.deaths>0},
   {id:'hot', ic:'🔥', x:'Orange sand scorches you even off the sun. Don’t stand on it.', t:()=>run.hot.length>0 && run.t>1.2},
-  {id:'spf', ic:'🧴', x:'You have SPF — pop it for a few seconds of sun-proof to cross the open.', t:()=>run.charges.spf>0 && run.t>2},
+  {id:'spf', ic:'🧴', x:'You have SPF — pop it for a few seconds of sun-proof to cross the open.', t:()=>run.charges.spf>0 && run.t>2,
+    d:s=>run.charges.spf<s.sp},
   {id:'cart', ic:'🛒', x:'That cart’s shadow moves. Board it at the right moment and ride.', t:()=>run.movers.length>0 && run.t>1.2},
   {id:'cloud', ic:'🌥️', x:'A drifting cloud is a moving island of shade — hop on.', t:()=>run.clouds.length>0 && run.t>1.2},
   {id:'wilt', ic:'🥀', x:'Striped awnings wilt if you camp under them. Keep moving.', t:()=>run.wilts.length>0 && run.t>1.2},
-  {id:'ice', ic:'🧊', x:'ICE slows the sun’s sweep. Sip it when the timing is brutal.', t:()=>run.charges.ice>0 && run.t>2},
+  {id:'ice', ic:'🧊', x:'ICE slows the sun’s sweep. Sip it when the timing is brutal.', t:()=>run.charges.ice>0 && run.t>2,
+    d:s=>run.charges.ice<s.ic2},
   {id:'lunge', ic:'😡', x:'The Angry Sun is winding up a lunge — move off the flashing ring!', t:()=>run.lunge&&run.lunge.state==='warn'},
   {id:'eclipse', ic:'🌚', x:'Eclipse! Everything is safe-dark for a moment — sprint!', t:()=>run.darkT>0},
 ];
-function checkTut(dt){ if(coachHideT>0){ coachHideT-=dt; if(coachHideT<=0){ hideCoach(); coachGapT=5.0; } return; }
-  if(coachGapT>0){ if(mode==='play') coachGapT-=dt; return; }   // breathing room to actually TRY the last tip
+function checkTut(dt){
+  if(coachHideT>0){
+    // performable tip: dismiss the moment the player DOES it (small linger)
+    if(coachDone && mode==='play' && run){ let did=false; try{ did=coachDone(coachSnap); }catch(e){}
+      if(did) coachHideT=Math.min(coachHideT,1.0); }
+    coachHideT-=dt; if(coachHideT<=0){ hideCoach(); coachGapT=5.0; } return; }
+  if(coachGapT>0){ if(mode==='play') coachGapT-=dt; return; }   // breathing room between marks
   if(mode!=='play'||!run) return;
-  for(const s of TUT){ if(!save.tut[s.id]){ let ok=false; try{ ok=s.t(); }catch(e){} if(ok){ save.tut[s.id]=true; persist(); coach(s.x,s.ic); break; } } } }
+  for(const s of TUT){ if(!save.tut[s.id]){ let ok=false; try{ ok=s.t(); }catch(e){} if(ok){ save.tut[s.id]=true; persist(); coach(s.x,s.ic,s.d); break; } } } }
 
 /* ----- pause ----- */
 function togglePause(){ if(screen!=='play') return; if(mode==='play'){ mode='paused'; showScreen('pause'); stopMusic(); }

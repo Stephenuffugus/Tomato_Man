@@ -698,6 +698,7 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
   // tag umbrella casters with facing index for wind re-tilt
   let fi=0; const facings={}; for(const c of L.casters){ if(c[0]==='U'){ c.__fi=fi; facings[fi]=c[4]; fi++; } }
   run={ L,t:0,az:L.sun.azC,deaths:0,screenT:0,darkT:0,slowT:0,shake:0,lastSafe:true,grazeT:0,sinceSafe:0,graceT:1.0,
+        rings:[],floats:[],flash:0,flashC:'255,80,40',
         shadePolys:[],shadeEll:[],popups:[],trail:[],parts:[],facings,
         movers:(L.movers||[]).map(m=>({...m})),
         clouds:(L.clouds||[]).map(c=>({...c})),
@@ -736,13 +737,20 @@ function showCombo(n){ const c=$('comboTag'); c.textContent='x'+n+' COMBO'; c.st
 
 function spawnParts(x,y,n,col,spd,life){ for(let i=0;i<n;i++){ const a=Math.random()*TAU,s=spd*(0.4+Math.random()*0.6);
   run.parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:life||0.5,t:life||0.5,col,r:2+Math.random()*2}); } }
+/* ---- JUICE: impact rings, floating score numbers, screen flash, punchy shake ---- */
+function spawnRing(x,y,col,r1,life){ if(save.settings.reduce)return; run.rings.push({x,y,col,r:5,r1:r1||46,t:life||0.42,life:life||0.42}); }
+function floatText(x,y,txt,col){ run.floats.push({x,y,txt,col:col||'255,240,180',t:0.85,life:0.85,vy:-52}); }
+function screenFlash(col,a){ if(save.settings.reduce)return; run.flash=Math.max(run.flash,a||0.4); run.flashC=col||'255,80,40'; }
+function jShake(a){ if(!save.settings.reduce) run.shake=Math.max(run.shake,a); }
+function popSquash(sx,sy){ P.sx=sx; P.sy=sy; }
 function collectFind(fnd){ fnd.got=true; run.findsRun++;
   const cd=collectOf(run.L.world);
   let arr=save.finds[run.findId]; if(!arr){ arr=[]; save.finds[run.findId]=arr; } arr[fnd.i]=true;
   const total=run.finds.length, have=run.finds.filter(f=>f.got).length;
   addBeams(12);                                                    // bonus aloe per find (addBeams persists)
-  SFX.pop(); spawnParts(fnd.x,fnd.y,14,'255,225,150',140,0.6);
-  if(have>=total){ addBeams(40); toast(cd.emoji+'  all '+total+'! +40 aloe','var(--beam)'); SFX.win(); }
+  SFX.pop(); spawnParts(fnd.x,fnd.y,22,'255,225,150',160,0.65);
+  spawnRing(fnd.x,fnd.y,'255,225,150',52); floatText(fnd.x,fnd.y-6,'+12','255,230,150'); popSquash(0.78,1.26); jShake(0.14);
+  if(have>=total){ addBeams(40); spawnRing(fnd.x,fnd.y,'255,235,120',110,0.6); screenFlash('255,220,120',0.3); jShake(0.32); floatText(fnd.x,fnd.y-30,'ALL '+total+'!','255,235,140'); toast(cd.emoji+'  all '+total+'! +40 aloe','var(--beam)'); SFX.win(); }
   else toast(cd.emoji+'  '+cd.name+'!  +12','var(--beam)');
   // world 100% → unlock that world's exclusive hat (once)
   const w=run.L.world, rid=WORLD_REWARD[w];
@@ -773,6 +781,7 @@ function doDash(){ const f=run.feel; if(P.dashStock>0){P.dashStock--;} else { if
   P.dashT=f.dashDur; dashBuf=0; run.dashUses=(run.dashUses||0)+1; SFX.dash();
   const mv=mvVec(); if(Math.hypot(mv.x,mv.y)>0.05) P.face=Math.atan2(mv.y,mv.x);
   P.sx=1.4;P.sy=0.7; // stretch along axis
+  spawnParts(P.x,P.y,9,'255,185,95',115,0.34); spawnRing(P.x,P.y,'255,195,110',30,0.28); jShake(0.08); // dash burst
   freeze=Math.max(freeze, save.settings.reduce?0.03:0.045); // dash hitstop — the burst "fires"
   spawnParts(P.x,P.y,7,'255,210,150',150,0.35);
   if(!save.settings.reduce) run.shake=Math.max(run.shake,0.06); }
@@ -833,6 +842,9 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
   if(mag>0.5 && Math.random()<0.3 && !save.settings.reduce) spawnParts(P.x,P.y+8,1,'180,150,90',40,0.3);
   for(const tr of run.trail) tr.a-=dt*3.2; run.trail=run.trail.filter(tr=>tr.a>0);
   for(const pt of run.parts){ pt.x+=pt.vx*dt; pt.y+=pt.vy*dt; pt.vx*=0.92; pt.vy*=0.92; pt.t-=dt; } run.parts=run.parts.filter(p=>p.t>0);
+  for(const rg of run.rings){ rg.r=lerp(rg.r,rg.r1,Math.min(1,dt*11)); rg.t-=dt; } run.rings=run.rings.filter(r=>r.t>0);
+  for(const fl of run.floats){ fl.y+=fl.vy*dt; fl.vy*=0.88; fl.t-=dt; } run.floats=run.floats.filter(f=>f.t>0);
+  if(run.flash>0) run.flash=Math.max(0,run.flash-dt*2.4);
   // camera with look-ahead
   const laX=clamp(P.vx*0.18,-80,80), laY=clamp(P.vy*0.18,-80,80);
   cam.x=lerp(cam.x,clamp(P.x+laX-W/2,0,Math.max(0,L.worldW-W)),0.12);
@@ -873,16 +885,18 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
       b.got=true; run.beamsGot++; run.combo++; run.comboT=comboWindow();
       const mult=comboMult(run.combo), near=P.exp>55?2:1, val=Math.round(ECON.beamValue*mult*near);
       run.beamScore+=val; run.comboMax=Math.max(run.comboMax,mult);
-      SFX.beam(run.combo); spawnParts(b.x,b.y,10,'140,240,180',130,0.6);
-      if(near>1) toast('SIZZLE! ×2','#ffd23f'); else if(mult>1) showCombo(mult); } }
+      SFX.beam(run.combo); spawnParts(b.x,b.y,14,'140,240,180',150,0.6);
+      spawnRing(b.x,b.y,'150,245,190',30+mult*7); floatText(b.x,b.y-4,'+'+val, mult>1?'255,214,90':'150,245,190');
+      popSquash(0.82,1.2); if(mult>1)jShake(0.10+mult*0.02);
+      if(near>1){ toast('SIZZLE! ×2','#ffd23f'); screenFlash('255,180,60',0.18); } else if(mult>1) showCombo(mult); } }
   run.comboT-=dt; if(run.comboT<=0&&run.combo>0){ run.combo=Math.max(0,run.combo-comboNotch()); run.comboT=run.combo>0?comboWindow():0; }
   for(const p of run.pops){ if(!p.got && dist(P.x,P.y,p.x,p.y)<40+P.r){ p.got=true; P.dashCd=0; P.dashStock++; SFX.pop();  // forgiving grab (was 26): a near-miss still counts
-      spawnParts(p.x,p.y,10,'120,200,255',120,0.5); toast('+dash','#7fd0ff'); } }
+      spawnParts(p.x,p.y,16,'120,200,255',150,0.55); spawnRing(p.x,p.y,'130,205,255',40); floatText(p.x,p.y-4,'+DASH','130,205,255'); popSquash(0.8,1.24); jShake(0.12); toast('+dash','#7fd0ff'); } }
   // ---- collectibles (seashells / ice-cream / gems — persist across runs) ----
-  for(const fnd of run.finds){ if(!fnd.got && dist(P.x,P.y,fnd.x,fnd.y)<pr+P.r+10) collectFind(fnd); }
+  for(const fnd of run.finds){ if(!fnd.got && dist(P.x,P.y,fnd.x,fnd.y)<pr+P.r+22) collectFind(fnd); }  // forgiving grab so tucked-away finds are actually gettable
 
   // ---- checkpoints / exit ----
-  L.checkpoints.forEach((c,idx)=>{ if(!run.cpHit[idx]&&dist(P.x,P.y,c[0],c[1])<70){ run.cpHit[idx]=true; run.cp={x:c[0],y:c[1]}; toast('checkpoint','var(--leaf)'); SFX.checkpoint(); } });
+  L.checkpoints.forEach((c,idx)=>{ if(!run.cpHit[idx]&&dist(P.x,P.y,c[0],c[1])<70){ run.cpHit[idx]=true; run.cp={x:c[0],y:c[1]}; spawnRing(c[0],c[1],'120,220,140',60,0.5); floatText(c[0],c[1]-8,'CHECKPOINT','130,225,150'); jShake(0.1); toast('checkpoint','var(--leaf)'); SFX.checkpoint(); } });
   if(endless){ const prog=clamp(1-(P.y/(L.worldH)),0,1); /* endless score by height */ }
   if(dist(P.x,P.y,L.exit[0],L.exit[1])<48){ winLevel(); return; }
 
@@ -905,8 +919,8 @@ function updateHUD(onHot){ const f=run.feel;
 }
 function burn(){ if(run.coolerBox){ run.coolerBox=false; P.exp=0; P.vx=0;P.vy=0; run.screenT=Math.max(run.screenT,1.2);
     run.spawnAt=run.t; toast('COOLER BOX!','#9fe0a0'); SFX.spf(); return; } // revive in place, keep combo
-  run.deaths++; save.totalBurns++; persist(); toast('BURNED'); run.shake=save.settings.reduce?0:0.45; freeze=save.settings.reduce?0:0.08;
-  SFX.burn(); spawnParts(P.x,P.y,20,'255,80,40',180,0.7);
+  run.deaths++; save.totalBurns++; persist(); toast('BURNED'); run.shake=save.settings.reduce?0:0.58; freeze=save.settings.reduce?0:0.09;
+  SFX.burn(); spawnParts(P.x,P.y,24,'255,80,40',190,0.75); spawnRing(P.x,P.y,'255,95,55',72,0.5); screenFlash('255,55,30',0.55);
   run.combo=0; P.exp=0; P.x=run.cp.x; P.y=run.cp.y; P.vx=0;P.vy=0; P.dashT=0; P.dashCd=0; P.dashStock=0; run.sinceSafe=0; run.spawnAt=run.t;
   run.screenT=Math.max(run.screenT,run.feel.respawnGrace); run.trail.length=0; }
 
@@ -948,7 +962,7 @@ function nextLevelIndex(){ const w=LEVELS[li].world, wl=levelsOfWorld(w), pos=wl
 /* ===================== RENDER ===================== */
 function render(){ const inPlay=(screen==='play');
   if(!inPlay){ ctx.clearRect(0,0,W,H); return; }
-  const L=run.L; const shx=run.shake>0?(Math.random()-0.5)*10:0, shy=run.shake>0?(Math.random()-0.5)*10:0;
+  const L=run.L; const _sm=Math.min(20,run.shake*46); const shx=run.shake>0?(Math.random()-0.5)*_sm:0, shy=run.shake>0?(Math.random()-0.5)*_sm:0;
   const ox=-cam.x+shx, oy=-cam.y+shy; const pal=WORLDS[L.world].pal;
   // sky/ground
   const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,pal.sand1); g.addColorStop(1,pal.sand2);
@@ -1060,9 +1074,15 @@ function render(){ const inPlay=(screen==='play');
     else ctx.fillStyle=`rgba(${col},${tr.a*0.5})`; ctx.beginPath(); ctx.arc(tr.x+ox,tr.y+oy,P.r*0.85,0,TAU); ctx.fill(); }
   // particles
   for(const pt of run.parts){ ctx.fillStyle=`rgba(${pt.col},${clamp(pt.t/pt.life,0,1)})`; ctx.beginPath(); ctx.arc(pt.x+ox,pt.y+oy,pt.r,0,TAU); ctx.fill(); }
+  // impact rings (juice)
+  for(const rg of run.rings){ const a=clamp(rg.t/rg.life,0,1); ctx.strokeStyle=`rgba(${rg.col},${a*0.75})`; ctx.lineWidth=1+a*3; ctx.beginPath(); ctx.arc(rg.x+ox,rg.y+oy,rg.r,0,TAU); ctx.stroke(); }
 
   // player
   drawHero(P.x+ox,P.y+oy);
+  // floating score numbers (juice)
+  if(run.floats.length){ ctx.save(); ctx.font='800 17px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.lineWidth=3.5; ctx.strokeStyle='rgba(18,12,8,.8)';
+    for(const fl of run.floats){ const a=clamp(fl.t/fl.life,0,1); ctx.globalAlpha=a; ctx.strokeText(fl.txt,fl.x+ox,fl.y+oy); ctx.fillStyle=`rgb(${fl.col})`; ctx.fillText(fl.txt,fl.x+ox,fl.y+oy); }
+    ctx.restore(); }
 
   // joystick
   if(stick.active){ ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(stick.ox,stick.oy,stick.max,0,TAU); ctx.stroke();
@@ -1074,6 +1094,8 @@ function render(){ const inPlay=(screen==='play');
   if(!run.lastSafe && run.darkT<=0 && P.exp>12){ const v=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.3,W/2,H/2,Math.max(W,H)*0.7);
     const a=clamp(P.exp/100,0,1)*0.5; v.addColorStop(0,'rgba(200,30,20,0)'); v.addColorStop(1,`rgba(200,30,20,${a})`);
     ctx.fillStyle=v; ctx.fillRect(0,0,W,H); }
+  // juice flash (burn / all-collected / big sizzle)
+  if(run.flash>0){ ctx.fillStyle=`rgba(${run.flashC},${clamp(run.flash,0,0.6)})`; ctx.fillRect(0,0,W,H); }
 
   // exit arrow offscreen
   if(ex<0||ex>W||ey<0||ey>H){ const ax=clamp(ex,40,W-40),ay=clamp(ey,40,H-40),ang=Math.atan2(ey-H/2,ex-W/2);

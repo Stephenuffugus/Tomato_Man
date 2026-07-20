@@ -1,6 +1,6 @@
 /* Tomato Man service worker — offline app shell for standalone install.
    Bump CACHE to force-refresh the cached shell on a new release. */
-const CACHE = 'tomato-man-v1';
+const CACHE = 'tomato-man-v2';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest',
   'thumbnail.png', 'icon-192.png', 'icon-512.png', 'icon-512-maskable.png'

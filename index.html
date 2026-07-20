@@ -629,7 +629,7 @@ function genLevel(worldIdx,diff,seed){
     }
     if(worldIdx>=1 && rnd()<0.3) hot.push([cx+r(-200,200),y+90,80]);
     if(rnd()<0.4) beams.push([cx+r(-260,260),y+r(-40,40)]);
-    if(worldIdx>=1 && rnd()<0.2) pops.push([cx+r(-120,120),y]);
+    if(rnd()<0.42) pops.push([cx+r(-55,55),y]);   // popsicles: frequent + kept on the shade path (not flung into the sun) so they're actually grabbable
     if(b%3===0) checkpoints.push([cx,y]);
   }
   casters.push(['R',cx-180,exitY,360,70,420]); // exit pad
@@ -876,7 +876,7 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
       SFX.beam(run.combo); spawnParts(b.x,b.y,10,'140,240,180',130,0.6);
       if(near>1) toast('SIZZLE! ×2','#ffd23f'); else if(mult>1) showCombo(mult); } }
   run.comboT-=dt; if(run.comboT<=0&&run.combo>0){ run.combo=Math.max(0,run.combo-comboNotch()); run.comboT=run.combo>0?comboWindow():0; }
-  for(const p of run.pops){ if(!p.got && dist(P.x,P.y,p.x,p.y)<26+P.r){ p.got=true; P.dashCd=0; P.dashStock++; SFX.pop();
+  for(const p of run.pops){ if(!p.got && dist(P.x,P.y,p.x,p.y)<40+P.r){ p.got=true; P.dashCd=0; P.dashStock++; SFX.pop();  // forgiving grab (was 26): a near-miss still counts
       spawnParts(p.x,p.y,10,'120,200,255',120,0.5); toast('+dash','#7fd0ff'); } }
   // ---- collectibles (seashells / ice-cream / gems — persist across runs) ----
   for(const fnd of run.finds){ if(!fnd.got && dist(P.x,P.y,fnd.x,fnd.y)<pr+P.r+10) collectFind(fnd); }

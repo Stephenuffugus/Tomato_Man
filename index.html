@@ -26,9 +26,9 @@
 <style>
   /* Sunstruck type (Astra's pack v1): Bree Serif for headings, Atkinson Hyperlegible for controls and copy. Both OFL,
      subset to Latin woff2 (lucid-winds tools/tomato-man-tests/astra_in.py) and served from art/fonts so the game is offline. */
-  @font-face{font-family:'Bree Serif';font-weight:400;font-display:swap;src:url(art/fonts/bree-serif.woff2?v=20261105b) format('woff2')}
-  @font-face{font-family:'Atkinson Hyperlegible';font-weight:400;font-display:swap;src:url(art/fonts/atkinson-regular.woff2?v=20261105b) format('woff2')}
-  @font-face{font-family:'Atkinson Hyperlegible';font-weight:700;font-display:swap;src:url(art/fonts/atkinson-bold.woff2?v=20261105b) format('woff2')}
+  @font-face{font-family:'Bree Serif';font-weight:400;font-display:swap;src:url(art/fonts/bree-serif.woff2?v=20261105c) format('woff2')}
+  @font-face{font-family:'Atkinson Hyperlegible';font-weight:400;font-display:swap;src:url(art/fonts/atkinson-regular.woff2?v=20261105c) format('woff2')}
+  @font-face{font-family:'Atkinson Hyperlegible';font-weight:700;font-display:swap;src:url(art/fonts/atkinson-bold.woff2?v=20261105c) format('woff2')}
   .mk{width:1.15em;height:1.15em;display:inline-block;vertical-align:-.2em;flex:none}
   :root{
     --paper:#fff6e6; --ink:#23314a; --tomato:#e8332a; --leaf:#4fb56a; --beam:#ffd23f;
@@ -153,7 +153,7 @@
   .big-btn:active{box-shadow:0 1px 0 #8f2a17} .big-btn.green{background:var(--calyx);color:#fff8ea;box-shadow:0 4px 0 #04503f}
   .ghost-btn{background:rgba(255,248,226,.94);color:var(--ink);border:2px solid rgba(43,42,32,.45);min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:16px}
   .iconbtn{background:rgba(255,248,226,.94);color:var(--ink);border:2px solid rgba(43,42,32,.35);width:48px;height:48px;font-size:22px}
-  .wallet{color:var(--ink);text-shadow:none;border:10px solid transparent;border-image:url(art/ui/aloe_wallet_chip_frame.png?v=20261105b) 28 fill / 10px stretch;padding:0 4px;font-size:16px}
+  .wallet{color:var(--ink);text-shadow:none;border:10px solid transparent;border-image:url(art/ui/aloe_wallet_chip_frame.png?v=20261105c) 28 fill / 10px stretch;padding:0 4px;font-size:16px}
   .wallet .ic{display:none}   /* her chip carries its own aloe */ .wallet{padding-left:22px}
   .tab{color:var(--ink);border-color:rgba(43,42,32,.4);background:rgba(255,248,226,.7);min-height:44px} .tab.on{background:var(--tomatoR);color:#fff8ea;border-color:var(--tomatoR)}
   .toggleRow{background:rgba(255,248,226,.85);color:var(--ink);min-height:52px} .sw{background:rgba(43,42,32,.25)} .sw.on{background:var(--calyx)}
@@ -165,33 +165,33 @@
   .worldCard .wchip{position:absolute;left:3%;top:5%;background:rgba(255,248,226,.9);border-radius:10px;padding:3px 9px;font:700 13px 'Atkinson Hyperlegible',sans-serif}
   .worldCard.locked{filter:grayscale(.6) brightness(.93);cursor:not-allowed}
   /* level, shop and builder cards: her paper frames */
-  .card{background:none;color:var(--ink);border:12px solid transparent;border-image:url(art/ui/level_card_frame.png?v=20261105b) 28 fill / 12px stretch;border-radius:0;padding:2px 4px 4px}
-  #shopGrid .card,#buildGrid .card{border-image:url(art/ui/shop_card_frame.png?v=20261105b) 28 fill / 12px stretch}
+  .card{background:none;color:var(--ink);border:12px solid transparent;border-image:url(art/ui/level_card_frame.png?v=20261105c) 28 fill / 12px stretch;border-radius:0;padding:2px 4px 4px}
+  #shopGrid .card,#buildGrid .card{border-image:url(art/ui/shop_card_frame.png?v=20261105c) 28 fill / 12px stretch}
   .card small{color:var(--inkSoft);opacity:1;font-size:14px;line-height:1.35} .sub2{font-size:15px} .card .price{color:var(--ink);top:2px;right:4px} .card.hascost{padding-right:48px}
   .card.equipped,.card.owned{box-shadow:0 0 0 3px var(--calyx)} .card.locked,.card.cant{opacity:.55}
   .card .lname{font:400 16px 'Bree Serif',Georgia,serif}
   .card .rec{display:flex;align-items:center;gap:4px;color:var(--ink);margin-top:6px;letter-spacing:0}
   .card .rec .sock{width:22px;height:22px} .card .rec .sock.off{opacity:.25;filter:grayscale(1)}
   .card .rec .lmedal{width:26px;height:26px;margin-left:4px} .card .rec .lbest{margin-left:auto;font-weight:700;font-size:13px}
-  #builderCanvas{border:14px solid transparent;border-image:url(art/ui/builder_frame_frame.png?v=20261105b) 28 fill / 14px stretch;box-sizing:content-box}
+  #builderCanvas{border:14px solid transparent;border-image:url(art/ui/builder_frame_frame.png?v=20261105c) 28 fill / 14px stretch;box-sizing:content-box}
   /* How to Play: four picture cards first, every rule one tap further */
   .htQuick{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:420px;margin:6px 0 10px}
-  .htQ{border:12px solid transparent;border-image:url(art/ui/level_card_frame.png?v=20261105b) 28 fill / 12px stretch;padding:4px;text-align:center;font-size:16px;line-height:1.3}
+  .htQ{border:12px solid transparent;border-image:url(art/ui/level_card_frame.png?v=20261105c) 28 fill / 12px stretch;padding:4px;text-align:center;font-size:16px;line-height:1.3}
   .htQ .mk{width:44px;height:44px;display:block;margin:2px auto 6px;color:var(--ink)}
   .htCard{background:rgba(255,248,226,.85);border-color:rgba(43,42,32,.18);color:var(--ink)} .htCard .hb{opacity:1;color:var(--inkSoft)}
   .htCard .hi .mk{width:26px;height:26px}
   /* the coach, the toast and the win in her paper */
-  #coach{background:none;border:14px solid transparent;border-image:url(art/ui/coach_bubble_frame.png?v=20261105b) 28 fill / 14px stretch;border-radius:0;box-shadow:none;color:var(--ink);font-size:16px;padding:4px 8px}
+  #coach{background:none;border:14px solid transparent;border-image:url(art/ui/coach_bubble_frame.png?v=20261105c) 28 fill / 14px stretch;border-radius:0;box-shadow:none;color:var(--ink);font-size:16px;padding:4px 8px}
   #coach .ic .mk{width:26px;height:26px}
   #toast{left:50%;right:auto;width:max-content;max-width:88vw;transform:translateX(-50%);font-size:20px;color:var(--ink)!important;text-shadow:none;
-    border:12px solid transparent;border-image:url(art/ui/toast_pill_frame.png?v=20261105b) 28 fill / 12px stretch;padding:2px 10px;letter-spacing:.02em}
+    border:12px solid transparent;border-image:url(art/ui/toast_pill_frame.png?v=20261105c) 28 fill / 12px stretch;padding:2px 10px;letter-spacing:.02em}
   #toast .tdot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:1px}
   #winTitle{color:var(--calyx)!important;font-family:'Bree Serif',Georgia,serif;font-weight:400} .medalImg{width:96px;height:96px}
   .earnLine{color:var(--calyx)}
   /* the HUD on light sand: ink with a pale edge, her meter, her buttons, the pause mark */
   #heatWrap .lbl{color:var(--ink);text-shadow:0 1px 0 rgba(255,248,226,.9);font-size:12px;opacity:1}
-  #heatBar{position:relative;height:30px;border:0;border-radius:0;background:url(art/ui/exposure_meter_frame.png?v=20261105b) center/100% 100% no-repeat;overflow:visible}
-  #heatFill{position:absolute;left:3.1%;top:20.8%;width:93.8%!important;height:58.4%;border-radius:2px;background:url(art/ui/exposure_fill.png?v=20261105b) left/100% 100% no-repeat!important;transition:clip-path .05s linear}
+  #heatBar{position:relative;height:30px;border:0;border-radius:0;background:url(art/ui/exposure_meter_frame.png?v=20261105c) center/100% 100% no-repeat;overflow:visible}
+  #heatFill{position:absolute;left:3.1%;top:20.8%;width:93.8%!important;height:58.4%;border-radius:2px;background:url(art/ui/exposure_fill.png?v=20261105c) left/100% 100% no-repeat!important;transition:clip-path .05s linear}
   #heatFill.spf{background:#7fd0ff!important} #heatFill.dark{background:#9fb0ff!important}
   #topRight{color:var(--ink);text-shadow:0 1px 0 rgba(255,248,226,.95),0 0 6px rgba(255,248,226,.8)}
   #lvlFlash{color:var(--ink);text-shadow:0 2px 0 rgba(255,248,226,.95),0 0 10px rgba(255,248,226,.9);font-family:'Bree Serif',Georgia,serif;font-weight:400}
@@ -205,11 +205,11 @@
   .srOnly{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   #pauseBtn{width:48px;height:48px;background:rgba(255,248,226,.92);color:var(--ink);border:2px solid rgba(43,42,32,.4);font-size:22px}
   #btns .btn{position:relative;border:0;background-color:rgba(35,49,74,.5);background-position:center;background-size:100% 100%;background-repeat:no-repeat;color:var(--ink)}
-  #bDash{background-image:url(art/ui/button_dash.svg?v=20261105b)} #bShade{background-image:url(art/ui/button_shade.svg?v=20261105b)}
-  #bScreen{background-image:url(art/ui/button_spf.svg?v=20261105b)} #bIce{background-image:url(art/ui/button_ice.svg?v=20261105b)}
+  #bDash{background-image:url(art/ui/button_dash.svg?v=20261105c)} #bShade{background-image:url(art/ui/button_shade.svg?v=20261105c)}
+  #bScreen{background-image:url(art/ui/button_spf.svg?v=20261105c)} #bIce{background-image:url(art/ui/button_ice.svg?v=20261105c)}
   #btns .btn .w{position:absolute;left:-10px;right:-10px;bottom:-17px;text-align:center;font-size:11px;font-weight:700;text-shadow:0 1px 0 rgba(255,248,226,.95)}
   #btns .btn .c{position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;border-radius:11px;background:var(--ink);color:#fff8ea;font-size:12px;display:flex;align-items:center;justify-content:center;opacity:1;margin:0}
-  #btns .btn.empty{opacity:1} #btns .btn.empty::after{content:'';position:absolute;inset:0;background:url(art/ui/disabled_overlay.svg?v=20261105b) center/100% 100% no-repeat;pointer-events:none}
+  #btns .btn.empty{opacity:1} #btns .btn.empty::after{content:'';position:absolute;inset:0;background:url(art/ui/disabled_overlay.svg?v=20261105c) center/100% 100% no-repeat;pointer-events:none}
   #bDash::before{content:'';position:absolute;inset:8%;border-radius:50%;background:conic-gradient(rgba(43,42,32,.5) calc(var(--cd,0)*360deg),transparent 0);pointer-events:none}
   #bDash.stock{box-shadow:0 0 0 4px rgba(127,208,255,.85)}
   /* the walk (step 7): labels clear of the next button; the level name below the right column; the HUD in cream
@@ -219,6 +219,11 @@
   #play-ui.night #topRight,#play-ui.night #heatWrap .lbl,#play-ui.night #btns .btn .w{color:#fff8ea;text-shadow:0 1px 0 rgba(20,18,30,.95),0 0 6px rgba(20,18,30,.85)}
   h2.title{padding:0 50px} #builder h2.title{padding:0;margin-top:50px;font-size:clamp(22px,7vw,30px)}
   h1.logo{margin-top:46px}
+  /* m2 step 10: her cue marks, one at a time under the meter */
+  #cue{top:calc(env(safe-area-inset-top,8px) + 54px);left:14px;display:flex;align-items:center;gap:6px;padding:3px 10px 3px 6px;border-radius:14px;
+    background:rgba(255,248,226,.92);color:var(--ink);border:2px solid rgba(43,42,32,.35);font:700 13px 'Atkinson Hyperlegible',sans-serif;opacity:0;transition:opacity .2s;pointer-events:none;text-shadow:none}
+  #cue.show{opacity:1} #cue .mk{width:22px;height:22px} #cue.warn{color:#8f2a17;border-color:rgba(143,42,23,.6)}
+  #play-ui.night #cue{background:rgba(20,18,30,.78);color:#fff8ea;border-color:rgba(255,248,226,.45)}
 
 </style>
 <link rel="canonical" href="https://lucidwinds.com/satellites/tomato-man/">
@@ -247,7 +252,7 @@
 })();
 </script>
 <!-- TM ICONS (lucid-winds tools/tomato-man-tests/astra_in.py writes this line) -->
-<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><symbol id="tm-aloe" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M32 4q11 15 9 23 17-12 22-8-3 18-18 20 10 14 6 23-18-4-19-17-7 16-21 17-3-16 10-23Q3 37 1 19q16-2 24 8-2-14 7-23z"/></g></symbol><symbol id="tm-back" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M31 8l-24 24 24 24 6-6-14-14h34v-8H23l14-14z"/></g></symbol><symbol id="tm-builder" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M30 3l6 9 13-4-4 12q15 5 15 20 0 21-28 21S4 61 4 40q0-17 18-21l-8-9 15 4z"/></g></symbol><symbol id="tm-check" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M8 31l13 13L53 10l7 7-39 41L1 38z"/></g></symbol><symbol id="tm-cone" viewBox="0 0 96 96"><g fill="currentColor" transform="scale(1.5)"><path d="M13 25q-7-13 5-16 2-15 14-5 14-7 15 6 13 4 5 15zM16 31h32L32 61z"/></g></symbol><symbol id="tm-daily" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M10 12h7V4h7v8h16V4h7v8h7v47H10zm7 14v26h30V26zm6 6h18v6H23zm0 11h12v5H23z"/></g></symbol><symbol id="tm-dash" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M27 8h24L38 26h17L25 58l7-23H18zM4 17h15v5H4zM2 29h13v5H2zM7 41h11v5H7z"/></g></symbol><symbol id="tm-gem" viewBox="0 0 96 96"><g fill="currentColor" transform="scale(1.5)"><path d="M16 7h32l14 19-30 35L2 26zm3 6L10 25h17zm6 0l7 12 7-12zm20 0L37 25h17z"/></g></symbol><symbol id="tm-heart-off" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M32 57C2 37 1 23 9 13q12-13 23 2 11-15 23-2 16 19-23 44zM14 18c-8 10 1 22 18 32 17-10 26-22 18-32-6-7-13-3-18 7-5-10-12-14-18-7z"/></g></symbol><symbol id="tm-heart-on" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M32 57C2 37 1 23 9 13q12-13 23 2 11-15 23-2 16 19-23 44z"/></g></symbol><symbol id="tm-ice" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M8 17l24-12 24 12v30L32 60 8 47zm8 5v20l12 7V29zm19 7v20l13-7V22z"/></g></symbol><symbol id="tm-lock" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M18 27V18a14 14 0 0128 0v9h6v32H12V27zm7 0h14v-9a7 7 0 00-14 0zm4 12v11h6V39z"/></g></symbol><symbol id="tm-move" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M32 3l10 12h-7v14h14v-7l12 10-12 10v-7H35v14h7L32 61 22 49h7V35H15v7L3 32l12-10v7h14V15h-7z"/></g></symbol><symbol id="tm-next" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M33 8l24 24-24 24-6-6 14-14H7v-8h34L27 14z"/></g></symbol><symbol id="tm-pause" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M15 9h12v46H15zM37 9h12v46H37z"/></g></symbol><symbol id="tm-retry" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M13 23V7l8 7a25 25 0 11-11 30l7-3a17 17 0 1010-20l8 7H13z"/></g></symbol><symbol id="tm-settings" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M26 4h12l3 9 9 4 9-1 4 12-7 6-1 10 3 8-10 8-9-4-9 2-7 5-10-7 1-10-5-8-8-5 3-12 10-2 7-7zm6 17a11 11 0 100 22 11 11 0 000-22z"/></g></symbol><symbol id="tm-shade" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M5 30C7 3 57 3 59 30H5zm24 4h6v15q0 10 11 4l3 5q-19 11-20-9z"/></g></symbol><symbol id="tm-shell" viewBox="0 0 96 96"><g fill="currentColor" transform="scale(1.5)"><path d="M30 58C-2 46 0 20 13 11l16 38-10-43q8-5 13-1l1 44 9-44q10 3 13 12L40 51l20-28q8 25-23 35z"/></g></symbol><symbol id="tm-shop" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M9 7h46l6 18q-5 10-14 2-8 9-15 0-8 9-15 0-9 8-14-2zm1 26h7v20h30V33h7v27H10zm15 3h14v17H25z"/></g></symbol><symbol id="tm-spf" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M24 4h16v10H24zm-7 13h30l5 9v32H12V26zm15 11a9 9 0 100 18 9 9 0 000-18z"/></g></symbol><symbol id="tm-star" viewBox="0 0 96 96"><g fill="currentColor" transform="scale(1.5)"><path d="M32 3l9 18 20 3-15 14 4 22-18-10-18 10 4-22L3 24l20-3z"/></g></symbol><symbol id="tm-sun" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><circle cx="32" cy="32" r="13"/><path d="M29 3h6v10h-6zM29 51h6v10h-6zM3 29h10v6H3zM51 29h10v6H51zM9 12l4-4 8 8-4 4zM44 48l4-4 8 8-4 4zM9 52l8-8 4 4-8 8zM44 16l8-8 4 4-8 8z"/></g></symbol></svg>
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><symbol id="tm-aloe" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M32 4q11 15 9 23 17-12 22-8-3 18-18 20 10 14 6 23-18-4-19-17-7 16-21 17-3-16 10-23Q3 37 1 19q16-2 24 8-2-14 7-23z"/></g></symbol><symbol id="tm-back" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M31 8l-24 24 24 24 6-6-14-14h34v-8H23l14-14z"/></g></symbol><symbol id="tm-builder" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M30 3l6 9 13-4-4 12q15 5 15 20 0 21-28 21S4 61 4 40q0-17 18-21l-8-9 15 4z"/></g></symbol><symbol id="tm-check" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M8 31l13 13L53 10l7 7-39 41L1 38z"/></g></symbol><symbol id="tm-cone" viewBox="0 0 96 96"><g fill="currentColor" transform="scale(1.5)"><path d="M13 25q-7-13 5-16 2-15 14-5 14-7 15 6 13 4 5 15zM16 31h32L32 61z"/></g></symbol><symbol id="tm-daily" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M10 12h7V4h7v8h16V4h7v8h7v47H10zm7 14v26h30V26zm6 6h18v6H23zm0 11h12v5H23z"/></g></symbol><symbol id="tm-dash" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M27 8h24L38 26h17L25 58l7-23H18zM4 17h15v5H4zM2 29h13v5H2zM7 41h11v5H7z"/></g></symbol><symbol id="tm-gem" viewBox="0 0 96 96"><g fill="currentColor" transform="scale(1.5)"><path d="M16 7h32l14 19-30 35L2 26zm3 6L10 25h17zm6 0l7 12 7-12zm20 0L37 25h17z"/></g></symbol><symbol id="tm-heart-off" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M32 57C2 37 1 23 9 13q12-13 23 2 11-15 23-2 16 19-23 44zM14 18c-8 10 1 22 18 32 17-10 26-22 18-32-6-7-13-3-18 7-5-10-12-14-18-7z"/></g></symbol><symbol id="tm-heart-on" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M32 57C2 37 1 23 9 13q12-13 23 2 11-15 23-2 16 19-23 44z"/></g></symbol><symbol id="tm-ice" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M8 17l24-12 24 12v30L32 60 8 47zm8 5v20l12 7V29zm19 7v20l13-7V22z"/></g></symbol><symbol id="tm-lock" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M18 27V18a14 14 0 0128 0v9h6v32H12V27zm7 0h14v-9a7 7 0 00-14 0zm4 12v11h6V39z"/></g></symbol><symbol id="tm-move" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M32 3l10 12h-7v14h14v-7l12 10-12 10v-7H35v14h7L32 61 22 49h7V35H15v7L3 32l12-10v7h14V15h-7z"/></g></symbol><symbol id="tm-next" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M33 8l24 24-24 24-6-6 14-14H7v-8h34L27 14z"/></g></symbol><symbol id="tm-pause" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M15 9h12v46H15zM37 9h12v46H37z"/></g></symbol><symbol id="tm-retry" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M13 23V7l8 7a25 25 0 11-11 30l7-3a17 17 0 1010-20l8 7H13z"/></g></symbol><symbol id="tm-settings" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M26 4h12l3 9 9 4 9-1 4 12-7 6-1 10 3 8-10 8-9-4-9 2-7 5-10-7 1-10-5-8-8-5 3-12 10-2 7-7zm6 17a11 11 0 100 22 11 11 0 000-22z"/></g></symbol><symbol id="tm-shade" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M5 30C7 3 57 3 59 30H5zm24 4h6v15q0 10 11 4l3 5q-19 11-20-9z"/></g></symbol><symbol id="tm-shell" viewBox="0 0 96 96"><g fill="currentColor" transform="scale(1.5)"><path d="M30 58C-2 46 0 20 13 11l16 38-10-43q8-5 13-1l1 44 9-44q10 3 13 12L40 51l20-28q8 25-23 35z"/></g></symbol><symbol id="tm-shop" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M9 7h46l6 18q-5 10-14 2-8 9-15 0-8 9-15 0-9 8-14-2zm1 26h7v20h30V33h7v27H10zm15 3h14v17H25z"/></g></symbol><symbol id="tm-spf" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M24 4h16v10H24zm-7 13h30l5 9v32H12V26zm15 11a9 9 0 100 18 9 9 0 000-18z"/></g></symbol><symbol id="tm-star" viewBox="0 0 96 96"><g fill="currentColor" transform="scale(1.5)"><path d="M32 3l9 18 20 3-15 14 4 22-18-10-18 10 4-22L3 24l20-3z"/></g></symbol><symbol id="tm-sun" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><circle cx="32" cy="32" r="13"/><path d="M29 3h6v10h-6zM29 51h6v10h-6zM3 29h10v6H3zM51 29h10v6H51zM9 12l4-4 8 8-4 4zM44 48l4-4 8 8-4 4zM9 52l8-8 4 4-8 8zM44 16l8-8 4 4-8 8z"/></g></symbol><symbol id="tm-boss-target" viewBox="0 0 256 256"><circle cx="128" cy="128" r="83" fill="none" stroke="currentColor" stroke-width="12" stroke-dasharray="91 39"/><path d="M128 20v39M128 197v39M20 128h39M197 128h39" fill="none" stroke="currentColor" stroke-width="12"/></symbol><symbol id="tm-lunge-lane" viewBox="0 0 256 256"><path d="M24 36h208M24 220h208" fill="none" stroke="currentColor" stroke-width="10" stroke-dasharray="24 12"/><path d="m62 83 45 45-45 45m73-90 45 45-45 45" fill="none" stroke="currentColor" stroke-width="16" stroke-linejoin="round"/></symbol><symbol id="tm-safe-exit" viewBox="0 0 256 256"><path d="M38 201V39h103l-18 30 18 30H49" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/><path d="m103 172 35 34 80-82" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="tm-awning-warning" viewBox="0 0 256 256"><path d="M28 78h200l-24 58-46-17-30 37-32-37-43 17Z" fill="none" stroke="currentColor" stroke-width="12" stroke-linejoin="round"/><path d="M128 177v26m0 13v8" stroke="currentColor" stroke-width="14"/></symbol><symbol id="tm-umbrella-turn" viewBox="0 0 256 256"><path d="M48 128a80 80 0 0 1 160 0ZM128 128v79q0 25-24 25" fill="none" stroke="currentColor" stroke-width="12"/><path d="M35 58q45-50 99-29m-7-18 14 24-28 9" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round"/></symbol><symbol id="tm-cooling" viewBox="0 0 256 256"><path d="M128 25C109 69 61 121 61 158a67 67 0 0 0 134 0c0-37-48-89-67-133Z" fill="none" stroke="currentColor" stroke-width="12"/><path d="M128 101v84m-31-53 62 35m-62 0 62-35" stroke="currentColor" stroke-width="10"/></symbol><symbol id="tm-eclipse-window" viewBox="0 0 256 256"><circle cx="128" cy="128" r="63" fill="currentColor"/><path d="M128 15v27m0 172v27M15 128h27m172 0h27M48 48l20 20m120 120 20 20M48 208l20-20M188 68l20-20" stroke="currentColor" stroke-width="10"/></symbol><symbol id="tm-shade-ready" viewBox="0 0 256 256"><path d="M26 153q102-115 204 0Z" fill="currentColor"/><path d="M49 191h158M76 219h104" stroke="currentColor" stroke-width="12" stroke-linecap="round"/></symbol></svg>
 <!-- /TM ICONS -->
 <canvas id="game"></canvas>
 
@@ -256,6 +261,7 @@
 
 <!-- ===== in-game HUD ===== -->
 <div id="play-ui" class="hidden">
+  <div id="cue" class="panel" role="status" aria-live="polite"></div>
   <div id="heatWrap" class="panel"><div class="lbl" id="heatLbl">Exposure</div><div id="heatBar"><div id="heatFill"></div></div></div>
   <div id="topRight" class="panel">
     <div><b id="timeT">0.0</b>s</div>
@@ -280,7 +286,7 @@
 
 <!-- ===== TITLE ===== -->
 <div id="title" class="overlay center show">
-  <h1 class="logo"><img src="art/ui/logo_on_sand.svg?v=20261105b" alt="Tomato Man" onerror="this.remove()"><span class="txt">TOMATO<span class="two">MAN</span></span></h1>
+  <h1 class="logo"><img src="art/ui/logo_on_sand.svg?v=20261105c" alt="Tomato Man" onerror="this.remove()"><span class="txt">TOMATO<span class="two">MAN</span></span></h1>
   <div class="tag">The sun is death. Shade is the only ground, and it moves.</div>
   <div class="menuCol">
     <button class="big-btn green" id="tPlay">PLAY</button>
@@ -531,7 +537,7 @@ function stopMusic(){ if(Audio2.musicTimer){ clearInterval(Audio2.musicTimer); A
    through A(key): null until it has loaded, so every draw keeps its code drawn fallback. One ART_V token on every URL.
    The first visit loads the title, the HUD, the pickups, the sun and Morning Tide; a world's ground, horizon and decor
    load when that world is first shown (needWorld), the Angry Sun with the Eclipse world, the share frames on a share. */
-const ART_V='20261105b';
+const ART_V='20261105c';
 const WORLD_DIRS=['morning_tide','midday_blaze','tide_pools','dunes_at_dusk','eclipse'];
 const ASSET_PATHS={
   menu:'art/ui/menu_plate.webp', logo_sand:'art/ui/logo_on_sand.svg', logo_dark:'art/ui/logo_on_dark.svg',
@@ -873,7 +879,7 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
         charges:{shade:ch.shade,spf:ch.spf,ice:ch.ice},
         coolerBox: !!save.loadout.cooler_box, siesta: !!save.loadout.siesta, magnet: !!save.loadout.magnet_pop, spawnAt:0, feel,
         fx:[], decor:scatterDecor(L) };
-  run.cacti=cactiFor(L,run.decor); run.crnd=mulberry32(((L.worldW*5+L.worldH*3)|0)+7); run.blinkNext=3; run.blinkI=-1; run.blinkAt=-9;
+  cueKey='~'; run.cacti=cactiFor(L,run.decor); run.crnd=mulberry32(((L.worldW*5+L.worldH*3)|0)+7); run.blinkNext=3; run.blinkI=-1; run.blinkAt=-9;
   // make the orange 'R' awnings solid — but never the ones the player spawns / respawns / exits on (start, exit, checkpoints)
   run.walls=(L.casters||[]).filter(c=>c[0]==='R').map(c=>({x:c[1],y:c[2],w:c[3],h:c[4]}))
     .filter(w=>![L.start,L.exit,...(L.checkpoints||[])].some(p=>p[0]>w.x-18&&p[0]<w.x+w.w+18&&p[1]>w.y-18&&p[1]<w.y+w.h+18));
@@ -938,6 +944,16 @@ function flash(L){ const f=$('lvlFlash'); f.innerHTML=`${L.name}<small>${L.sub}<
 /* the toast: her pill, ink text, a dot in the call's colour (internal strings only, they may carry a mark) */
 function toast(msg,col){ const t=$('toast'); t.innerHTML=`<span class="tdot" style="background:${col||'var(--tomato)'}"></span>`+msg;
   t.style.transition='none'; t.style.opacity='1'; requestAnimationFrame(()=>{ t.style.transition='opacity .7s'; t.style.opacity='0'; }); }
+let cueKey='~';
+function cueNow(){ const L=run.L;
+  if(run.lunge&&run.lunge.state==='warn') return ['boss-target','lunge coming',1];
+  for(const wlt of run.wilts) if(!wlt.closed&&wlt.under&&wlt.campT/(wlt.camp||3)>=0.25) return ['awning-warning','shade wilting',1];
+  if(run.darkT>0) return ['eclipse-window','eclipse, cross now',0];
+  if(run.act&&run.act.k==='cooling') return ['cooling','cooling down',0];
+  if(run.wind&&run.wind.spin&&(L.casters||[]).some(c=>c[0]==='U'&&dist(P.x,P.y,c[1],c[2])<300)) return ['umbrella-turn','umbrella turning',0];
+  if(run.charges.shade>0&&!run.lastSafe&&P.exp>=40) return ['shade-ready','drop shade',0];
+  if(dist(P.x,P.y,L.exit[0],L.exit[1])<320) return ['safe-exit','the flag',0];
+  return null; }
 function burnStrip(msg){ const b=$('burnStrip'); if(!b) return; const lf=$('lvlFlash'); if(lf) lf.style.opacity='0'; b.textContent=msg; b.classList.add('show'); clearTimeout(burnStrip._t); burnStrip._t=setTimeout(()=>b.classList.remove('show'),2000); }
 function showCombo(n){ const c=$('comboTag'); c.textContent='x'+n+' COMBO'; c.style.transition='none'; c.style.opacity='1';
   requestAnimationFrame(()=>{ c.style.transition='opacity .6s'; c.style.opacity='0'; }); }
@@ -1061,7 +1077,7 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
 
   // ---- wilting awnings ----
   for(const wlt of run.wilts){ const dir=run.az+Math.PI,ux=Math.cos(dir),uy=Math.sin(dir);
-    const poly=sweptRect(wlt.x,wlt.y,wlt.w,wlt.d,wlt.sh,ux,uy,L.sun.elev); const under=inPoly(P.x,P.y,poly);
+    const poly=sweptRect(wlt.x,wlt.y,wlt.w,wlt.d,wlt.sh,ux,uy,L.sun.elev); const under=inPoly(P.x,P.y,poly); wlt.under=under;
     if(!wlt.closed){ if(under){ wlt.campT+=dt; if(wlt.campT>=(wlt.camp||3)){ wlt.closed=true; wlt.regrow=2.4; toast('shade wilted','#cda'); } }
       else wlt.campT=Math.max(0,wlt.campT-dt*0.6); }
     else { wlt.regrow-=dt; if(wlt.regrow<=0 && !under){ wlt.closed=false; wlt.campT=0; } } }
@@ -1120,6 +1136,7 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
 function updateHUD(onHot){ const f=run.feel;
   const hf=$('heatFill'); hf.style.clipPath='inset(0 '+(100-P.exp).toFixed(1)+'% 0 0)'; hf.style.webkitClipPath=hf.style.clipPath;
   hf.className=run.screenT>0?'spf':(run.darkT>0?'dark':''); $('play-ui').classList.toggle('night',run.darkT>0);
+  const cu=cueNow(), ck=cu?cu[0]:''; if(ck!==cueKey){ cueKey=ck; const ce=$('cue'); if(cu){ ce.innerHTML=mk(cu[0])+'<span>'+cu[1]+'</span>'; ce.className='panel show'+(cu[2]?' warn':''); } else ce.className='panel'; }
   $('heatLbl').textContent=run.graceT>0?'get ready…':(run.screenT>0?'SPF active':(run.darkT>0?'eclipse':(run.slowT>0?'ICE · time slow':(onHot?'HOT SAND':'Exposure'))));
   $('timeT').textContent=run.t.toFixed(1);
   if(run.findId){ const bt=save.best[run.findId]; $('bestT').style.display=bt?'':'none'; $('bestT').textContent=bt?('best '+bt.toFixed(1)+'s'):'';
@@ -1817,7 +1834,7 @@ const TUT=[
   {id:'find', ic:'shell', x:'Hidden treasure. Grab all 3 in a level to 100% it, some are off the beaten path.', t:()=>run.finds.some(f=>!f.got&&dist(P.x,P.y,f.x,f.y)<250)},
   {id:'dash', ic:'dash', x:'A thin strip of sun ahead? Tap DASH and cross it fast.', t:()=>run.t>6,
     d:s=>(run.dashUses||0)>s.da},
-  {id:'shadeDrop', ic:'shade', x:'No shade ahead? Tap SHADE to drop your own.', t:()=>run.charges.shade>0 && run.t>4 && !shadedGeom(P.x,P.y),
+  {id:'shadeDrop', ic:'shade-ready', x:'No shade ahead? Tap SHADE to drop your own.', t:()=>run.charges.shade>0 && run.t>4 && !shadedGeom(P.x,P.y),
     d:s=>run.charges.shade<s.sh},
   {id:'checkpoint', ic:'check', x:'Checkpoint. Burn now and you respawn right here.', t:()=>run.cpHit.some(Boolean)},
   {id:'burn', ic:'sun', x:'Burned. Keep an eye on the Exposure bar, reach shade before it fills.', t:()=>run.deaths>0},
@@ -1826,11 +1843,12 @@ const TUT=[
     d:s=>run.charges.spf<s.sp},
   {id:'cart', ic:'shade', x:'That cart’s shadow moves. Board it at the right moment and ride.', t:()=>run.movers.length>0 && run.t>1.2},
   {id:'cloud', ic:'shade', x:'A drifting cloud is a moving island of shade, hop on.', t:()=>run.clouds.length>0 && run.t>1.2},
-  {id:'wilt', ic:'shade', x:'Striped awnings wilt if you camp under them. Keep moving.', t:()=>run.wilts.length>0 && run.t>1.2},
+  {id:'wilt', ic:'awning-warning', x:'Plain awnings wilt if you camp under them. Keep moving.', t:()=>run.wilts.length>0 && run.t>1.2},
+  {id:'umbrella', ic:'umbrella-turn', x:'Wind turns the umbrellas, and their shade swings with them.', t:()=>run.wind&&run.wind.spin&&run.L.casters.some(c=>c[0]==='U')&&run.t>1.5},
   {id:'ice', ic:'ice', x:'ICE slows the sun’s sweep. Sip it when the timing is brutal.', t:()=>run.charges.ice>0 && run.t>2,
     d:s=>run.charges.ice<s.ic2},
-  {id:'lunge', ic:'sun', x:'The Angry Sun is winding up a lunge. Move off the flashing ring.', t:()=>run.lunge&&run.lunge.state==='warn'},
-  {id:'eclipse', ic:'sun', x:'Eclipse. Everything is dark and safe for a moment, so sprint.', t:()=>run.darkT>0},
+  {id:'lunge', ic:'boss-target', x:'The Angry Sun is winding up a lunge. Move off the flashing ring.', t:()=>run.lunge&&run.lunge.state==='warn'},
+  {id:'eclipse', ic:'eclipse-window', x:'Eclipse. Everything is dark and safe for a moment, so sprint.', t:()=>run.darkT>0},
 ];
 function checkTut(dt){
   if(coachHideT>0){

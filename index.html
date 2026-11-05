@@ -451,7 +451,7 @@ const ASSET_PATHS={
   menu:'art/ui/menu_plate.webp', logo_sand:'art/ui/logo_on_sand.svg', logo_dark:'art/ui/logo_on_dark.svg',
   sun:'art/sun/roaming_sun.webp', sun_rays:'art/sun/sun_rays.webp', sun_hud:'art/sun/sun_position_hud.png',
   awning_striped:'art/casters/striped_awning.webp', awning_solid:'art/casters/solid_awning.webp', umbrella:'art/casters/umbrella.webp',
-  carts:'art/casters/vendor_cart_reskins.webp', cloud_platform:'art/casters/cloud_platform.webp', cloud_elevator:'art/casters/cloud_elevator.webp',
+  cart_terracotta:'art/casters/cart_terracotta.webp', cart_slate:'art/casters/cart_slate.webp', cart_sage:'art/casters/cart_sage.webp', cloud_platform:'art/casters/cloud_platform.webp', cloud_elevator:'art/casters/cloud_elevator.webp',
   far:'art/casters/far_silhouette.png',
   aloe_lit:'art/pickups/aloe_lit.webp', aloe_dim:'art/pickups/aloe_dim.webp', popsicle:'art/pickups/popsicle.webp',
   shade_pool:'art/pickups/shade_pool.webp', checkpoints:'art/pickups/checkpoint_pair.webp', exit_flag:'art/pickups/exit_flag.webp',
@@ -776,7 +776,8 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
         beamsGot:0, beamScore:0, combo:0, comboT:0, comboMax:0,
         cp:{x:L.checkpoints[0][0],y:L.checkpoints[0][1]}, cpHit:[],
         charges:{shade:ch.shade,spf:ch.spf,ice:ch.ice},
-        coolerBox: !!save.loadout.cooler_box, siesta: !!save.loadout.siesta, magnet: !!save.loadout.magnet_pop, spawnAt:0, feel };
+        coolerBox: !!save.loadout.cooler_box, siesta: !!save.loadout.siesta, magnet: !!save.loadout.magnet_pop, spawnAt:0, feel,
+        fx:[], decor:scatterDecor(L) };
   // make the orange 'R' awnings solid — but never the ones the player spawns / respawns / exits on (start, exit, checkpoints)
   run.walls=(L.casters||[]).filter(c=>c[0]==='R').map(c=>({x:c[1],y:c[2],w:c[3],h:c[4]}))
     .filter(w=>![L.start,L.exit,...(L.checkpoints||[])].some(p=>p[0]>w.x-18&&p[0]<w.x+w.w+18&&p[1]>w.y-18&&p[1]<w.y+w.h+18));
@@ -789,6 +790,29 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
   $('bIce').classList.toggle('hidden', run.charges.ice<=0 && !(L.ice));
   flash(L); sync(); startMusic(L.world); }
 
+/* DECOR (step 4): six to nine of the world's props from her decor sheet beside the route (start, checkpoints, flag), in
+   the open sand 150 to 350 px to the side, never inside an awning or umbrella, never within 80 px of a pickup, a find or
+   hot sand, never on each other; the planet tomato far off at the top. Seeded by the level's own shape, so a level
+   always wears the same props. Decor never blocks, never shades, never hurts. */
+function scatterDecor(L){ const seed=((L.casters||[]).length*7919+Math.round(L.worldW*3+L.worldH*5)+L.world*101)|0, rnd=mulberry32(seed), out=[];
+  const pts=[L.start,...(L.checkpoints||[]),L.exit].slice().sort((a,b)=>b[1]-a[1]);
+  const rects=(L.casters||[]).filter(c=>c[0]==='R').map(c=>({x:c[1],y:c[2],w:c[3],h:c[4]}));
+  const umbs=(L.casters||[]).filter(c=>c[0]==='U').map(c=>({x:c[1],y:c[2],r:c[3]}));
+  const avoid=[...(L.beams||[]),...(L.finds||[]),...(L.pops||[]),...(L.hot||[]),...(L.checkpoints||[]),L.exit];
+  const n=clamp(Math.round(L.worldH/380),5,9); let tries=0;
+  while(out.length<n&&tries<500){ tries++;
+    const k=Math.floor(rnd()*(pts.length-1)), a=pts[k], b=pts[k+1]||pts[k], t=rnd();
+    const x=a[0]+(b[0]-a[0])*t+(rnd()<0.5?-1:1)*(150+rnd()*200), y=a[1]+(b[1]-a[1])*t+(rnd()-0.5)*90;
+    if(x<60||x>L.worldW-60||y<120||y>L.worldH-60) continue;
+    if(rects.some(r=>x>r.x-70&&x<r.x+r.w+70&&y>r.y-150&&y<r.y+r.h+70)) continue;
+    if(umbs.some(u=>Math.hypot(x-u.x,y-u.y)<u.r+90)) continue;
+    if(avoid.some(p=>Math.hypot(x-p[0],y-p[1])<80)) continue;
+    if(out.some(d=>Math.hypot(x-d.x,y-d.y)<170)) continue;
+    out.push({x,y,f:Math.floor(rnd()*7)}); }
+  out.push({x:L.worldW*(0.2+rnd()*0.6),y:90,f:7,far:true});
+  return out; }
+/* a short effect from her strips: the dash puff (4 frames), the collect burst and the respawn flash (one image, grown and faded) */
+function fxAt(k,x,y,size,dur){ if(save.settings.reduce||!A(k)) return; run.fx.push({k,x,y,size,dur,t:0}); }
 function flash(L){ const f=$('lvlFlash'); f.innerHTML=`${L.name}<small>${L.sub}</small>`;
   f.style.opacity='1'; clearTimeout(flash._t); flash._t=setTimeout(()=>f.style.opacity='0',2100); }
 function toast(msg,col){ const t=$('toast'); t.innerHTML=msg;   // internal strings only; may carry a mark t.style.color=col||'var(--tomato)';
@@ -809,7 +833,7 @@ function collectFind(fnd){ fnd.got=true; run.findsRun++;
   let arr=save.finds[run.findId]; if(!arr){ arr=[]; save.finds[run.findId]=arr; } arr[fnd.i]=true;
   const total=run.finds.length, have=run.finds.filter(f=>f.got).length;
   addBeams(12);                                                    // bonus aloe per find (addBeams persists)
-  SFX.pop(); spawnParts(fnd.x,fnd.y,22,'255,225,150',160,0.65);
+  SFX.pop(); spawnParts(fnd.x,fnd.y,22,'255,225,150',160,0.65); fxAt('collect_burst',fnd.x,fnd.y,96,0.36);
   spawnRing(fnd.x,fnd.y,'255,225,150',52); floatText(fnd.x,fnd.y-6,'+12','255,230,150'); popSquash(0.78,1.26); jShake(0.14);
   if(have>=total){ addBeams(40); spawnRing(fnd.x,fnd.y,'255,235,120',110,0.6); screenFlash('255,220,120',0.3); jShake(0.32); floatText(fnd.x,fnd.y-30,'ALL '+total,'255,235,140'); toast(mk(cd.kind)+' all '+total+' found, +40 aloe','var(--beam)'); SFX.win(); }
   else toast(mk(cd.kind)+' '+cd.name+', +12','var(--beam)');
@@ -842,7 +866,7 @@ function doDash(){ const f=run.feel; if(P.dashStock>0){P.dashStock--;} else { if
   P.dashT=f.dashDur; dashBuf=0; run.dashUses=(run.dashUses||0)+1; SFX.dash();
   const mv=mvVec(); if(Math.hypot(mv.x,mv.y)>0.05) P.face=Math.atan2(mv.y,mv.x);
   P.sx=1.4;P.sy=0.7; // stretch along axis
-  spawnParts(P.x,P.y,9,'255,185,95',115,0.34); spawnRing(P.x,P.y,'255,195,110',30,0.28); jShake(0.08); // dash burst
+  spawnParts(P.x,P.y,9,'255,185,95',115,0.34); spawnRing(P.x,P.y,'255,195,110',30,0.28); jShake(0.08); fxAt('dash_puff',P.x,P.y+8,72,0.33); // dash burst
   freeze=Math.max(freeze, save.settings.reduce?0.03:0.045); // dash hitstop — the burst "fires"
   spawnParts(P.x,P.y,7,'255,210,150',150,0.35);
   if(!save.settings.reduce) run.shake=Math.max(run.shake,0.06); }
@@ -904,6 +928,7 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
   if(mag>0.5 && Math.random()<0.3 && !save.settings.reduce) spawnParts(P.x,P.y+8,1,'180,150,90',40,0.3);
   for(const tr of run.trail) tr.a-=dt*3.2; run.trail=run.trail.filter(tr=>tr.a>0);
   for(const pt of run.parts){ pt.x+=pt.vx*dt; pt.y+=pt.vy*dt; pt.vx*=0.92; pt.vy*=0.92; pt.t-=dt; } run.parts=run.parts.filter(p=>p.t>0);
+  for(const f of run.fx) f.t+=dt; run.fx=run.fx.filter(f=>f.t<f.dur);
   for(const rg of run.rings){ rg.r=lerp(rg.r,rg.r1,Math.min(1,dt*11)); rg.t-=dt; } run.rings=run.rings.filter(r=>r.t>0);
   for(const fl of run.floats){ fl.y+=fl.vy*dt; fl.vy*=0.88; fl.t-=dt; } run.floats=run.floats.filter(f=>f.t>0);
   if(run.flash>0) run.flash=Math.max(0,run.flash-dt*2.4);
@@ -947,7 +972,7 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
       b.got=true; run.beamsGot++; run.combo++; run.comboT=comboWindow();
       const mult=comboMult(run.combo), near=P.exp>55?2:1, val=Math.round(ECON.beamValue*mult*near);
       run.beamScore+=val; run.comboMax=Math.max(run.comboMax,mult);
-      SFX.beam(run.combo); spawnParts(b.x,b.y,14,'140,240,180',150,0.6);
+      SFX.beam(run.combo); spawnParts(b.x,b.y,14,'140,240,180',150,0.6); fxAt('collect_burst',b.x,b.y,78,0.32);
       spawnRing(b.x,b.y,'150,245,190',30+mult*7); floatText(b.x,b.y-4,'+'+val, mult>1?'255,214,90':'150,245,190');
       popSquash(0.82,1.2); if(mult>1)jShake(0.10+mult*0.02);
       if(near>1){ toast('SIZZLE ×2','#ffd23f'); screenFlash('255,180,60',0.18); } else if(mult>1) showCombo(mult); } }
@@ -985,7 +1010,7 @@ function burn(){ if(run.coolerBox){ run.coolerBox=false; P.exp=0; P.vx=0;P.vy=0;
   SFX.burn(); spawnParts(P.x,P.y,24,'255,80,40',190,0.75); spawnRing(P.x,P.y,'255,95,55',72,0.5); screenFlash('255,55,30',0.55);
   run.burnFx={x:P.x,y:P.y,t:0}; run.respawnT=save.settings.reduce?0:0.4;
   run.combo=0; P.exp=0; P.x=run.cp.x; P.y=run.cp.y; P.vx=0;P.vy=0; P.dashT=0; P.dashCd=0; P.dashStock=0; run.sinceSafe=0; run.spawnAt=run.t;
-  run.screenT=Math.max(run.screenT,run.feel.respawnGrace); run.trail.length=0; }
+  run.screenT=Math.max(run.screenT,run.feel.respawnGrace); run.trail.length=0; fxAt('respawn_flash',P.x,P.y,96,0.4); }
 
 const MEDAL={gold:'art/ui/medal_gold.svg',silver:'art/ui/medal_silver.svg',bronze:'art/ui/medal_bronze.svg'};
 function winLevel(){ mode='win'; const L=run.L; SFX.win(); stopMusic(); freeze=0;
@@ -1051,6 +1076,12 @@ function render(){ const inPlay=(screen==='play');
   gl.addColorStop(0,gt?'rgba(255,246,190,.2)':'rgba(255,246,190,.34)'); gl.addColorStop(.5,'rgba(255,240,170,.08)'); gl.addColorStop(1,'rgba(255,244,180,0)');
   ctx.fillStyle=gl; ctx.fillRect(0,0,W,H);
 
+  // decor: her world's props beside the route (under the shade, so a prop in shade is shaded)
+  const dsh=A('decor_'+WORLD_DIRS[L.world]);
+  if(dsh&&run.decor) for(const d of run.decor){ const cw=dsh.width/4, chh=dsh.height/2, k=d.far?0.5:0.21, x=d.x+ox, y=d.y+oy;
+    if(x<-90||x>W+90||y<-60||y>H+140) continue;
+    ctx.globalAlpha=d.far?0.65:1; ctx.drawImage(dsh,(d.f%4)*cw,(d.f>>2)*chh,cw,chh,x-128*k,y-480*k,256*k,512*k); }
+  ctx.globalAlpha=1;
   // hot sand: her patch (warm, patterned) with her shimmer crawling over it; the drawn patch without her art
   const hp=A('hot_patch'), shm=A('shimmer');
   if(hp) for(const h of run.hot){ const x=h[0]+ox,y=h[1]+oy,r=h[2]; ctx.drawImage(hp,x-r*1.15,y-r*1.15,r*2.3,r*2.3);
@@ -1089,36 +1120,52 @@ function render(){ const inPlay=(screen==='play');
 
   // static casters
   const cream=rgbStr(mixRGB(toRGB(pal.accent),[255,250,230],0.6));
+  const awS=A('awning_striped'), umA=A('umbrella');
   for(const c of L.casters){ if(c[0]==='R'){ const x=c[1]+ox,y=c[2]+oy,w=c[3],h=c[4];
       ctx.fillStyle='rgba(0,0,0,.10)'; ctx.fillRect(x+3,y+h,w,5);                       // ground contact shadow
+      if(awS){ ctx.drawImage(awS,x,y,w,h); continue; }                                  // her canopy, the size of the solid awning
       for(let i=0,sx=0;sx<w;i++,sx+=34){ ctx.fillStyle=(i%2)?pal.accent:cream; ctx.fillRect(x+sx,y,Math.min(34,w-sx),h); } // beach stripes
       const cg=ctx.createLinearGradient(0,y,0,y+h); cg.addColorStop(0,'rgba(255,255,255,.22)'); cg.addColorStop(.5,'rgba(255,255,255,0)'); cg.addColorStop(1,'rgba(0,0,0,.16)');
       ctx.fillStyle=cg; ctx.fillRect(x,y,w,h);                                          // canopy sheen
       ctx.fillStyle=pal.accent; for(let sx=0;sx<w-1;sx+=18){ ctx.beginPath(); ctx.arc(x+sx+9,y+h,9,0,Math.PI); ctx.fill(); } // scalloped hem
       ctx.fillStyle='rgba(110,64,36,.55)'; ctx.fillRect(x,y-2,w,3); }                   // top rail
     else { const facing=run.facings[c.__fi]!==undefined?run.facings[c.__fi]:c[4];
+      if(umA){ ctx.save(); ctx.translate(c[1]+ox,c[2]+oy); ctx.rotate(facing); const R=c[3]*1.08; ctx.drawImage(umA,-R,-R,R*2,R*2); ctx.restore(); continue; }
       ctx.save(); ctx.translate(c[1]+ox,c[2]+oy); ctx.rotate(facing);
       const ug=ctx.createRadialGradient(0,-c[3]*0.2,2,0,0,c[3]); ug.addColorStop(0,'#ff8a5c'); ug.addColorStop(1,pal.accent);
       ctx.fillStyle=ug; ctx.beginPath(); ctx.arc(0,0,c[3],0,TAU); ctx.fill();
       ctx.strokeStyle='rgba(0,0,0,.2)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(-c[3],0); ctx.lineTo(c[3],0); ctx.stroke(); ctx.restore(); } }
   // wilting awnings (visibly closing)
+  const awSo=A('awning_solid');
   for(const wlt of run.wilts){ const open=wlt.closed?0.15:clamp(1-wlt.campT/(wlt.camp||3),0.3,1);
+    if(awSo){ const w=wlt.w*open; ctx.globalAlpha=0.5+0.5*open; ctx.drawImage(awSo,wlt.x+ox+(wlt.w-w)/2,wlt.y+oy,w,wlt.d); ctx.globalAlpha=1; continue; }
     ctx.fillStyle=`rgba(120,160,90,${0.5+0.5*open})`; const w=wlt.w*open;
     ctx.fillRect(wlt.x+ox+(wlt.w-w)/2,wlt.y+oy,w,wlt.d);
     ctx.strokeStyle='rgba(60,90,40,.7)'; ctx.lineWidth=2; ctx.strokeRect(wlt.x+ox+(wlt.w-w)/2,wlt.y+oy,w,wlt.d); }
   // movers (carts)
-  for(const m of run.movers){ const x=m.x+ox,y=m.y+oy; ctx.fillStyle='#7a5230'; ctx.fillRect(x,y,m.w,m.d);
+  const cartA=A(['cart_terracotta','cart_slate','cart_sage','cart_terracotta','cart_slate'][L.world%5]);
+  for(const m of run.movers){ const x=m.x+ox,y=m.y+oy;
+    if(cartA){ const n=Math.max(1,Math.round(m.w/120)), cw=m.w/n, chh=cw*cartA.height/cartA.width;   // a convoy of her carts on the footprint
+      for(let k=0;k<n;k++) ctx.drawImage(cartA,x+k*cw,y+m.d-chh,cw,chh); continue; }
+    ctx.fillStyle='#7a5230'; ctx.fillRect(x,y,m.w,m.d);
     ctx.fillStyle='#e8c06a'; ctx.fillRect(x,y,m.w,7);
     ctx.fillStyle='#2a2a2a'; ctx.beginPath(); ctx.arc(x+14,y+m.d,6,0,TAU); ctx.arc(x+m.w-14,y+m.d,6,0,TAU); ctx.fill(); }
   // popsicle pickups
+  const popA=A('popsicle');
   for(const p of run.pops){ if(p.got)continue; const x=p.x+ox,y=p.y+oy,bob=Math.sin(nowT*4+p.x)*3;
+    if(popA){ ctx.drawImage(popA,x-18,y-20+bob,36,36); continue; }
     ctx.fillStyle='#ff6aa0'; ctx.beginPath(); roundRect(x-8,y-16+bob,16,22,6); ctx.fill();
     ctx.fillStyle='#9a5a2a'; ctx.fillRect(x-2,y+6+bob,4,12);
     ctx.fillStyle='rgba(255,255,255,.5)'; ctx.fillRect(x-5,y-13+bob,3,12); }
 
   // aloe (currency pickups) — LIT in sun (grab it!) vs DORMANT in shade (asleep)
+  const alL=A('aloe_lit'), alD=A('aloe_dim'), spk=A('sparkle');
   for(const b of run.beams){ if(b.got) continue; const x=b.x+ox,y=b.y+oy;
     const lit=b.lit!==undefined?b.lit:!shadedGeom(b.x,b.y);
+    if(lit&&alL){ const sz=38*(0.94+0.06*Math.sin(b.t*4)); ctx.drawImage(alL,x-sz/2,y-sz/2,sz,sz);   // her aloe, awake in the sun
+      if(spk&&!save.settings.reduce){ const ph=(b.t*0.6)%1; if(ph<0.3){ const ss=20*Math.sin(ph/0.3*Math.PI); ctx.drawImage(spk,x+9-ss/2,y-13-ss/2,ss,ss); } }
+      continue; }
+    if(!lit&&alD){ ctx.globalAlpha=0.9; ctx.drawImage(alD,x-14,y-14,28,28); ctx.globalAlpha=1; continue; }  // asleep in shade
     if(lit){ const pulse=0.6+0.4*Math.sin(b.t*4);
       const gr=ctx.createRadialGradient(x,y,0,x,y,22); gr.addColorStop(0,'rgba(150,255,190,.5)'); gr.addColorStop(1,'rgba(150,255,190,0)');
       ctx.fillStyle=gr; ctx.beginPath(); ctx.arc(x,y,22,0,TAU); ctx.fill();
@@ -1132,15 +1179,22 @@ function render(){ const inPlay=(screen==='play');
   for(const fnd of run.finds){ if(fnd.got) continue; drawFindIcon(fnd.x+ox, fnd.y+oy+Math.sin(nowT*3+fnd.x*0.05)*3, collectOf(L.world).kind); }
 
   // checkpoints
-  L.checkpoints.forEach((c,i)=>{ const hit=run.cpHit[i]; ctx.strokeStyle=hit?'rgba(79,181,106,.9)':'rgba(255,255,255,.45)'; ctx.lineWidth=3;
+  const cpA=A('checkpoints');
+  L.checkpoints.forEach((c,i)=>{ const hit=run.cpHit[i];
+    if(cpA){ const cw=cpA.width/2, ch=cpA.height, k=0.19*(256/cw);                        // her flag, off or on, its base on the point
+      ctx.strokeStyle=hit?'rgba(79,181,106,.35)':'rgba(60,70,90,.18)'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(c[0]+ox,c[1]+oy,16,0,TAU); ctx.stroke();
+      ctx.drawImage(cpA,(hit?1:0)*cw,0,cw,ch,c[0]+ox-64*k*(cw/256),c[1]+oy-366*k*(cw/256),cw*k,ch*k); return; }
+    ctx.strokeStyle=hit?'rgba(79,181,106,.9)':'rgba(255,255,255,.45)'; ctx.lineWidth=3;
     ctx.beginPath(); ctx.arc(c[0]+ox,c[1]+oy,16,0,TAU); ctx.stroke();
     ctx.fillStyle=hit?'rgba(79,181,106,.5)':'rgba(255,255,255,.18)'; ctx.beginPath(); ctx.arc(c[0]+ox,c[1]+oy,7,0,TAU); ctx.fill(); });
 
   // exit flag
   const ex=L.exit[0]+ox, ey=L.exit[1]+oy;
   ctx.strokeStyle='rgba(35,49,74,.6)'; ctx.lineWidth=3; ctx.setLineDash([7,7]); ctx.beginPath(); ctx.arc(ex,ey,46,0,TAU); ctx.stroke(); ctx.setLineDash([]);
-  ctx.strokeStyle='#23314a'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(ex,ey+30); ctx.lineTo(ex,ey-46); ctx.stroke();
-  ctx.fillStyle='#4fb56a'; ctx.beginPath(); ctx.moveTo(ex,ey-46); ctx.lineTo(ex+34,ey-32); ctx.lineTo(ex,ey-18); ctx.fill();
+  const exA=A('exit_flag');
+  if(exA){ const k=0.22*(384/exA.width); ctx.drawImage(exA,ex-96*k*(exA.width/384),ey+18-494*k*(exA.height/512),exA.width*k,exA.height*k); }   // her pennant
+  else { ctx.strokeStyle='#23314a'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(ex,ey+30); ctx.lineTo(ex,ey-46); ctx.stroke();
+    ctx.fillStyle='#4fb56a'; ctx.beginPath(); ctx.moveTo(ex,ey-46); ctx.lineTo(ex+34,ey-32); ctx.lineTo(ex,ey-18); ctx.fill(); }
 
   // angry sun lunge zone
   if(run.lunge && run.lunge.state!=='idle'){ const lg=run.lunge; const x=lg.zx+ox,y=lg.zy+oy;
@@ -1157,6 +1211,11 @@ function render(){ const inPlay=(screen==='play');
     else ctx.fillStyle=`rgba(${col},${tr.a*0.5})`; ctx.beginPath(); ctx.arc(tr.x+ox,tr.y+oy,P.r*0.85,0,TAU); ctx.fill(); }
   // particles
   for(const pt of run.parts){ ctx.fillStyle=`rgba(${pt.col},${clamp(pt.t/pt.life,0,1)})`; ctx.beginPath(); ctx.arc(pt.x+ox,pt.y+oy,pt.r,0,TAU); ctx.fill(); }
+  // her effects: the dash puff's four frames, the collect burst and respawn flash grown and faded
+  for(const f of run.fx){ const im=A(f.k); if(!im) continue; const p=clamp(f.t/f.dur,0,1), x=f.x+ox, y=f.y+oy;
+    if(f.k==='dash_puff'){ const fr=Math.min(3,Math.floor(p*4)), cw=im.width/4; ctx.globalAlpha=1-p*0.6; ctx.drawImage(im,fr*cw,0,cw,im.height,x-f.size/2,y-f.size/2,f.size,f.size); }
+    else { const sz=f.size*(0.6+0.6*p); ctx.globalAlpha=1-p; ctx.drawImage(im,x-sz/2,y-sz/2,sz,sz); } }
+  ctx.globalAlpha=1;
   // impact rings (juice)
   for(const rg of run.rings){ const a=clamp(rg.t/rg.life,0,1); ctx.strokeStyle=`rgba(${rg.col},${a*0.75})`; ctx.lineWidth=1+a*3; ctx.beginPath(); ctx.arc(rg.x+ox,rg.y+oy,rg.r,0,TAU); ctx.stroke(); }
 
@@ -1288,7 +1347,7 @@ function mixRGB(a,b,t){ t=clamp(t,0,1); return [lerp(a[0],b[0],t),lerp(a[1],b[1]
 function rgbStr(a){ return `rgb(${Math.round(a[0])},${Math.round(a[1])},${Math.round(a[2])})`; }
 function star(x,y,r,p){ctx.beginPath();for(let i=0;i<p*2;i++){const a=i*Math.PI/p,rr=i%2?r*0.5:r;const px=x+Math.cos(a)*rr,py=y+Math.sin(a)*rr;i?ctx.lineTo(px,py):ctx.moveTo(px,py);}ctx.closePath();ctx.fill();}
 function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
-function drawFindIcon(x,y,kind){
+function drawFindIcon(x,y,kind){ const fa=A('find_'+kind); if(fa){ ctx.drawImage(fa,x-20,y-20,40,40); return; }
   const gr=ctx.createRadialGradient(x,y,0,x,y,20); gr.addColorStop(0,'rgba(255,244,190,.5)'); gr.addColorStop(1,'rgba(255,244,190,0)');
   ctx.fillStyle=gr; ctx.beginPath(); ctx.arc(x,y,20,0,TAU); ctx.fill();
   ctx.save(); ctx.translate(x,y);

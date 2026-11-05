@@ -551,7 +551,7 @@ const ASSET_PATHS={
   card_morning_tide:'art/worlds/morning_tide/card.webp', card_midday_blaze:'art/worlds/midday_blaze/card.webp',
   card_tide_pools:'art/worlds/tide_pools/card.webp', card_dunes_at_dusk:'art/worlds/dunes_at_dusk/card.webp', card_eclipse:'art/worlds/eclipse/card.webp',
   hero_s:'art/hero/tomato_s.webp', hero_se:'art/hero/tomato_se.webp', hero_e:'art/hero/tomato_e.webp', hero_ne:'art/hero/tomato_ne.webp', hero_n:'art/hero/tomato_n.webp',
-  hero_respawn:'art/hero/tomato_respawn.webp', hero_victory:'art/hero/tomato_victory.webp', hero_states:'art/hero/exposure_states.webp', face_neutral:'art/hero/face_neutral.webp',
+  hero_respawn:'art/hero/tomato_respawn.webp', hero_victory:'art/hero/tomato_victory.webp', hero_cooling:'art/hero/tomato_cooling.webp', hero_shade_drop:'art/hero/tomato_shade_drop.webp', hero_states:'art/hero/exposure_states.webp', face_neutral:'art/hero/face_neutral.webp',
   trail_classic:'art/hero/trails/ember.png', trail_cool:'art/hero/trails/cool.png', trail_mint:'art/hero/trails/aloe.png', trail_rainbow:'art/hero/trails/rainbow.png',
 };
 /* loaded on demand: each world's ground, horizon, decor sheet and key art; the Angry Sun; the share frames */
@@ -564,6 +564,7 @@ const ASSET_LAZY={
   angry_glare:'art/sun/angry_sun_glare.webp', angry_wind_up:'art/sun/angry_sun_wind_up.webp', angry_lunge:'art/sun/angry_sun_lunge.webp',
   angry_panting:'art/sun/angry_sun_panting.webp', corona:'art/sun/eclipse_corona.webp',
   share_result:'art/sharing/result_square.webp', share_daily:'art/sharing/daily_card.webp',
+  hero_victory_big:'art/hero/tomato_victory_big.webp',
   m_gold:'art/ui/medal_gold.svg', m_silver:'art/ui/medal_silver.svg', m_bronze:'art/ui/medal_bronze.svg',
   sock_shell:'art/ui/progress_shell.png', sock_cone:'art/ui/progress_cone.png', sock_gem:'art/ui/progress_gem.png',
   body_strawberry:'art/hero/strawberry_body.webp', body_orange:'art/hero/orange_body.webp', body_lemon:'art/hero/lemon_body.webp', body_lime:'art/hero/lime_body.webp', body_peach:'art/hero/peach_body.webp', body_cherry:'art/hero/cherry_body.webp', body_bellpepper:'art/hero/bell_pepper_body.webp', body_eggplant:'art/hero/eggplant_body.webp', body_avocado:'art/hero/avocado_body.webp', body_heirloom:'art/hero/heirloom_body.webp', body_pickle:'art/hero/pickle_body.webp', body_golden:'art/hero/golden_body.webp', body_sunburn:'art/hero/sunburn_body.webp',
@@ -668,7 +669,7 @@ const COSMETICS=[
   {id:'crown',name:'Sun Crown',cat:'hat',price:600,color:'#ffd23f',kind:'crown'},
   // exclusive hats — earned by 100%-collecting a whole world (not buyable)
   {id:'shell_crown',name:'Shell Crown',cat:'hat',price:null,earn:0,color:'#f7a8c4',kind:'shell'},
-  {id:'cone_hat',name:'Ice-Cream Hat',cat:'hat',price:null,earn:1,kind:'cone'},
+  {id:'cone_hat',name:'Ice Cream Hat',cat:'hat',price:null,earn:1,kind:'cone'},
   {id:'cool_shades',name:'Cool Shades',cat:'hat',price:null,earn:2,color:'#20242c',kind:'shades'},
   {id:'gem_crown',name:'Gem Crown',cat:'hat',price:null,earn:3,color:'#37b6e0',kind:'gem'},
   {id:'eclipse_halo',name:'Eclipse Halo',cat:'hat',price:null,earn:4,color:'#b48aff',kind:'eclipse'},
@@ -848,7 +849,7 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
   const ch=startCharges(L); const feel=FEEL();
   // tag umbrella casters with facing index for wind re-tilt
   let fi=0; const facings={}; for(const c of L.casters){ if(c[0]==='U'){ c.__fi=fi; facings[fi]=c[4]; fi++; } }
-  run={ L,t:0,az:L.sun.azC,deaths:0,screenT:0,darkT:0,slowT:0,shake:0,lastSafe:true,grazeT:0,sinceSafe:0,graceT:1.0,
+  run={ L,t:0,act:null,hotAt:-9,az:L.sun.azC,deaths:0,screenT:0,darkT:0,slowT:0,shake:0,lastSafe:true,grazeT:0,sinceSafe:0,graceT:1.0,
         rings:[],floats:[],flash:0,flashC:'255,80,40',
         shadePolys:[],shadeEll:[],popups:[],trail:[],parts:[],facings,
         movers:(L.movers||[]).map(m=>({...m})),
@@ -962,7 +963,7 @@ function doDash(){ const f=run.feel; if(P.dashStock>0){P.dashStock--;} else { if
   freeze=Math.max(freeze, save.settings.reduce?0.03:0.045); // dash hitstop — the burst "fires"
   spawnParts(P.x,P.y,7,'255,210,150',150,0.35);
   if(!save.settings.reduce) run.shake=Math.max(run.shake,0.06); }
-function drop(){ if(run.charges.shade>0){ run.popups.push({x:P.x,y:P.y,r:82}); run.charges.shade--; SFX.shade(); spawnParts(P.x,P.y,8,'80,120,180',120,0.5); sync(); } else SFX.deny(); }
+function drop(){ if(run.charges.shade>0){ run.popups.push({x:P.x,y:P.y,r:82}); run.charges.shade--; act('shade_drop'); SFX.shade(); spawnParts(P.x,P.y,8,'80,120,180',120,0.5); sync(); } else SFX.deny(); }
 function spf(){ if(run.charges.spf>0&&run.screenT<=0){ run.screenT=run.feel.spfDur||2.6; run.charges.spf--; SFX.spf(); sync(); } else SFX.deny(); }
 function ice(){ if(run.charges.ice>0&&run.slowT<=0){ run.slowT=3.0; run.charges.ice--; SFX.ice(); sync(); } else SFX.deny(); }
 function sync(){ setC('bShade','cShade',run.charges.shade); setC('bScreen','cScreen',run.charges.spf); setC('bIce','cIce',run.charges.ice); }
@@ -1057,6 +1058,10 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
   rate += lungeBurn;
   P.exp=clamp(P.exp+rate*dt,0,f.burnThreshold);
   if(P.exp>=f.burnThreshold){ burn(); return; }
+  // the cooling beat: hot in the sun (half the meter or more), then standing still in shade, he fans himself once
+  if(!safe&&P.exp>=50) run.hotAt=run.t;
+  if(run.act){ run.act.t+=dt; if(run.act.t>=4/ACT_FPS[run.act.k]) run.act=null; }
+  else if(safe&&run.hotAt>0&&run.t-run.hotAt<1.5&&Math.hypot(P.vx,P.vy)<30&&P.dashT<=0&&run.respawnT<=0){ act('cooling'); run.hotAt=-9; }
 
   // ---- pickups: beams (combo), pops ----
   const pr=(run.magnet?2:1)*f.pickupR;
@@ -1101,7 +1106,7 @@ function burn(){ if(run.coolerBox){ run.coolerBox=false; P.exp=0; P.vx=0;P.vy=0;
   run.deaths++; save.totalBurns++; persist(); burnStrip('Burned at '+run.t.toFixed(1)+' s'); run.shake=save.settings.reduce?0:0.58; freeze=save.settings.reduce?0:0.09;
   SFX.burn(); spawnParts(P.x,P.y,24,'255,80,40',190,0.75); spawnRing(P.x,P.y,'255,95,55',72,0.5); screenFlash('255,55,30',0.55);
   run.burnFx={x:P.x,y:P.y,t:0}; run.respawnT=save.settings.reduce?0:0.4;
-  run.combo=0; P.exp=0; P.x=run.cp.x; P.y=run.cp.y; P.vx=0;P.vy=0; P.dashT=0; P.dashCd=0; P.dashStock=0; run.sinceSafe=0; run.spawnAt=run.t;
+  run.combo=0; run.act=null; P.exp=0; P.x=run.cp.x; P.y=run.cp.y; P.vx=0;P.vy=0; P.dashT=0; P.dashCd=0; P.dashStock=0; run.sinceSafe=0; run.spawnAt=run.t;
   run.screenT=Math.max(run.screenT,run.feel.respawnGrace); run.trail.length=0; fxAt('respawn_flash',P.x,P.y,96,0.4); }
 
 const MEDAL={gold:'art/ui/medal_gold.svg',silver:'art/ui/medal_silver.svg',bronze:'art/ui/medal_bronze.svg'};
@@ -1134,6 +1139,7 @@ function winLevel(){ mode='win'; const L=run.L; SFX.win(); stopMusic(); freeze=0
   $('winEarn').innerHTML=`<div class="earnLine">+ ${earn} aloe ${mk('aloe')}</div>`+(first?`<div class="earnLine">first clear bonus</div>`:'');
   $('winNext').style.display=(!endless && nextLevelIndex()!==-1)?'':'none';
   run.winInfo={name:L.name, world:L.world, t:run.t, par:L.par, medal, isNewBest, deaths:run.deaths, finds:fcw, kind:collectOf(L.world).kind, endless, daily:!!dailyKey};
+  run.winInfo.at=performance.now(); need('hero_victory_big');
   need(dailyKey?'share_daily':'share_result'); need('m_'+medal); need('sock_'+run.winInfo.kind);
   $('play-ui').classList.add('hidden'); showScreen('win'); updateWallet(); drawWinCard();
 }
@@ -1143,17 +1149,20 @@ function winLevel(){ mode='win'; const L=run.L; SFX.win(); stopMusic(); freeze=0
 const CARD_LAYOUT={
   result:{frame:'share_result',win:[100,290,880,540],bands:[[80,222,920,52],[80,866,920,70],[80,950,920,64]]},
   daily:{frame:'share_daily',win:[100,376,880,484],bands:[[80,238,920,58],[80,306,920,58],[80,900,920,100]]} };
-function drawWinCard(){ const c=$('winCv'); if(!c||!run||!run.winInfo) return; drawPostcard(c,run.winInfo); }
-function drawPostcard(c,w){ const g=c.getContext('2d'), S=c.width/1080, Lay=CARD_LAYOUT[w.daily?'daily':'result'];
+function drawWinCard(){ const c=$('winCv'); if(!c||!run||!run.winInfo) return; const w=run.winInfo;
+  const f=save.settings.reduce?3:Math.min(3,Math.floor((performance.now()-(w.at||0))*ACT_FPS.victory/1000));
+  drawPostcard(c,w,f); if(f<3&&screen==='win') requestAnimationFrame(drawWinCard); }
+const cardTmp=document.createElement('canvas'); cardTmp.width=cardTmp.height=256; const cardTx=cardTmp.getContext('2d');
+function drawPostcard(c,w,vf){ if(vf==null) vf=3; const g=c.getContext('2d'), S=c.width/1080, Lay=CARD_LAYOUT[w.daily?'daily':'result'];
   g.clearRect(0,0,c.width,c.height);
   const wx=Lay.win[0]*S, wy=Lay.win[1]*S, ww=Lay.win[2]*S, wh=Lay.win[3]*S;
   g.save(); g.beginPath(); g.rect(wx,wy,ww,wh); g.clip();
   const gt=A('ground_'+WORLD_DIRS[w.world]); if(gt){ g.fillStyle=g.createPattern(gt,'repeat'); } else g.fillStyle='#ead7a0'; g.fillRect(wx,wy,ww,wh);
   g.fillStyle='rgba(101,126,148,.55)'; g.beginPath(); g.moveTo(wx+ww*0.52,wy); g.lineTo(wx+ww*0.86,wy); g.lineTo(wx+ww*0.5,wy+wh); g.lineTo(wx+ww*0.16,wy+wh); g.closePath(); g.fill();
-  const hs=wh*0.92, hx=wx+ww*0.5-hs/2, hy=wy+wh-hs*0.98, vic=A('hero_victory');
+  const hs=wh*0.92, hx=wx+ww*0.5-hs/2, hy=wy+wh-hs*0.98, tom=save.cosmetics.body==='tomato';
   g.fillStyle='rgba(0,0,0,.14)'; g.beginPath(); g.ellipse(wx+ww*0.5,wy+wh-hs*0.1,hs*0.2,hs*0.06,0,0,TAU); g.fill();
-  if(save.cosmetics.body==='tomato'&&vic){ const cw=vic.width/4; g.drawImage(vic,3*cw,0,cw,vic.height,hx,hy,hs,hs); }
-  else { const b=A('body_'+save.cosmetics.body); if(b) g.drawImage(b,hx,hy,hs,hs); }
+  const fig=tom?(A('hero_victory_big')||A('hero_victory')):A('body_'+save.cosmetics.body);
+  if(fig){ composeHero(cardTx,256,fig,4,1,tom?vf:0,tom?HAT_ANCHOR.victory[vf]:HAT_ANCHOR.s[0],0,tom); g.drawImage(cardTmp,hx,hy,hs,hs); }
   g.restore();
   const fr=A(Lay.frame); if(fr) g.drawImage(fr,0,0,c.width,c.height); else { g.strokeStyle='#8a7a56'; g.lineWidth=3; g.strokeRect(wx,wy,ww,wh); }
   const B=Lay.bands, band=(r,txt,font)=>{ g.font=font; g.fillStyle='#2b2a20'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(txt,(r[0]+r[2]/2)*S,(r[1]+r[3]/2)*S); };
@@ -1392,32 +1401,41 @@ function render(){ const inPlay=(screen==='play');
    28 across (the collider stays radius 14; his legs and arms overhang it). Cells: 0 idle, 1 to 4 the walk at 8 fps,
    5 and 6 the dash at 12 fps, 7 a hop. Standing still for half a second he turns to face you. */
 /* TM HERO SOCKETS (lucid-winds tools/tomato-man-tests/astra_in.py writes this line) */
-const HAT_ANCHOR={"s":[[128,41],[128,41],[128,41],[129,41],[128,42],[128,56],[129,61],[129,39]],"se":[[131,40],[133,44],[134,48],[136,52],[136,54],[141,63],[153,64],[137,43]],"e":[[129,46],[129,46],[129,46],[129,46],[129,46],[140,60],[156,65],[133,39]],"ne":[[129,42],[129,43],[135,46],[136,46],[136,47],[144,58],[157,51],[135,40]],"n":[[129,51],[129,51],[129,51],[130,51],[129,52],[130,63],[131,46],[129,40]]};
+const HAT_ANCHOR={"s":[[128,41],[128,41],[128,41],[129,41],[128,42],[128,56],[129,61],[129,39]],"se":[[131,40],[133,44],[134,48],[136,52],[136,54],[141,63],[153,64],[137,43]],"e":[[129,46],[129,46],[129,46],[129,46],[129,46],[140,60],[156,65],[133,39]],"ne":[[129,42],[129,43],[135,46],[136,46],[136,47],[144,58],[157,51],[135,40]],"n":[[129,51],[129,51],[129,51],[130,51],[129,52],[130,63],[131,46],[129,40]],"victory":[[128,51],[128,51],[128,50],[128,51]],"respawn":[[128,114],[128,72],[128,51],[128,49]],"cooling":[[128,66],[128,56],[128,55],[128,47]],"shade_drop":[[128,49],[128,49],[128,51],[128,50]]};
 /* /TM HERO SOCKETS */
 const HERO_B=['e','se','s','sw','w','nw','n','ne'], HERO_SRC={s:'s',se:'se',e:'e',ne:'ne',n:'n',sw:'se',w:'e',nw:'ne'};
 const HERO_FLIP={sw:1,w:1,nw:1}, HAT_DIR={s:'s',se:'e',e:'e',ne:'n',n:'n',nw:'n',w:'w',sw:'w'}, HAT_COL={s:0,e:1,n:2,w:3};
 const heroTmp=document.createElement('canvas'); heroTmp.width=heroTmp.height=128; const heroTx=heroTmp.getContext('2d');
 function heroBearing(){ if(run&&run.idleT>0.5) return 's'; let a=P.face; return HERO_B[((Math.round(a/(Math.PI/4))%8)+8)%8]; }
-function drawHero(x,y){ const body=cosmetic(save.cosmetics.body), hat=cosmetic(save.cosmetics.hat);
-  const tomato=body.id==='tomato', bb=heroBearing(), src=HERO_SRC[bb];
+/* m2 step 8: her four south facing actions at their fps, played once (the physics never turned by them), each on
+   its own per frame hat anchor; the dash her crouch then her stretch held, as her manifest says (no loop). The engine
+   has no hop, so her hop cell waits. */
+const ACT_FPS={victory:8,respawn:10,cooling:8,shade_drop:8};
+function act(k){ if(!run||save.settings.reduce||save.cosmetics.body!=='tomato') return; run.act={k,t:0}; }
+/* one figure into a square scratch canvas of N px: a tomato cell of a sheet (cols by rows), or a produce body with her
+   face; the hat at the cell's anchor (her 256 px cell space), from its bearing column hc */
+function composeHero(tx,N,img,cols,rows,cell,an,hc,tomato){ const k=N/128; tx.clearRect(0,0,N,N);
+  if(tomato){ const cw=img.width/cols, ch=img.height/rows; tx.drawImage(img,(cell%cols)*cw,Math.floor(cell/cols)*ch,cw,ch,0,0,N,N); }
+  else { tx.drawImage(img,0,0,img.width,img.height,0,0,N,N); const fc=A('face_neutral'); if(fc) tx.drawImage(fc,0,40,128,128,22*k,10*k,84*k,84*k); }
+  const hat=cosmetic(save.cosmetics.hat);
+  if(hat.kind!=='none'&&an){ const hs=A('hat_'+hat.id); if(hs) tx.drawImage(hs,hc*128,0,128,128,(an[0]-64)/2*k,(an[1]-28)/2*k,64*k,64*k); } }
+function drawHero(x,y){ const body=cosmetic(save.cosmetics.body);
+  const tomato=body.id==='tomato'; let bb=heroBearing(); const src=HERO_SRC[bb];
   const sheet=tomato?A('hero_'+src):A('body_'+body.id);
   if(!sheet){ drawHeroCode(x,y); return; }
   // ground shadow and the state rings, as before
   ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x,y+P.r*0.8,P.r*0.95,P.r*0.4,0,0,TAU); ctx.fill();
   if(run.screenT>0){ ctx.strokeStyle='rgba(150,210,255,.95)'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(x,y,P.r+9+Math.sin(nowT*12)*1.5,0,TAU); ctx.stroke(); }
   else if(run.slowT>0){ ctx.strokeStyle='rgba(160,240,255,.8)'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(x,y,P.r+9,0,TAU); ctx.stroke(); }
-  // the cell: a respawn plays her four frames, a dash her two, walking her four, else idle
   const moving=Math.hypot(P.vx,P.vy)>30&&!(run.idleT>0.5);
-  let img=sheet, cell=0, cols=4;
-  if(tomato&&run.respawnT>0&&A('hero_respawn')){ img=A('hero_respawn'); cell=Math.min(3,Math.floor((0.4-run.respawnT)/0.1)); cols=4; }
-  else if(tomato){ cell=P.dashT>0?5+(Math.floor(nowT*12)%2):(moving&&!save.settings.reduce?1+(Math.floor(nowT*8)%4):0); }
-  const cw=img.width/cols, chh=tomato?(img===sheet?img.height/2:img.height):img.height;
-  // drawn into a small canvas first, so the exposure tint touches only the figure
-  heroTx.clearRect(0,0,128,128);
-  if(tomato) heroTx.drawImage(img,(cell%cols)*cw,Math.floor(cell/cols)*chh,cw,chh,0,0,128,128);
-  else { heroTx.drawImage(img,0,0,img.width,img.height,0,0,128,128); const fc=A('face_neutral'); if(fc) heroTx.drawImage(fc,0,40,128,128,22,10,84,84); }
-  if(hat.kind!=='none'){ const hs=A('hat_'+hat.id), an=(HAT_ANCHOR[src]||HAT_ANCHOR.s)[tomato?Math.min(cell,7):0];
-    if(hs&&an){ const hc=HAT_COL[HAT_DIR[src]]; heroTx.drawImage(hs,hc*128,0,128,128,(an[0]-64)/2,(an[1]-28)/2,64,64); } }
+  let img=sheet, rows=tomato?2:1, cell=0, an=null, hc=HAT_COL[HAT_DIR[src]];
+  const actImg=(tomato&&run.act)?A('hero_'+run.act.k):null;
+  if(tomato&&run.respawnT>0&&A('hero_respawn')){ img=A('hero_respawn'); rows=1; cell=Math.min(3,Math.floor((0.4-run.respawnT)*ACT_FPS.respawn)); an=HAT_ANCHOR.respawn[cell]; hc=0; bb='s'; }
+  else if(tomato&&P.dashT>0){ cell=(run.feel.dashDur-P.dashT)<1/12?5:6; an=HAT_ANCHOR[src][cell]; }
+  else if(actImg){ img=actImg; rows=1; cell=Math.min(3,Math.floor(run.act.t*ACT_FPS[run.act.k])); an=HAT_ANCHOR[run.act.k][cell]; hc=0; bb='s'; }
+  else if(tomato){ cell=moving&&!save.settings.reduce?1+(Math.floor(nowT*8)%4):0; an=HAT_ANCHOR[src][cell]; }
+  else an=(HAT_ANCHOR[src]||HAT_ANCHOR.s)[0];
+  composeHero(heroTx,128,img,4,rows,cell,an,hc,tomato);   // drawn small first, so the exposure tint touches only the figure
   const burnT=clamp((P.exp-25)/75,0,1);
   if(burnT>0){ heroTx.save(); heroTx.globalCompositeOperation='source-atop'; heroTx.fillStyle=`rgba(225,50,40,${(burnT*0.42).toFixed(3)})`; heroTx.fillRect(0,0,128,128); heroTx.restore(); }
   ctx.save(); ctx.translate(x,y); ctx.scale(P.sx,P.sy); if(HERO_FLIP[bb]) ctx.scale(-1,1);

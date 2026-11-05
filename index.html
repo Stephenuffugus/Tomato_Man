@@ -565,6 +565,10 @@ const ASSET_LAZY={
   angry_panting:'art/sun/angry_sun_panting.webp', corona:'art/sun/eclipse_corona.webp',
   share_result:'art/sharing/result_square.webp', share_daily:'art/sharing/daily_card.webp',
   hero_victory_big:'art/hero/tomato_victory_big.webp',
+  wilt_solid:'art/casters/solid_awning_states.webp', umb_states:'art/casters/umbrella_states.webp',
+  cactus_blink:'art/worlds/cactus_blink.webp', cactus_wave:'art/worlds/cactus_wave.webp', cactus_wind:'art/worlds/cactus_wind.webp',
+  sun_wind_up:'art/sun/angry_sun_wind_up_sheet.webp', sun_lunge:'art/sun/angry_sun_lunge_sheet.webp', sun_recovery:'art/sun/angry_sun_recovery_sheet.webp',
+  ring_boss:'art/effects/boss_telegraph.webp', ring_safe:'art/effects/safe_window.webp', lane:'art/ui/lunge_lane.png',
   m_gold:'art/ui/medal_gold.svg', m_silver:'art/ui/medal_silver.svg', m_bronze:'art/ui/medal_bronze.svg',
   sock_shell:'art/ui/progress_shell.png', sock_cone:'art/ui/progress_cone.png', sock_gem:'art/ui/progress_gem.png',
   body_strawberry:'art/hero/strawberry_body.webp', body_orange:'art/hero/orange_body.webp', body_lemon:'art/hero/lemon_body.webp', body_lime:'art/hero/lime_body.webp', body_peach:'art/hero/peach_body.webp', body_cherry:'art/hero/cherry_body.webp', body_bellpepper:'art/hero/bell_pepper_body.webp', body_eggplant:'art/hero/eggplant_body.webp', body_avocado:'art/hero/avocado_body.webp', body_heirloom:'art/hero/heirloom_body.webp', body_pickle:'art/hero/pickle_body.webp', body_golden:'art/hero/golden_body.webp', body_sunburn:'art/hero/sunburn_body.webp',
@@ -869,6 +873,7 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
         charges:{shade:ch.shade,spf:ch.spf,ice:ch.ice},
         coolerBox: !!save.loadout.cooler_box, siesta: !!save.loadout.siesta, magnet: !!save.loadout.magnet_pop, spawnAt:0, feel,
         fx:[], decor:scatterDecor(L) };
+  run.cacti=cactiFor(L,run.decor); run.crnd=mulberry32(((L.worldW*5+L.worldH*3)|0)+7); run.blinkNext=3; run.blinkI=-1; run.blinkAt=-9;
   // make the orange 'R' awnings solid — but never the ones the player spawns / respawns / exits on (start, exit, checkpoints)
   run.walls=(L.casters||[]).filter(c=>c[0]==='R').map(c=>({x:c[1],y:c[2],w:c[3],h:c[4]}))
     .filter(w=>![L.start,L.exit,...(L.checkpoints||[])].some(p=>p[0]>w.x-18&&p[0]<w.x+w.w+18&&p[1]>w.y-18&&p[1]<w.y+w.h+18));
@@ -876,7 +881,7 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
   cam.x=clamp(P.x-W/2,0,Math.max(0,L.worldW-W)); cam.y=clamp(P.y-H/2,0,Math.max(0,L.worldH-H));
   // consume loadout (single-use boosts)
   save.loadout={}; persist();
-  applyTheme(L.world); needWorld(L.world); needLook();
+  applyTheme(L.world); needWorld(L.world); needLook(); needLevel(L);
   screen='play'; mode='play'; showScreen(null); $('play-ui').classList.remove('hidden');
   $('bIce').classList.toggle('hidden', run.charges.ice<=0 && !(L.ice));
   flash(L); sync(); startMusic(L.world); }
@@ -885,6 +890,30 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
    the open sand 150 to 350 px to the side, never inside an awning or umbrella, never within 80 px of a pickup, a find or
    hot sand, never on each other; the planet tomato far off at the top. Seeded by the level's own shape, so a level
    always wears the same props. Decor never blocks, never shades, never hurts. */
+/* m2 step 9: the moving world's art, loaded with the level that uses it */
+function needLevel(L){ need('cactus_blink'); if(L.wind) need('cactus_wind');
+  if((L.wilts||[]).length) need('wilt_solid'); if((L.casters||[]).some(c=>c[0]==='U')) need('umb_states');
+  if(L.sun&&L.sun.lunge){ need('sun_wind_up'); need('sun_lunge'); need('sun_recovery'); need('ring_boss'); need('lane'); }
+  if(L.sun&&L.sun.dark) need('ring_safe'); }
+/* her cactus spectators: two per level, one each side of the route, near enough to its line to stand at the screen's
+   edges, clear of casters, carts, pickups and the decor; scenery only (no shade, no collision) */
+function cactiFor(L,decor){ const rnd=mulberry32(((L.worldW*11+L.worldH*7+L.world*53)|0)+3), out=[];
+  const pts=[L.start,...(L.checkpoints||[]),L.exit].slice().sort((a,b)=>b[1]-a[1]);
+  const rects=(L.casters||[]).filter(c=>c[0]==='R').map(c=>({x:c[1],y:c[2],w:c[3],h:c[4]}));
+  const umbs=(L.casters||[]).filter(c=>c[0]==='U').map(c=>({x:c[1],y:c[2],r:c[3]}));
+  const avoid=[...(L.beams||[]),...(L.finds||[]),...(L.pops||[]),...(L.hot||[]),...(L.checkpoints||[]),L.exit,L.start];
+  let tries=0; while(out.length<2&&tries<600){ tries++;
+    const k=Math.floor(rnd()*(pts.length-1)), a=pts[k], b=pts[k+1]||pts[k], t=0.15+rnd()*0.7, side=out.length?-out[0].side:(rnd()<0.5?-1:1);
+    const x=a[0]+(b[0]-a[0])*t+side*(140+rnd()*40), y=a[1]+(b[1]-a[1])*t;
+    if(x<60||x>L.worldW-60||y<200||y>L.worldH-80) continue;
+    if(rects.some(r=>x>r.x-60&&x<r.x+r.w+60&&y>r.y-150&&y<r.y+r.h+80)) continue;
+    if(umbs.some(u=>Math.hypot(x-u.x,y-u.y)<u.r+90)) continue;
+    if((L.movers||[]).some(m=>y>m.y-140&&y<m.y+m.d+120&&x>m.minx-60&&x<m.maxx+m.w+60)) continue;
+    if(avoid.some(p=>Math.hypot(x-p[0],y-p[1])<100)) continue;
+    if((decor||[]).some(d=>Math.hypot(x-d.x,y-d.y)<110)) continue;
+    if(out.some(d=>Math.abs(y-d.y)<420)) continue;
+    out.push({x,y,side}); }
+  return out; }
 function scatterDecor(L){ const seed=((L.casters||[]).length*7919+Math.round(L.worldW*3+L.worldH*5)+L.world*101)|0, rnd=mulberry32(seed), out=[];
   const pts=[L.start,...(L.checkpoints||[]),L.exit].slice().sort((a,b)=>b[1]-a[1]);
   const rects=(L.casters||[]).filter(c=>c[0]==='R').map(c=>({x:c[1],y:c[2],w:c[3],h:c[4]}));
@@ -1047,6 +1076,7 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
       if(dist(P.x,P.y,lg.zx,lg.zy)<lg.reach && run.screenT<=0 && run.darkT<=0 && run.graceT<=0) lungeBurn=420; }
     else lg.state='idle'; }
 
+  if(run.cacti&&run.cacti.length&&run.t>=run.blinkNext){ run.blinkI=Math.floor(run.crnd()*run.cacti.length); run.blinkAt=run.t; run.blinkNext=run.t+4+run.crnd()*5; }
   // ---- exposure ----
   const safe=safeAt(P.x,P.y); run.lastSafe=safe;
   if(safe) run.sinceSafe=0; else run.sinceSafe+=dt;
@@ -1139,7 +1169,7 @@ function winLevel(){ mode='win'; const L=run.L; SFX.win(); stopMusic(); freeze=0
   $('winEarn').innerHTML=`<div class="earnLine">+ ${earn} aloe ${mk('aloe')}</div>`+(first?`<div class="earnLine">first clear bonus</div>`:'');
   $('winNext').style.display=(!endless && nextLevelIndex()!==-1)?'':'none';
   run.winInfo={name:L.name, world:L.world, t:run.t, par:L.par, medal, isNewBest, deaths:run.deaths, finds:fcw, kind:collectOf(L.world).kind, endless, daily:!!dailyKey};
-  run.winInfo.at=performance.now(); need('hero_victory_big');
+  run.winInfo.at=performance.now(); need('hero_victory_big'); need('cactus_wave');
   need(dailyKey?'share_daily':'share_result'); need('m_'+medal); need('sock_'+run.winInfo.kind);
   $('play-ui').classList.add('hidden'); showScreen('win'); updateWallet(); drawWinCard();
 }
@@ -1150,10 +1180,11 @@ const CARD_LAYOUT={
   result:{frame:'share_result',win:[100,290,880,540],bands:[[80,222,920,52],[80,866,920,70],[80,950,920,64]]},
   daily:{frame:'share_daily',win:[100,376,880,484],bands:[[80,238,920,58],[80,306,920,58],[80,900,920,100]]} };
 function drawWinCard(){ const c=$('winCv'); if(!c||!run||!run.winInfo) return; const w=run.winInfo;
-  const f=save.settings.reduce?3:Math.min(3,Math.floor((performance.now()-(w.at||0))*ACT_FPS.victory/1000));
-  drawPostcard(c,w,f); if(f<3&&screen==='win') requestAnimationFrame(drawWinCard); }
+  const el=(performance.now()-(w.at||0))/1000, f=save.settings.reduce?3:Math.min(3,Math.floor(el*ACT_FPS.victory));
+  const cf=save.settings.reduce?0:(el<4/6?Math.floor(el*6):0);    // her cactus waves once at 6 fps
+  drawPostcard(c,w,f,cf); if(el<0.75&&!save.settings.reduce&&screen==='win') requestAnimationFrame(drawWinCard); }
 const cardTmp=document.createElement('canvas'); cardTmp.width=cardTmp.height=256; const cardTx=cardTmp.getContext('2d');
-function drawPostcard(c,w,vf){ if(vf==null) vf=3; const g=c.getContext('2d'), S=c.width/1080, Lay=CARD_LAYOUT[w.daily?'daily':'result'];
+function drawPostcard(c,w,vf,cf){ if(vf==null) vf=3; if(cf==null) cf=2; const g=c.getContext('2d'), S=c.width/1080, Lay=CARD_LAYOUT[w.daily?'daily':'result'];
   g.clearRect(0,0,c.width,c.height);
   const wx=Lay.win[0]*S, wy=Lay.win[1]*S, ww=Lay.win[2]*S, wh=Lay.win[3]*S;
   g.save(); g.beginPath(); g.rect(wx,wy,ww,wh); g.clip();
@@ -1163,6 +1194,9 @@ function drawPostcard(c,w,vf){ if(vf==null) vf=3; const g=c.getContext('2d'), S=
   g.fillStyle='rgba(0,0,0,.14)'; g.beginPath(); g.ellipse(wx+ww*0.5,wy+wh-hs*0.1,hs*0.2,hs*0.06,0,0,TAU); g.fill();
   const fig=tom?(A('hero_victory_big')||A('hero_victory')):A('body_'+save.cosmetics.body);
   if(fig){ composeHero(cardTx,256,fig,4,1,tom?vf:0,tom?HAT_ANCHOR.victory[vf]:HAT_ANCHOR.s[0],0,tom); g.drawImage(cardTmp,hx,hy,hs,hs); }
+  const cwv=A('cactus_wave'); if(cwv){ const cw=cwv.width/4, ch=cwv.height, dh=wh*0.46, dw=dh*cw/ch;
+    g.fillStyle='rgba(0,0,0,.12)'; g.beginPath(); g.ellipse(wx+ww*0.87,wy+wh*0.955,dw*0.22,dh*0.04,0,0,TAU); g.fill();
+    g.drawImage(cwv,cf*cw,0,cw,ch,wx+ww*0.87-dw/2,wy+wh*0.97-dh*(180/192),dw,dh); }
   g.restore();
   const fr=A(Lay.frame); if(fr) g.drawImage(fr,0,0,c.width,c.height); else { g.strokeStyle='#8a7a56'; g.lineWidth=3; g.strokeRect(wx,wy,ww,wh); }
   const B=Lay.bands, band=(r,txt,font)=>{ g.font=font; g.fillStyle='#2b2a20'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(txt,(r[0]+r[2]/2)*S,(r[1]+r[3]/2)*S); };
@@ -1222,6 +1256,17 @@ function render(){ const inPlay=(screen==='play');
 
   // decor: her world's props beside the route (under the shade, so a prop in shade is shaded)
   const dsh=A('decor_'+WORLD_DIRS[L.world]);
+  // her cactus spectators: blink one at a time, lean only in real wind (more wind, more lean), frame zero when reduced
+  const cbl=A('cactus_blink'), cwi=A('cactus_wind');
+  if(cbl&&run.cacti) for(let ci=0;ci<run.cacti.length;ci++){ const c=run.cacti[ci]; let img=cbl, f=0, dir=1;
+    if(!save.settings.reduce){
+      const wx=run.wind?((run.wind.ax||0)+(run.wind.gust?run.wind.gust.amp*Math.sin((run.t-ci*0.3)*TAU/run.wind.gust.period):0)):0;
+      if(cwi&&Math.abs(wx)>15){ img=cwi; f=Math.abs(wx)>60?3:(Math.abs(wx)>35?2:1); dir=wx<0?-1:1; }
+      else if(ci===run.blinkI&&run.t-run.blinkAt<4/6) f=Math.floor((run.t-run.blinkAt)*6); }
+    const cw=img.width/4, ch=img.height, sc=0.57;
+    ctx.save(); ctx.translate(c.x+ox,c.y+oy); if(dir<0) ctx.scale(-1,1);
+    ctx.fillStyle='rgba(0,0,0,.12)'; ctx.beginPath(); ctx.ellipse(0,-4,26,7,0,0,TAU); ctx.fill();
+    ctx.drawImage(img,f*cw,0,cw,ch,-64*sc,-180*sc,cw*sc,ch*sc); ctx.restore(); }
   if(dsh&&run.decor) for(const d of run.decor){ const cw=dsh.width/4, chh=dsh.height/2, k=d.far?0.5:0.21, x=d.x+ox, y=d.y+oy;
     if(x<-90||x>W+90||y<-60||y>H+140) continue;
     ctx.globalAlpha=d.far?0.65:1; ctx.drawImage(dsh,(d.f%4)*cw,(d.f>>2)*chh,cw,chh,x-128*k,y-480*k,256*k,512*k); }
@@ -1274,14 +1319,26 @@ function render(){ const inPlay=(screen==='play');
       ctx.fillStyle=pal.accent; for(let sx=0;sx<w-1;sx+=18){ ctx.beginPath(); ctx.arc(x+sx+9,y+h,9,0,Math.PI); ctx.fill(); } // scalloped hem
       ctx.fillStyle='rgba(110,64,36,.55)'; ctx.fillRect(x,y-2,w,3); }                   // top rail
     else { const facing=run.facings[c.__fi]!==undefined?run.facings[c.__fi]:c[4];
+      const ust=A('umb_states');
+      if(ust&&WORLD_FIT.umb){ const gu=run.wind&&run.wind.gust?Math.abs(Math.sin(run.t*TAU/run.wind.gust.period)):0;
+        let dd=run.az-facing; dd=Math.atan2(Math.sin(dd),Math.cos(dd));
+        const st=gu>0.75?3:(dd>0.35?0:(dd<-0.35?2:1)), cs=WORLD_FIT.umb[0], k=(c[3]*1.08)/WORLD_FIT.umb[1];
+        ctx.save(); ctx.translate(c[1]+ox,c[2]+oy); ctx.rotate(facing+Math.PI/2);   // her pole runs away from the sun
+        ctx.drawImage(ust,(st%2)*cs,Math.floor(st/2)*cs,cs,cs,-cs/2*k,-cs/2*k,cs*k,cs*k); ctx.restore(); continue; }
       if(umA){ ctx.save(); ctx.translate(c[1]+ox,c[2]+oy); ctx.rotate(facing); const R=c[3]*1.08; ctx.drawImage(umA,-R,-R,R*2,R*2); ctx.restore(); continue; }
       ctx.save(); ctx.translate(c[1]+ox,c[2]+oy); ctx.rotate(facing);
       const ug=ctx.createRadialGradient(0,-c[3]*0.2,2,0,0,c[3]); ug.addColorStop(0,'#ff8a5c'); ug.addColorStop(1,pal.accent);
       ctx.fillStyle=ug; ctx.beginPath(); ctx.arc(0,0,c[3],0,TAU); ctx.fill();
       ctx.strokeStyle='rgba(0,0,0,.2)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(-c[3],0); ctx.lineTo(c[3],0); ctx.stroke(); ctx.restore(); } }
   // wilting awnings (visibly closing)
-  const awSo=A('awning_solid');
+  const awSo=A('awning_solid'), wsh=A('wilt_solid');
   for(const wlt of run.wilts){ const open=wlt.closed?0.15:clamp(1-wlt.campT/(wlt.camp||3),0.3,1);
+    // her states by the engine's camp clock: healthy, drooping, sagging while it climbs; collapsed only once closed
+    // (the engine has taken its shade away); the canvas pinned to the caster's top left by her healthy canopy
+    if(wsh&&WORLD_FIT.wilt){ const rr=wlt.campT/(wlt.camp||3), st=wlt.closed?3:(rr<0.25?0:(rr<0.6?1:2)), F=WORLD_FIT.wilt;
+      const sx=wlt.w/(F[2]-F[0]), sy=wlt.d/(F[3]-F[1]);
+      if(st<3){ ctx.fillStyle='rgba(0,0,0,.10)'; ctx.fillRect(wlt.x+ox+3,wlt.y+oy+wlt.d,wlt.w,5); }
+      ctx.drawImage(wsh,(st%2)*F[4],Math.floor(st/2)*F[5],F[4],F[5],wlt.x+ox-F[0]*sx,wlt.y+oy-F[1]*sy,F[4]*sx,F[5]*sy); continue; }   // her four states on one rail
     if(awSo){ const w=wlt.w*open; ctx.globalAlpha=0.5+0.5*open; ctx.drawImage(awSo,wlt.x+ox+(wlt.w-w)/2,wlt.y+oy,w,wlt.d); ctx.globalAlpha=1; continue; }
     ctx.fillStyle=`rgba(120,160,90,${0.5+0.5*open})`; const w=wlt.w*open;
     ctx.fillRect(wlt.x+ox+(wlt.w-w)/2,wlt.y+oy,w,wlt.d);
@@ -1340,9 +1397,19 @@ function render(){ const inPlay=(screen==='play');
   else { ctx.strokeStyle='#23314a'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(ex,ey+30); ctx.lineTo(ex,ey-46); ctx.stroke();
     ctx.fillStyle='#4fb56a'; ctx.beginPath(); ctx.moveTo(ex,ey-46); ctx.lineTo(ex+34,ey-32); ctx.lineTo(ex,ey-18); ctx.fill(); }
 
-  // angry sun lunge zone
-  if(run.lunge && run.lunge.state!=='idle'){ const lg=run.lunge; const x=lg.zx+ox,y=lg.zy+oy;
-    if(lg.state==='warn'){ ctx.strokeStyle='rgba(255,60,40,.8)'; ctx.lineWidth=4; ctx.setLineDash([6,6]); ctx.beginPath(); ctx.arc(x,y,lg.reach,0,TAU); ctx.stroke(); ctx.setLineDash([]); }
+  // the dark window: her slate ring round him, an availability cue only (never a safe pool), closing as the window does
+  const rsf=A('ring_safe');
+  if(run.dark&&run.darkT>0&&rsf&&WORLD_FIT.safe_window){ const cyc=run.dark.period+run.dark.dur, pd=((run.dark.timer%cyc)-run.dark.period)/run.dark.dur;
+    const f=save.settings.reduce?0:clamp(Math.floor(pd*4),0,3), k=(P.r*3)/WORLD_FIT.safe_window;
+    ctx.drawImage(rsf,f*256,0,256,256,P.x+ox-128*k,P.y+oy-128*k,256*k,256*k); }
+  // angry sun lunge zone: her broken ring at the zone's real reach, closing over the engine's own warning; her lane
+  // from the sun's marker to the zone, turned to that bearing
+  if(run.lunge && run.lunge.state!=='idle'){ const lg=run.lunge; const x=lg.zx+ox,y=lg.zy+oy, rb=A('ring_boss');
+    if(lg.state==='warn'&&rb&&WORLD_FIT.boss_telegraph){ const ph=lg.timer%lg.period, f=save.settings.reduce?0:clamp(Math.floor(ph/lg.warn*4),0,3), k=lg.reach/WORLD_FIT.boss_telegraph;
+      ctx.drawImage(rb,f*256,0,256,256,x-128*k,y-128*k,256*k,256*k);
+      const ln=A('lane'); if(ln){ const sp=sunXY(), ang=Math.atan2(y-sp.y,x-sp.x), d0=58+39, lw=78, lh=lw*ln.height/ln.width;   // just off the sun's disc, toward the zone
+        ctx.save(); ctx.translate(sp.x+Math.cos(ang)*d0,sp.y+Math.sin(ang)*d0); ctx.rotate(ang); ctx.globalAlpha=0.9; ctx.drawImage(ln,-lw/2,-lh/2,lw,lh); ctx.restore(); } }
+    else if(lg.state==='warn'){ ctx.strokeStyle='rgba(255,60,40,.8)'; ctx.lineWidth=4; ctx.setLineDash([6,6]); ctx.beginPath(); ctx.arc(x,y,lg.reach,0,TAU); ctx.stroke(); ctx.setLineDash([]); }
     else { const rg=ctx.createRadialGradient(x,y,0,x,y,lg.reach); rg.addColorStop(0,'rgba(255,120,40,.7)'); rg.addColorStop(1,'rgba(255,40,20,0)');
       ctx.fillStyle=rg; ctx.beginPath(); ctx.arc(x,y,lg.reach,0,TAU); ctx.fill(); } }
 
@@ -1403,6 +1470,9 @@ function render(){ const inPlay=(screen==='play');
 /* TM HERO SOCKETS (lucid-winds tools/tomato-man-tests/astra_in.py writes this line) */
 const HAT_ANCHOR={"s":[[128,41],[128,41],[128,41],[129,41],[128,42],[128,56],[129,61],[129,39]],"se":[[131,40],[133,44],[134,48],[136,52],[136,54],[141,63],[153,64],[137,43]],"e":[[129,46],[129,46],[129,46],[129,46],[129,46],[140,60],[156,65],[133,39]],"ne":[[129,42],[129,43],[135,46],[136,46],[136,47],[144,58],[157,51],[135,40]],"n":[[129,51],[129,51],[129,51],[130,51],[129,52],[130,63],[131,46],[129,40]],"victory":[[128,51],[128,51],[128,50],[128,51]],"respawn":[[128,114],[128,72],[128,51],[128,49]],"cooling":[[128,66],[128,56],[128,55],[128,47]],"shade_drop":[[128,49],[128,49],[128,51],[128,50]]};
 /* /TM HERO SOCKETS */
+/* TM WORLD FITS (lucid-winds tools/tomato-man-tests/astra_in.py writes this line) */
+const WORLD_FIT={"wilt":[1,0,652,144,664,163],"umb":[384,144.5],"sunK":1.1,"boss_telegraph":114.0,"safe_window":114.0};
+/* /TM WORLD FITS */
 const HERO_B=['e','se','s','sw','w','nw','n','ne'], HERO_SRC={s:'s',se:'se',e:'e',ne:'ne',n:'n',sw:'se',w:'e',nw:'ne'};
 const HERO_FLIP={sw:1,w:1,nw:1}, HAT_DIR={s:'s',se:'e',e:'e',ne:'n',n:'n',nw:'n',w:'w',sw:'w'}, HAT_COL={s:0,e:1,n:2,w:3};
 const heroTmp=document.createElement('canvas'); heroTmp.width=heroTmp.height=128; const heroTx=heroTmp.getContext('2d');
@@ -1545,21 +1615,28 @@ function drawHatExtra(g,cx,cy,hr,kind,hc){ g.save(); g.translate(cx,cy); const u
     g.strokeStyle=hc; g.lineWidth=2.4; g.beginPath(); g.ellipse(0,-20,9,3.4,0,0,TAU); g.stroke(); }
   g.restore(); }
 const EXTRA_HATS=['shell','cone','shades','gem','eclipse'];
-function sunToken(lunge){ const m=46,angry=lunge&&lunge.state!=='idle';
+function sunXY(){ const m=46; return {x:clamp(W/2+Math.cos(run.az)*(W/2-m),m,W-m), y:clamp(H/2+Math.sin(run.az)*(H/2-m),m,H-m)}; }
+function sunToken(lunge){ const m=46,angry=lunge&&lunge.state!=='idle'; let fc=-1;
   const x=clamp(W/2+Math.cos(run.az)*(W/2-m),m,W-m),y=clamp(H/2+Math.sin(run.az)*(H/2-m),m,H-m);
   /* her sun (step 3): the face disc with its rays turning apart from it; in the Eclipse world the Angry Sun in her four
      states (glare, wind up while it warns, the lunge, panting after); the disc turns slowly to look at him (DECISION 5) */
   let face=A('sun'), rays=A('sun_rays');
   if(lunge){ const ph=lunge.timer%lunge.period, pant=lunge.state==='idle'&&ph-(lunge.warn+lunge.dur)<1.2;
     const k=lunge.state==='warn'?'angry_wind_up':(lunge.state==='strike'?'angry_lunge':(pant?'angry_panting':'angry_glare'));
-    if(A(k)){ face=A(k); rays=null; } }
+    const shk=lunge.state==='warn'?'sun_wind_up':(lunge.state==='strike'?'sun_lunge':(pant?'sun_recovery':null));
+    if(shk&&A(shk)){ const end=lunge.warn+lunge.dur, tt=lunge.state==='warn'?ph:(lunge.state==='strike'?ph-lunge.warn:ph-end);
+      face=A(shk); rays=null; fc=save.settings.reduce?3:clamp(Math.floor(tt*(lunge.state==='strike'?12:8)),0,3); }
+    else if(A(k)){ face=A(k); rays=null; } }
   if(face){ const R=lunge?(angry?42:34):27;   // a marker at the edge, not a set piece: it must not crowd his ground
     if(run.darkT>0&&A('corona')){ ctx.drawImage(A('corona'),x-R*2.1,y-R*2.1,R*4.2,R*4.2); }
     if(rays&&!save.settings.reduce){ ctx.save(); ctx.translate(x,y); ctx.rotate(nowT*0.3); ctx.drawImage(rays,-R*1.4,-R*1.4,R*2.8,R*2.8); ctx.restore(); }
     else if(rays){ ctx.drawImage(rays,x-R*1.4,y-R*1.4,R*2.8,R*2.8); }
     let want=Math.atan2((P.y-cam.y)-y,(P.x-cam.x)-x)-Math.PI/2; want=Math.atan2(Math.sin(want),Math.cos(want)); want=clamp(want,-0.45,0.45);
     run.sunLook=save.settings.reduce?0:lerp(run.sunLook||0,want,0.04);
-    ctx.save(); ctx.translate(x,y); ctx.rotate(run.sunLook); ctx.drawImage(face,-R,-R,R*2,R*2); ctx.restore(); return; }
+    ctx.save(); ctx.translate(x,y); ctx.rotate(run.sunLook);
+    if(fc>=0){ const cw=face.width/4, Rs=R*(WORLD_FIT.sunK||1); ctx.drawImage(face,fc*cw,0,cw,face.height,-Rs,-Rs,Rs*2,Rs*2); }   // her v2 sheet, the same disc size
+    else ctx.drawImage(face,-R,-R,R*2,R*2);
+    ctx.restore(); return; }
   // radiant halo
   const gr=ctx.createRadialGradient(x,y,4,x,y,angry?74:58);
   gr.addColorStop(0,angry?'rgba(255,120,50,.6)':'rgba(255,222,120,.55)'); gr.addColorStop(1,'rgba(255,200,90,0)');

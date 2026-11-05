@@ -139,6 +139,74 @@
   .htCard .ht{font-weight:900;font-size:15px;margin-bottom:1px;}
   .htCard .hb{font-weight:600;font-size:13px;opacity:.82;line-height:1.4;}
   #howto .htHero{font-size:14px;opacity:.9;max-width:420px;line-height:1.5;margin:2px auto 10px;}
+  /* ===== SUNSTRUCK (step 5): every screen in pale daylight paper with ink text and Astra's frames, so the game looks
+     like its thumbnail and not like a night menu; the shade blue, the tomato red and the aloe green keep their jobs ===== */
+  :root{ --paper:#f4e8c2; --ink:#2b2a20; --inkSoft:#5c5846; --tomatoR:#d9452a; --calyx:#087b61; --aloeG:#4f9a5c; }
+  .overlay{background:linear-gradient(180deg,#f6ebc8 0%,#e4cf96 100%);color:var(--ink);}
+  #title{background:var(--tm-menu,linear-gradient(180deg,#f6ebc8,#e4cf96)) center/cover no-repeat;justify-content:space-between;}
+  h1.logo{margin:4px 0 0;line-height:0;text-shadow:none} h1.logo img{width:min(80vw,330px);height:auto} h1.logo img+.txt{display:none}
+  h1.logo .txt{line-height:.95}
+  .tag{color:var(--ink);background:rgba(255,248,226,.82);border-radius:12px;padding:8px 14px;font-size:15px;max-width:330px;margin:4px auto 0}
+  #title .hintline{display:none}
+  h2.title{color:var(--ink)} .sub2,.hintline,.statline{color:var(--inkSoft);opacity:1}
+  .big-btn{background:var(--tomatoR);color:#fff8ea;box-shadow:0 4px 0 #8f2a17;font-family:'Bree Serif',Georgia,serif;font-weight:400;font-size:20px;min-height:52px}
+  .big-btn:active{box-shadow:0 1px 0 #8f2a17} .big-btn.green{background:var(--calyx);color:#fff8ea;box-shadow:0 4px 0 #04503f}
+  .ghost-btn{background:rgba(255,248,226,.94);color:var(--ink);border:2px solid rgba(43,42,32,.45);min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:16px}
+  .iconbtn{background:rgba(255,248,226,.94);color:var(--ink);border:2px solid rgba(43,42,32,.35);width:48px;height:48px;font-size:22px}
+  .wallet{color:var(--ink);text-shadow:none;border:10px solid transparent;border-image:url(art/ui/aloe_wallet_chip_frame.png?v=20261105a) 28 fill / 10px stretch;padding:0 4px;font-size:16px}
+  .wallet .ic{color:var(--aloeG)}
+  .tab{color:var(--ink);border-color:rgba(43,42,32,.4);background:rgba(255,248,226,.7);min-height:44px} .tab.on{background:var(--tomatoR);color:#fff8ea;border-color:var(--tomatoR)}
+  .toggleRow{background:rgba(255,248,226,.85);color:var(--ink);min-height:52px} .sw{background:rgba(43,42,32,.25)} .sw.on{background:var(--calyx)}
+  /* world postcards: her scene, the name in her band, the finds on a chip */
+  .worldCard{padding:0;border:0;border-radius:12px;min-height:0;aspect-ratio:640/360;background:#efe0b4 center/cover no-repeat;color:var(--ink);
+    box-shadow:0 3px 0 rgba(43,42,32,.22),0 8px 18px rgba(43,42,32,.14);overflow:hidden;text-align:left}
+  .worldCard .wname{position:absolute;left:4%;right:4%;bottom:2.4%;height:11.5%;display:flex;align-items:center;justify-content:space-between;gap:8px;font:400 18px 'Bree Serif',Georgia,serif;white-space:nowrap}
+  .worldCard .wprog{position:static;font:700 13px 'Atkinson Hyperlegible',sans-serif;color:var(--inkSoft)}
+  .worldCard .wchip{position:absolute;left:3%;top:5%;background:rgba(255,248,226,.9);border-radius:10px;padding:3px 9px;font:700 13px 'Atkinson Hyperlegible',sans-serif}
+  .worldCard.locked{filter:grayscale(.6) brightness(.93);cursor:not-allowed}
+  /* level, shop and builder cards: her paper frames */
+  .card{background:none;color:var(--ink);border:12px solid transparent;border-image:url(art/ui/level_card_frame.png?v=20261105a) 28 fill / 12px stretch;border-radius:0;padding:2px 4px 4px}
+  #shopGrid .card,#buildGrid .card{border-image:url(art/ui/shop_card_frame.png?v=20261105a) 28 fill / 12px stretch}
+  .card small{color:var(--inkSoft);opacity:1;font-size:14px;line-height:1.35} .sub2{font-size:15px} .card .price{color:var(--ink);top:2px;right:4px} .card.hascost{padding-right:48px}
+  .card.equipped,.card.owned{box-shadow:0 0 0 3px var(--calyx)} .card.locked,.card.cant{opacity:.55}
+  .card .lname{font:400 16px 'Bree Serif',Georgia,serif}
+  .card .rec{display:flex;align-items:center;gap:4px;color:var(--ink);margin-top:6px;letter-spacing:0}
+  .card .rec .sock{width:22px;height:22px} .card .rec .sock.off{opacity:.25;filter:grayscale(1)}
+  .card .rec .lmedal{width:26px;height:26px;margin-left:4px} .card .rec .lbest{margin-left:auto;font-weight:700;font-size:13px}
+  #builderCanvas{border:14px solid transparent;border-image:url(art/ui/builder_frame_frame.png?v=20261105a) 28 fill / 14px stretch;box-sizing:content-box}
+  /* How to Play: four picture cards first, every rule one tap further */
+  .htQuick{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:420px;margin:6px 0 10px}
+  .htQ{border:12px solid transparent;border-image:url(art/ui/level_card_frame.png?v=20261105a) 28 fill / 12px stretch;padding:4px;text-align:center;font-size:16px;line-height:1.3}
+  .htQ .mk{width:44px;height:44px;display:block;margin:2px auto 6px;color:var(--ink)}
+  .htCard{background:rgba(255,248,226,.85);border-color:rgba(43,42,32,.18);color:var(--ink)} .htCard .hb{opacity:1;color:var(--inkSoft)}
+  .htCard .hi .mk{width:26px;height:26px}
+  /* the coach, the toast and the win in her paper */
+  #coach{background:none;border:14px solid transparent;border-image:url(art/ui/coach_bubble_frame.png?v=20261105a) 28 fill / 14px stretch;border-radius:0;box-shadow:none;color:var(--ink);font-size:16px;padding:4px 8px}
+  #coach .ic .mk{width:26px;height:26px}
+  #toast{left:50%;right:auto;width:max-content;max-width:88vw;transform:translateX(-50%);font-size:20px;color:var(--ink)!important;text-shadow:none;
+    border:12px solid transparent;border-image:url(art/ui/toast_pill_frame.png?v=20261105a) 28 fill / 12px stretch;padding:2px 10px;letter-spacing:.02em}
+  #toast .tdot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:1px}
+  #winTitle{color:var(--calyx)!important;font-family:'Bree Serif',Georgia,serif;font-weight:400} .medalImg{width:96px;height:96px}
+  .earnLine{color:var(--calyx)}
+  /* the HUD on light sand: ink with a pale edge, her meter, her buttons, the pause mark */
+  #heatWrap .lbl{color:var(--ink);text-shadow:0 1px 0 rgba(255,248,226,.9);font-size:12px;opacity:1}
+  #heatBar{position:relative;height:30px;border:0;border-radius:0;background:url(art/ui/exposure_meter_frame.png?v=20261105a) center/100% 100% no-repeat;overflow:visible}
+  #heatFill{position:absolute;left:3.1%;top:20.8%;width:93.8%!important;height:58.4%;border-radius:2px;background:url(art/ui/exposure_fill.png?v=20261105a) left/100% 100% no-repeat!important;transition:clip-path .05s linear}
+  #heatFill.spf{background:#7fd0ff!important} #heatFill.dark{background:#9fb0ff!important}
+  #topRight{color:var(--ink);text-shadow:0 1px 0 rgba(255,248,226,.95),0 0 6px rgba(255,248,226,.8)}
+  #lvlFlash{color:var(--ink);text-shadow:0 2px 0 rgba(255,248,226,.95),0 0 10px rgba(255,248,226,.9);font-family:'Bree Serif',Georgia,serif;font-weight:400}
+  #lvlFlash small{font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700}
+  #comboTag{text-shadow:0 3px 0 #7a5a00,0 0 8px rgba(43,42,32,.4)}
+  #pauseBtn{width:48px;height:48px;background:rgba(255,248,226,.92);color:var(--ink);border:2px solid rgba(43,42,32,.4);font-size:22px}
+  #btns .btn{position:relative;border:0;background-color:rgba(35,49,74,.5);background-position:center;background-size:100% 100%;background-repeat:no-repeat;color:var(--ink)}
+  #bDash{background-image:url(art/ui/button_dash.svg?v=20261105a)} #bShade{background-image:url(art/ui/button_shade.svg?v=20261105a)}
+  #bScreen{background-image:url(art/ui/button_spf.svg?v=20261105a)} #bIce{background-image:url(art/ui/button_ice.svg?v=20261105a)}
+  #btns .btn .w{position:absolute;left:-10px;right:-10px;bottom:-17px;text-align:center;font-size:11px;font-weight:700;text-shadow:0 1px 0 rgba(255,248,226,.95)}
+  #btns .btn .c{position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;border-radius:11px;background:var(--ink);color:#fff8ea;font-size:12px;display:flex;align-items:center;justify-content:center;opacity:1;margin:0}
+  #btns .btn.empty{opacity:1} #btns .btn.empty::after{content:'';position:absolute;inset:0;background:url(art/ui/disabled_overlay.svg?v=20261105a) center/100% 100% no-repeat;pointer-events:none}
+  #bDash::before{content:'';position:absolute;inset:8%;border-radius:50%;background:conic-gradient(rgba(43,42,32,.5) calc(var(--cd,0)*360deg),transparent 0);pointer-events:none}
+  #bDash.stock{box-shadow:0 0 0 4px rgba(127,208,255,.85)}
+
 </style>
 <link rel="canonical" href="https://lucidwinds.com/satellites/tomato-man/">
 </head>
@@ -183,14 +251,14 @@
     <div id="beamRun"><svg class="mk" aria-hidden="true"><use href="#tm-aloe"/></svg> <span id="beamRunN">0</span></div>
     <div id="deathT" style="opacity:.8">burns 0</div>
   </div>
-  <div id="pauseBtn">II</div>
+  <div id="pauseBtn" role="button" aria-label="Pause"><svg class="mk" aria-hidden="true"><use href="#tm-pause"/></svg></div>
   <div id="comboTag"></div>
   <div id="lvlFlash" class="panel"></div>
   <div id="btns">
-    <div id="bIce" class="btn hidden">ICE<span class="c" id="cIce">0</span></div>
-    <div id="bScreen" class="btn">SPF<span class="c" id="cScreen">0</span></div>
-    <div id="bShade" class="btn">SHADE<span class="c" id="cShade">0</span></div>
-    <div id="bDash" class="btn">DASH</div>
+    <div id="bIce" class="btn hidden" role="button" aria-label="Ice"><span class="w">ICE</span><span class="c" id="cIce">0</span></div>
+    <div id="bScreen" class="btn" role="button" aria-label="SPF"><span class="w">SPF</span><span class="c" id="cScreen">0</span></div>
+    <div id="bShade" class="btn" role="button" aria-label="Shade"><span class="w">SHADE</span><span class="c" id="cShade">0</span></div>
+    <div id="bDash" class="btn" role="button" aria-label="Dash"><span class="w">DASH</span></div>
   </div>
 </div>
 <div id="toast"></div>
@@ -198,8 +266,8 @@
 
 <!-- ===== TITLE ===== -->
 <div id="title" class="overlay center show">
-  <h1 class="logo">TOMATO<span class="two">MAN</span></h1>
-  <div class="tag">The sun is death. Shade is the only ground. Sweep through the shadows, gather the aloe, beat the heat, and don't get burned.</div>
+  <h1 class="logo"><img src="art/ui/logo_on_sand.svg?v=20261105a" alt="Tomato Man" onerror="this.remove()"><span class="txt">TOMATO<span class="two">MAN</span></span></h1>
+  <div class="tag">The sun is death. Shade is the only ground, and it moves.</div>
   <div class="menuCol">
     <button class="big-btn green" id="tPlay">PLAY</button>
     <button class="ghost-btn" id="tDaily"><svg class="mk" aria-hidden="true"><use href="#tm-daily"/></svg> Daily Challenge</button>
@@ -217,7 +285,7 @@
 
 <!-- ===== WORLD MAP ===== -->
 <div id="map" class="overlay">
-  <div class="backRow"><div class="iconbtn" id="mapBack">‹</div></div>
+  <div class="backRow"><div class="iconbtn" id="mapBack" role="button" aria-label="Back"><svg class="mk" aria-hidden="true"><use href="#tm-back"/></svg></div></div>
   <h2 class="title">Choose a World</h2>
   <div class="sub2">Clear levels to unlock the next world.</div>
   <div class="menuCol" id="worldList" style="max-width:380px"></div>
@@ -226,7 +294,7 @@
 
 <!-- ===== LEVEL SELECT ===== -->
 <div id="levels" class="overlay">
-  <div class="backRow"><div class="iconbtn" id="lvlBack">‹</div></div>
+  <div class="backRow"><div class="iconbtn" id="lvlBack" role="button" aria-label="Back"><svg class="mk" aria-hidden="true"><use href="#tm-back"/></svg></div></div>
   <h2 class="title" id="lvlWorldName">World</h2>
   <div class="sub2" id="lvlWorldSub"></div>
   <div class="grid" id="lvlGrid"></div>
@@ -259,7 +327,7 @@
 
 <!-- ===== SHOP ===== -->
 <div id="shop" class="overlay">
-  <div class="backRow"><div class="iconbtn" id="shopBack">‹</div></div>
+  <div class="backRow"><div class="iconbtn" id="shopBack" role="button" aria-label="Back"><svg class="mk" aria-hidden="true"><use href="#tm-back"/></svg></div></div>
   <h2 class="title"><svg class="mk" aria-hidden="true"><use href="#tm-aloe"/></svg> Aloe Shop</h2>
   <div class="sub2" id="shopWallet">0 aloe</div>
   <div class="tabs">
@@ -273,7 +341,7 @@
 
 <!-- ===== CHARACTER BUILDER ===== -->
 <div id="builder" class="overlay">
-  <div class="backRow"><div class="iconbtn" id="buildBack">‹</div></div>
+  <div class="backRow"><div class="iconbtn" id="buildBack" role="button" aria-label="Back"><svg class="mk" aria-hidden="true"><use href="#tm-back"/></svg></div></div>
   <h2 class="title">Build Your Tomato Man</h2>
   <canvas id="builderCanvas" width="360" height="560"></canvas>
   <div class="tabs">
@@ -287,7 +355,7 @@
 
 <!-- ===== SETTINGS ===== -->
 <div id="settings" class="overlay center">
-  <div class="backRow"><div class="iconbtn" id="setBack">‹</div></div>
+  <div class="backRow"><div class="iconbtn" id="setBack" role="button" aria-label="Back"><svg class="mk" aria-hidden="true"><use href="#tm-back"/></svg></div></div>
   <h2 class="title">Settings</h2>
   <div class="toggleRow">Sound FX <div class="sw on" id="swSfx"><div class="k"></div></div></div>
   <div class="toggleRow">Music <div class="sw on" id="swMusic"><div class="k"></div></div></div>
@@ -298,10 +366,11 @@
 
 <!-- ===== HOW TO PLAY ===== -->
 <div id="howto" class="overlay">
-  <div class="backRow"><div class="iconbtn" id="howBack">‹</div></div>
+  <div class="backRow"><div class="iconbtn" id="howBack" role="button" aria-label="Back"><svg class="mk" aria-hidden="true"><use href="#tm-back"/></svg></div></div>
   <h2 class="title">How to Play</h2>
-  <div class="htHero">You're <b>Tomato Man</b>. Direct sun cooks you in about a second, so <b>shade is the only safe ground, and it slides as the sun sweeps the sky.</b> Ride the moving shadows up to the green flag.</div>
-  <div class="htList" id="htList"></div>
+  <div class="htQuick" id="htQuick"></div>
+  <button class="ghost-btn" id="htMore">Every rule</button>
+  <div class="htList" id="htList" hidden></div>
   <button class="big-btn green" id="howPlay" style="margin-top:14px;max-width:320px">Got it, play</button>
   <div class="pad"></div>
 </div>
@@ -485,7 +554,8 @@ const ASSET_LAZY={
 };
 const ASSETS={};
 function loadOne(k,path){ if(k in ASSETS) return; ASSETS[k]=null; const img=new Image();
-  img.onload=()=>{ ASSETS[k]=img; if(screen==='builder'&&typeof drawBuilderPreview==='function') drawBuilderPreview(); };
+  img.onload=()=>{ ASSETS[k]=img; if(screen==='builder'&&typeof drawBuilderPreview==='function') drawBuilderPreview();
+    if(k==='menu') document.documentElement.style.setProperty('--tm-menu','url("'+img.src+'")'); };
   img.onerror=()=>{ ASSETS[k]=null; }; img.src=path+'?v='+ART_V; }
 /* the equipped produce and hat for play, and everything the builder shows */
 function needLook(){ const b=save.cosmetics.body, h=save.cosmetics.hat; if(b!=='tomato') need('body_'+b); if(h!=='none') need('hat_'+h); }
@@ -815,7 +885,8 @@ function scatterDecor(L){ const seed=((L.casters||[]).length*7919+Math.round(L.w
 function fxAt(k,x,y,size,dur){ if(save.settings.reduce||!A(k)) return; run.fx.push({k,x,y,size,dur,t:0}); }
 function flash(L){ const f=$('lvlFlash'); f.innerHTML=`${L.name}<small>${L.sub}</small>`;
   f.style.opacity='1'; clearTimeout(flash._t); flash._t=setTimeout(()=>f.style.opacity='0',2100); }
-function toast(msg,col){ const t=$('toast'); t.innerHTML=msg;   // internal strings only; may carry a mark t.style.color=col||'var(--tomato)';
+/* the toast: her pill, ink text, a dot in the call's colour (internal strings only, they may carry a mark) */
+function toast(msg,col){ const t=$('toast'); t.innerHTML=`<span class="tdot" style="background:${col||'var(--tomato)'}"></span>`+msg;
   t.style.transition='none'; t.style.opacity='1'; requestAnimationFrame(()=>{ t.style.transition='opacity .7s'; t.style.opacity='0'; }); }
 function showCombo(n){ const c=$('comboTag'); c.textContent='x'+n+' COMBO'; c.style.transition='none'; c.style.opacity='1';
   requestAnimationFrame(()=>{ c.style.transition='opacity .6s'; c.style.opacity='0'; }); }
@@ -991,8 +1062,8 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
   checkTut(dt);
 }
 function updateHUD(onHot){ const f=run.feel;
-  $('heatFill').style.width=P.exp+'%';
-  $('heatFill').style.background=run.screenT>0?'#7fd0ff':(run.darkT>0?'#9fb0ff':skin(P.exp/100));
+  const hf=$('heatFill'); hf.style.clipPath='inset(0 '+(100-P.exp).toFixed(1)+'% 0 0)'; hf.style.webkitClipPath=hf.style.clipPath;
+  hf.className=run.screenT>0?'spf':(run.darkT>0?'dark':'');
   $('heatLbl').textContent=run.graceT>0?'get ready…':(run.screenT>0?'SPF active':(run.darkT>0?'eclipse':(run.slowT>0?'ICE · time slow':(onHot?'HOT SAND':'Exposure'))));
   $('timeT').textContent=run.t.toFixed(1);
   if(run.findId){ const bt=save.best[run.findId]; $('bestT').style.display=''; $('bestT').textContent=bt?('best '+bt.toFixed(1)+'s'):'best · ';
@@ -1002,7 +1073,7 @@ function updateHUD(onHot){ const f=run.feel;
   $('beamRunN').textContent=run.beamsGot;
   $('deathT').textContent='burns '+run.deaths;
   const frac=P.dashCd>0?P.dashCd/f.dashCd:0;
-  $('bDash').style.background=(P.dashStock>0)?'rgba(120,200,255,.7)':(P.dashCd>0?`conic-gradient(rgba(35,49,74,.7) ${frac*360}deg, rgba(232,93,60,.6) 0)`:'rgba(232,93,60,.6)');
+  const bd=$('bDash'); bd.style.setProperty('--cd',frac.toFixed(3)); bd.classList.toggle('stock',P.dashStock>0);
 }
 function burn(){ if(run.coolerBox){ run.coolerBox=false; P.exp=0; P.vx=0;P.vy=0; run.screenT=Math.max(run.screenT,1.2);
     run.spawnAt=run.t; toast('COOLER BOX','#9fe0a0'); SFX.spf(); return; } // revive in place, keep combo
@@ -1228,7 +1299,10 @@ function render(){ const inPlay=(screen==='play');
     ctx.restore(); }
 
   // joystick
-  if(stick.active){ ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(stick.ox,stick.oy,stick.max,0,TAU); ctx.stroke();
+  const jsB=A('stick_base'), jsT=A('stick_thumb');
+  if(stick.active&&jsB&&jsT){ const R=stick.max+10; ctx.globalAlpha=0.9; ctx.drawImage(jsB,stick.ox-R,stick.oy-R,R*2,R*2);   // her stick
+    ctx.drawImage(jsT,stick.ox+stick.dx-30,stick.oy+stick.dy-30,60,60); ctx.globalAlpha=1; }
+  else if(stick.active){ ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(stick.ox,stick.oy,stick.max,0,TAU); ctx.stroke();
     ctx.fillStyle='rgba(255,255,255,.35)'; ctx.beginPath(); ctx.arc(stick.ox+stick.dx,stick.oy+stick.dy,25,0,TAU); ctx.fill(); }
 
   // dark eclipse overlay
@@ -1445,15 +1519,17 @@ function worldUnlocked(w){ if(w===0) return true; const prev=levelsOfWorld(w-1);
 function unlockedLevel(i){ const L=LEVELS[i]; const wl=levelsOfWorld(L.world); const pos=wl.findIndex(o=>o.i===i);
   if(!worldUnlocked(L.world)) return false; if(pos===0) return true; const prev=wl[pos-1]; return !!save.stars[levelId(prev.L,prev.i)]; }
 
+const CARD_SRC=['art/worlds/morning_tide/card.webp','art/worlds/midday_blaze/card.webp','art/worlds/tide_pools/card.webp','art/worlds/dunes_at_dusk/card.webp','art/worlds/eclipse/card.webp'];
+const SOCK={shell:'art/ui/progress_shell.png',cone:'art/ui/progress_cone.png',gem:'art/ui/progress_gem.png'};
 function buildWorldMap(){ const list=$('worldList'); list.innerHTML='';
   WORLDS.forEach((w,wi)=>{ const unlocked=worldUnlocked(wi); const lv=levelsOfWorld(wi);
     const cleared=lv.filter(o=>save.stars[levelId(o.L,o.i)]).length; const stars=lv.reduce((a,o)=>a+(save.stars[levelId(o.L,o.i)]||0),0);
     const em=mk(collectOf(wi).kind); const fTot=lv.reduce((a,o)=>a+((o.L.finds||[]).length),0);
     const fGot=lv.reduce((a,o)=>{ const arr=save.finds[levelId(o.L,o.i)]||[]; return a+arr.filter(Boolean).length; },0);
     const done100=unlocked&&worldFindsComplete(wi);
-    const c=document.createElement('div'); c.className='worldCard'+(unlocked?'':' locked');
-    c.style.background=`linear-gradient(120deg,${w.pal.sky1},${w.pal.accent}55)`;
-    c.innerHTML=`${wi+1}. ${w.name}<span class="wsub">${w.sub}${unlocked?`  ·  ${em} ${fGot}/${fTot}${done100?', hat earned':''}`:''}</span><span class="wprog">${unlocked?(cleared+'/'+lv.length+' '+mk('check')+'  '+mk('star')+stars):mk('lock')+' locked'}</span>`;
+    const c=document.createElement('div'); c.className='worldCard'+(unlocked?'':' locked'); c.title=w.sub;
+    c.style.backgroundImage=`url(${CARD_SRC[wi]}?v=${ART_V})`;      // her postcard; the name rides in her band
+    c.innerHTML=`<span class="wchip">${unlocked?`${em} ${fGot}/${fTot}${done100?', hat earned':''}`:mk('lock')+' Locked'}</span><span class="wname"><span>${w.name}</span><span class="wprog">${unlocked?(cleared+'/'+lv.length+' cleared · '+stars+' '+mk('star')):'clear a level in '+(wi>0?WORLDS[wi-1].name:'')}</span></span>`;
     if(unlocked) c.addEventListener('click',()=>{SFX.click();openWorld(wi);});
     list.appendChild(c); }); }
 let curWorld=0;
@@ -1461,9 +1537,10 @@ function openWorld(wi){ curWorld=wi; $('lvlWorldName').textContent=WORLDS[wi].na
   const grid=$('lvlGrid'); grid.innerHTML='';
   levelsOfWorld(wi).forEach(o=>{ const i=o.i,L=o.L; const id=levelId(L,i); const st=save.stars[id]||0; const unlocked=unlockedLevel(i);
     const b=document.createElement('div'); b.className='card'+(unlocked?'':' locked');
-    const stars=st?mk('star').repeat(st)+'<span style="opacity:.3">'+mk('star').repeat(3-st)+'</span>':'';
-    const fc=levelFindCount(id,L); const findStr=fc.total?`  ·  ${mk(collectOf(L.world).kind)} ${fc.have}/${fc.total}${fc.have===fc.total?' '+mk('check'):''}`:'';
-    b.innerHTML=`${L.name}<small>${L.sub}</small>${unlocked?`<div class="rec">${st?stars:'Play'}${save.best[id]?'  ·  '+save.best[id].toFixed(1)+'s':''}${findStr}</div>`:'<div class="rec">'+mk('lock')+' clear previous</div>'}`;
+    const kind=collectOf(L.world).kind, got=save.finds[id]||[], nF=(L.finds||[]).length;
+    const socks=Array.from({length:nF},(_,k)=>`<img class="sock${got[k]?'':' off'}" src="${SOCK[kind]}?v=${ART_V}" alt="">`).join('');
+    const md=['','bronze','silver','gold'][st]||'', medal=md?`<img class="lmedal" src="${MEDAL[md]}?v=${ART_V}" alt="${md} medal">`:'';
+    b.innerHTML=`<span class="lname">${L.name}</span><small>${L.sub}</small>${unlocked?`<div class="rec">${socks}${medal}<span class="lbest">${save.best[id]?save.best[id].toFixed(1)+'s':'Play'}</span></div>`:'<div class="rec">'+mk('lock')+' clear the one before</div>'}`;
     if(unlocked) b.addEventListener('click',()=>{SFX.click();startLevel(i);});
     grid.appendChild(o.b=b); });
   showScreen('levels'); }
@@ -1548,7 +1625,11 @@ const HOWTO=[
   {i:'shade',t:'Clouds & carts',b:'Cloud and cart shadows drift across the map. Step aboard and let them ferry you over the bright gaps.'},
   {i:'sun',t:'Late game trouble',b:'Striped awnings wilt if you camp under them; the Angry Sun lunges where you’re standing (move when it flashes); an eclipse makes everything dark and safe for a moment, so fly.'},
 ];
-function buildHowto(){ save.seenHowto=true; persist(); const l=$('htList'); if(!l) return; l.innerHTML='';
+const HOWTO_QUICK=[{i:'sun',b:'The sun burns you. Stay out of it.'},{i:'shade',b:'Shade is safe ground, and it moves with the sun.'},
+  {i:'move',b:'Drag your left thumb to walk.'},{i:'dash',b:'Tap DASH to cross a thin strip of sun fast.'}];
+function buildHowto(){ save.seenHowto=true; persist(); const q=$('htQuick');
+  if(q){ q.innerHTML=HOWTO_QUICK.map(c=>`<div class="htQ">${mk(c.i)}${c.b}</div>`).join(''); }
+  const l=$('htList'); if(!l) return; l.innerHTML=''; l.hidden=true; const more=$('htMore'); if(more){ more.style.display=''; more.onclick=()=>{ SFX.click(); l.hidden=false; more.style.display='none'; }; }
   HOWTO.forEach(c=>{ const d=document.createElement('div'); d.className='htCard';
     d.innerHTML=`<div class="hi">${mk(c.i)}</div><div><div class="ht">${c.t}</div><div class="hb">${c.b}</div></div>`; l.appendChild(d); }); }
 

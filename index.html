@@ -470,11 +470,11 @@ const ASSET_PATHS={
 };
 /* loaded on demand: each world's ground, horizon, decor sheet and key art; the Angry Sun; the share frames */
 const ASSET_LAZY={
-  ground_morning_tide:'art/worlds/morning_tide/ground.webp', horizon_morning_tide:'art/worlds/morning_tide/horizon.webp', decor_morning_tide:'art/worlds/morning_tide/decor.webp', key_morning_tide:'art/worlds/morning_tide/key_art.webp',
-  ground_midday_blaze:'art/worlds/midday_blaze/ground.webp', horizon_midday_blaze:'art/worlds/midday_blaze/horizon.webp', decor_midday_blaze:'art/worlds/midday_blaze/decor.webp', key_midday_blaze:'art/worlds/midday_blaze/key_art.webp',
-  ground_tide_pools:'art/worlds/tide_pools/ground.webp', horizon_tide_pools:'art/worlds/tide_pools/horizon.webp', decor_tide_pools:'art/worlds/tide_pools/decor.webp', key_tide_pools:'art/worlds/tide_pools/key_art.webp',
-  ground_dunes_at_dusk:'art/worlds/dunes_at_dusk/ground.webp', horizon_dunes_at_dusk:'art/worlds/dunes_at_dusk/horizon.webp', decor_dunes_at_dusk:'art/worlds/dunes_at_dusk/decor.webp', key_dunes_at_dusk:'art/worlds/dunes_at_dusk/key_art.webp',
-  ground_eclipse:'art/worlds/eclipse/ground.webp', horizon_eclipse:'art/worlds/eclipse/horizon.webp', decor_eclipse:'art/worlds/eclipse/decor.webp', key_eclipse:'art/worlds/eclipse/key_art.webp',
+  ground_morning_tide:'art/worlds/morning_tide/ground.webp', decor_morning_tide:'art/worlds/morning_tide/decor.webp', key_morning_tide:'art/worlds/morning_tide/key_art.webp',
+  ground_midday_blaze:'art/worlds/midday_blaze/ground.webp', decor_midday_blaze:'art/worlds/midday_blaze/decor.webp', key_midday_blaze:'art/worlds/midday_blaze/key_art.webp',
+  ground_tide_pools:'art/worlds/tide_pools/ground.webp', decor_tide_pools:'art/worlds/tide_pools/decor.webp', key_tide_pools:'art/worlds/tide_pools/key_art.webp',
+  ground_dunes_at_dusk:'art/worlds/dunes_at_dusk/ground.webp', decor_dunes_at_dusk:'art/worlds/dunes_at_dusk/decor.webp', key_dunes_at_dusk:'art/worlds/dunes_at_dusk/key_art.webp',
+  ground_eclipse:'art/worlds/eclipse/ground.webp', decor_eclipse:'art/worlds/eclipse/decor.webp', key_eclipse:'art/worlds/eclipse/key_art.webp',
   angry_glare:'art/sun/angry_sun_glare.webp', angry_wind_up:'art/sun/angry_sun_wind_up.webp', angry_lunge:'art/sun/angry_sun_lunge.webp',
   angry_panting:'art/sun/angry_sun_panting.webp', corona:'art/sun/eclipse_corona.webp',
   share_result:'art/sharing/result_square.webp', share_daily:'art/sharing/daily_card.webp',
@@ -492,7 +492,7 @@ function needLook(){ const b=save.cosmetics.body, h=save.cosmetics.hat; if(b!=='
 function needBuilder(){ need('bbody'); need('bhead_'+save.cosmetics.body); if(save.cosmetics.hat!=='none') need('bhat_'+save.cosmetics.hat); }
 function loadAssets(){ for(const k in ASSET_PATHS) loadOne(k,ASSET_PATHS[k]); needWorld(0); }
 function need(k){ if(ASSET_LAZY[k]) loadOne(k,ASSET_LAZY[k]); }
-function needWorld(w){ const d=WORLD_DIRS[w%5]; ['ground_','horizon_','decor_','key_'].forEach(p=>need(p+d));
+function needWorld(w){ const d=WORLD_DIRS[w%5]; ['ground_','decor_','key_'].forEach(p=>need(p+d));
   if(w===4){ ['angry_glare','angry_wind_up','angry_lunge','angry_panting','corona'].forEach(need); } }
 const A=k=>ASSETS[k]||null;
 /* one of Astra's one colour marks from the inline sprite, sized by the text around it */
@@ -1028,46 +1028,62 @@ function render(){ const inPlay=(screen==='play');
   if(!inPlay){ ctx.clearRect(0,0,W,H); return; }
   const L=run.L; const _sm=Math.min(20,run.shake*46); const shx=run.shake>0?(Math.random()-0.5)*_sm:0, shy=run.shake>0?(Math.random()-0.5)*_sm:0;
   const ox=-cam.x+shx, oy=-cam.y+shy; const pal=WORLDS[L.world].pal;
-  // sky/ground
-  const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,pal.sand1); g.addColorStop(1,pal.sand2);
-  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-  // world-locked sand ripples (parallax with camera)
-  if(!save.settings.reduce){ ctx.strokeStyle='rgba(120,80,30,.05)'; ctx.lineWidth=6;
+  // the ground (step 3): her world tile, locked to the world, light enough that the shade reads on it
+  const gt=A('ground_'+WORLD_DIRS[L.world]);
+  if(gt){ if(render.gpImg!==gt){ render.gp=ctx.createPattern(gt,'repeat'); render.gpImg=gt; }
+    if(render.gp.setTransform&&window.DOMMatrix) render.gp.setTransform(new DOMMatrix([1,0,0,1,ox,oy]));
+    ctx.fillStyle=render.gp; ctx.fillRect(0,0,W,H); }
+  else { const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,pal.sand1); g.addColorStop(1,pal.sand2); ctx.fillStyle=g; ctx.fillRect(0,0,W,H); }
+  // her far silhouette along the top of the world, a dusty skyline past the flag (decor only, under everything)
+  const far=A('far'); if(far&&oy>-160){ const fh=110, fw=fh*far.width/far.height;
+    if(!render.farC||render.farW!==L.world){ const c2=document.createElement('canvas'); c2.width=far.width; c2.height=far.height; const g2=c2.getContext('2d');
+      g2.drawImage(far,0,0); g2.globalCompositeOperation='source-in'; g2.fillStyle=pal.ink||'#5a4a60'; g2.fillRect(0,0,c2.width,c2.height); render.farC=c2; render.farW=L.world; }
+    ctx.globalAlpha=0.22; for(let fx=ox%fw-fw;fx<W;fx+=fw) ctx.drawImage(render.farC,fx,oy+8,fw,fh); ctx.globalAlpha=1; }
+  // world-locked sand ripples (parallax with camera), only without her tile
+  if(!gt&&!save.settings.reduce){ ctx.strokeStyle='rgba(120,80,30,.05)'; ctx.lineWidth=6;
     for(let y=-((cam.y*0.6)%46);y<H+46;y+=46){ ctx.beginPath();
       for(let x=0;x<=W;x+=40){ const yy=y+Math.sin((x+cam.x*0.6)*0.012)*5; x?ctx.lineTo(x,yy):ctx.moveTo(x,yy); } ctx.stroke(); } }
-  ctx.fillStyle='rgba(90,60,25,.05)';
-  for(let i=0;i<70;i++){ const x=((i*131.7)-cam.x*0.5)%W, y=((i*197.3+i*i*11)-cam.y*0.5)%H; ctx.fillRect((x+W)%W,(y+H)%H,2,2); }
+  if(!gt){ ctx.fillStyle='rgba(90,60,25,.05)';
+    for(let i=0;i<70;i++){ const x=((i*131.7)-cam.x*0.5)%W, y=((i*197.3+i*i*11)-cam.y*0.5)%H; ctx.fillRect((x+W)%W,(y+H)%H,2,2); } }
   // directional sun wash — the ground glows brighter toward the sun
   const gx=W/2+Math.cos(run.az)*W*0.7, gy=H/2+Math.sin(run.az)*H*0.7;
   const gl=ctx.createRadialGradient(gx,gy,0,gx,gy,Math.max(W,H)*1.25);
-  gl.addColorStop(0,'rgba(255,246,190,.34)'); gl.addColorStop(.5,'rgba(255,240,170,.12)'); gl.addColorStop(1,'rgba(255,244,180,0)');
+  gl.addColorStop(0,gt?'rgba(255,246,190,.2)':'rgba(255,246,190,.34)'); gl.addColorStop(.5,'rgba(255,240,170,.08)'); gl.addColorStop(1,'rgba(255,244,180,0)');
   ctx.fillStyle=gl; ctx.fillRect(0,0,W,H);
 
-  // hot sand
-  for(const h of run.hot){ const x=h[0]+ox,y=h[1]+oy,r=h[2];
+  // hot sand: her patch (warm, patterned) with her shimmer crawling over it; the drawn patch without her art
+  const hp=A('hot_patch'), shm=A('shimmer');
+  if(hp) for(const h of run.hot){ const x=h[0]+ox,y=h[1]+oy,r=h[2]; ctx.drawImage(hp,x-r*1.15,y-r*1.15,r*2.3,r*2.3);
+    if(shm&&!save.settings.reduce){ const t=(nowT*0.6+h[0]*0.01)%1; ctx.globalAlpha=0.55*Math.sin(t*Math.PI); ctx.drawImage(shm,x-r,y-r*0.6-t*r*0.8,r*2,r); ctx.globalAlpha=1; } }
+  if(!hp) for(const h of run.hot){ const x=h[0]+ox,y=h[1]+oy,r=h[2];
     ctx.save(); ctx.beginPath(); ctx.arc(x,y,r,0,TAU); ctx.clip();
     ctx.fillStyle='rgba(235,110,40,.5)'; ctx.fillRect(x-r,y-r,r*2,r*2);
     ctx.strokeStyle='rgba(160,50,10,.5)'; ctx.lineWidth=3;
     for(let i=-r;i<r;i+=11){ctx.beginPath();ctx.moveTo(x-r,y+i);ctx.lineTo(x+r,y+i+r);ctx.stroke();} ctx.restore();
     ctx.strokeStyle='rgba(200,70,20,.75)'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(x,y,r,0,TAU); ctx.stroke(); }
 
-  // SHADE (safe ground) via multiply — soft feathered penumbra + cool depth
-  ctx.save(); ctx.globalCompositeOperation='multiply';
-  if(!save.settings.reduce){ ctx.shadowColor='rgba(58,78,120,.85)'; ctx.shadowBlur=15; }
-  ctx.fillStyle='rgba(74,94,134,1)';
-  for(const poly of run.shadePolys){ ctx.beginPath(); poly.forEach((p,i)=>{const sx=p.x+ox,sy=p.y+oy;i?ctx.lineTo(sx,sy):ctx.moveTo(sx,sy);}); ctx.closePath(); ctx.fill(); }
-  for(const e of run.shadeEll){ ctx.save(); ctx.translate(e.cx+ox,e.cy+oy); ctx.rotate(e.ang);
-    ctx.beginPath(); ctx.ellipse(0,0,e.major,e.minor,0,0,TAU); ctx.fill(); ctx.restore(); }
-  ctx.fillStyle='rgba(60,80,120,1)'; for(const p of run.popups){ ctx.beginPath(); ctx.arc(p.x+ox,p.y+oy,p.r,0,TAU); ctx.fill(); }
-  ctx.fillStyle='rgba(80,100,140,1)'; for(const cl of run.clouds){ ctx.beginPath(); ctx.arc(cl.x+ox,cl.y+oy,cl.r,0,TAU); ctx.fill(); }
-  ctx.restore();
-  // cool inner edge glow (reads as a crisp-but-soft shadow lip)
-  ctx.lineWidth=2; ctx.strokeStyle='rgba(40,60,110,.22)';
-  for(const poly of run.shadePolys){ ctx.beginPath(); poly.forEach((p,i)=>{const sx=p.x+ox,sy=p.y+oy;i?ctx.lineTo(sx,sy):ctx.moveTo(sx,sy);}); ctx.closePath(); ctx.stroke(); }
-
-  // popup markers + clouds
-  for(const p of run.popups){ ctx.fillStyle='#3a7bd5'; ctx.beginPath(); ctx.arc(p.x+ox,p.y+oy,7,0,TAU); ctx.fill(); }
-  for(const cl of run.clouds){ ctx.fillStyle='rgba(255,255,255,.85)';
+  // SHADE (step 3): every shadow, dropped pool and cloud shadow drawn ONCE into a mask, then laid down once in her safe
+  // shade (#657E94 at 0.55), so overlaps never stack into black walls and cool always means safe on her light ground
+  if(!render.sc){ render.sc=document.createElement('canvas'); render.sx=render.sc.getContext('2d'); }
+  const sc=render.sc, sx=render.sx;
+  if(sc.width!==cv.width||sc.height!==cv.height){ sc.width=cv.width; sc.height=cv.height; }
+  sx.setTransform(1,0,0,1,0,0); sx.globalCompositeOperation='source-over'; sx.clearRect(0,0,sc.width,sc.height);
+  sx.setTransform(DPR,0,0,DPR,0,0); sx.fillStyle='#000';
+  for(const poly of run.shadePolys){ sx.beginPath(); poly.forEach((p,i)=>{const X=p.x+ox,Y=p.y+oy; i?sx.lineTo(X,Y):sx.moveTo(X,Y);}); sx.closePath(); sx.fill(); }
+  for(const e of run.shadeEll){ sx.save(); sx.translate(e.cx+ox,e.cy+oy); sx.rotate(e.ang); sx.beginPath(); sx.ellipse(0,0,e.major,e.minor,0,0,TAU); sx.fill(); sx.restore(); }
+  for(const p of run.popups){ sx.beginPath(); sx.arc(p.x+ox,p.y+oy,p.r,0,TAU); sx.fill(); }
+  for(const cl of run.clouds){ sx.beginPath(); sx.arc(cl.x+ox,cl.y+oy,cl.r,0,TAU); sx.fill(); }
+  sx.setTransform(1,0,0,1,0,0); sx.globalCompositeOperation='source-in'; sx.fillStyle='#657e94'; sx.fillRect(0,0,sc.width,sc.height);
+  ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.globalAlpha=gt?0.55:0.62; ctx.drawImage(sc,0,0); ctx.restore();
+  // a dropped shade is her soft cool pool over its circle (the circle is the truth)
+  const pool=A('shade_pool');
+  for(const p of run.popups){ if(pool){ ctx.globalAlpha=0.45; ctx.drawImage(pool,p.x+ox-p.r*1.12,p.y+oy-p.r*1.12,p.r*2.24,p.r*2.24); ctx.globalAlpha=1; }
+    else { ctx.fillStyle='#3a7bd5'; ctx.beginPath(); ctx.arc(p.x+ox,p.y+oy,7,0,TAU); ctx.fill(); } }
+  // a cloud floats toward the sun from its own shadow, so the safe ground under it stays in view
+  const sux=Math.cos(run.az), suy=Math.sin(run.az);
+  for(const cl of run.clouds){ const ca=A(cl.vy?'cloud_elevator':'cloud_platform');
+    if(ca){ const w=cl.r*2.2, h=w*ca.height/ca.width; ctx.globalAlpha=0.78; ctx.drawImage(ca,cl.x+ox+sux*cl.r*0.85-w/2,cl.y+oy+suy*cl.r*0.85-h/2,w,h); ctx.globalAlpha=1; continue; }
+    ctx.fillStyle='rgba(255,255,255,.85)';
     for(let i=0;i<5;i++){const a=i/5*TAU,rr=cl.r*0.55; ctx.beginPath(); ctx.arc(cl.x+ox+Math.cos(a)*rr*0.6,cl.y+oy+Math.sin(a)*rr*0.6,cl.r*0.42,0,TAU); ctx.fill();}
     ctx.beginPath(); ctx.arc(cl.x+ox,cl.y+oy,cl.r*0.5,0,TAU); ctx.fill(); }
 
@@ -1157,9 +1173,11 @@ function render(){ const inPlay=(screen==='play');
     ctx.fillStyle='rgba(255,255,255,.35)'; ctx.beginPath(); ctx.arc(stick.ox+stick.dx,stick.oy+stick.dy,25,0,TAU); ctx.fill(); }
 
   // dark eclipse overlay
-  if(run.darkT>0){ ctx.fillStyle='rgba(20,10,40,.45)'; ctx.fillRect(0,0,W,H); }
+  if(run.darkT>0){ const ev=A('eclipse_vig'); if(ev){ ctx.globalAlpha=0.9; ctx.drawImage(ev,0,0,W,H); ctx.globalAlpha=1; } else { ctx.fillStyle='rgba(20,10,40,.45)'; ctx.fillRect(0,0,W,H); } }
   // danger vignette
-  if(!run.lastSafe && run.darkT<=0 && P.exp>12){ const v=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.3,W/2,H/2,Math.max(W,H)*0.7);
+  const nbv=A('near_burn');
+  if(nbv&&!run.lastSafe&&run.darkT<=0){ const a=clamp((P.exp-55)/45,0,1)*0.85; if(a>0){ ctx.globalAlpha=a; ctx.drawImage(nbv,0,0,W,H); ctx.globalAlpha=1; } }
+  if(!nbv && !run.lastSafe && run.darkT<=0 && P.exp>12){ const v=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.3,W/2,H/2,Math.max(W,H)*0.7);
     const a=clamp(P.exp/100,0,1)*0.5; v.addColorStop(0,'rgba(200,30,20,0)'); v.addColorStop(1,`rgba(200,30,20,${a})`);
     ctx.fillStyle=v; ctx.fillRect(0,0,W,H); }
   // juice flash (burn / all-collected / big sizzle)
@@ -1312,8 +1330,21 @@ function drawHatExtra(g,cx,cy,hr,kind,hc){ g.save(); g.translate(cx,cy); const u
     g.strokeStyle=hc; g.lineWidth=2.4; g.beginPath(); g.ellipse(0,-20,9,3.4,0,0,TAU); g.stroke(); }
   g.restore(); }
 const EXTRA_HATS=['shell','cone','shades','gem','eclipse'];
-function sunToken(lunge){ const m=42,angry=lunge&&lunge.state!=='idle';
+function sunToken(lunge){ const m=46,angry=lunge&&lunge.state!=='idle';
   const x=clamp(W/2+Math.cos(run.az)*(W/2-m),m,W-m),y=clamp(H/2+Math.sin(run.az)*(H/2-m),m,H-m);
+  /* her sun (step 3): the face disc with its rays turning apart from it; in the Eclipse world the Angry Sun in her four
+     states (glare, wind up while it warns, the lunge, panting after); the disc turns slowly to look at him (DECISION 5) */
+  let face=A('sun'), rays=A('sun_rays');
+  if(lunge){ const ph=lunge.timer%lunge.period, pant=lunge.state==='idle'&&ph-(lunge.warn+lunge.dur)<1.2;
+    const k=lunge.state==='warn'?'angry_wind_up':(lunge.state==='strike'?'angry_lunge':(pant?'angry_panting':'angry_glare'));
+    if(A(k)){ face=A(k); rays=null; } }
+  if(face){ const R=lunge?(angry?42:34):27;   // a marker at the edge, not a set piece: it must not crowd his ground
+    if(run.darkT>0&&A('corona')){ ctx.drawImage(A('corona'),x-R*2.1,y-R*2.1,R*4.2,R*4.2); }
+    if(rays&&!save.settings.reduce){ ctx.save(); ctx.translate(x,y); ctx.rotate(nowT*0.3); ctx.drawImage(rays,-R*1.4,-R*1.4,R*2.8,R*2.8); ctx.restore(); }
+    else if(rays){ ctx.drawImage(rays,x-R*1.4,y-R*1.4,R*2.8,R*2.8); }
+    let want=Math.atan2((P.y-cam.y)-y,(P.x-cam.x)-x)-Math.PI/2; want=Math.atan2(Math.sin(want),Math.cos(want)); want=clamp(want,-0.45,0.45);
+    run.sunLook=save.settings.reduce?0:lerp(run.sunLook||0,want,0.04);
+    ctx.save(); ctx.translate(x,y); ctx.rotate(run.sunLook); ctx.drawImage(face,-R,-R,R*2,R*2); ctx.restore(); return; }
   // radiant halo
   const gr=ctx.createRadialGradient(x,y,4,x,y,angry?74:58);
   gr.addColorStop(0,angry?'rgba(255,120,50,.6)':'rgba(255,222,120,.55)'); gr.addColorStop(1,'rgba(255,200,90,0)');

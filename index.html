@@ -120,7 +120,7 @@
   .sw{width:52px;height:30px;border-radius:16px;background:rgba(255,255,255,.2);position:relative;transition:background .2s;}
   .sw.on{background:var(--leaf);} .sw .k{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
     background:#fff;transition:left .2s;} .sw.on .k{left:25px;}
-  #builderCanvas{width:170px;height:170px;margin:8px 0;}
+  #builderCanvas{width:180px;height:280px;margin:8px 0;}
   .pad{height:14px;}
   .toptabs{position:fixed;top:calc(env(safe-area-inset-top,8px) + 8px);right:14px;z-index:20;display:flex;gap:8px;}
   .badge{display:inline-block;background:var(--leaf);color:#06250e;font-size:11px;font-weight:900;border-radius:8px;padding:2px 6px;margin-left:6px;}
@@ -275,7 +275,7 @@
 <div id="builder" class="overlay">
   <div class="backRow"><div class="iconbtn" id="buildBack">‹</div></div>
   <h2 class="title">Build Your Tomato Man</h2>
-  <canvas id="builderCanvas" width="340" height="340"></canvas>
+  <canvas id="builderCanvas" width="360" height="560"></canvas>
   <div class="tabs">
     <button class="tab on" data-bt="body">Produce</button>
     <button class="tab" data-bt="hat">Hat</button>
@@ -464,6 +464,9 @@ const ASSET_PATHS={
   meter_frame:'art/ui/exposure_meter_frame.png', meter_fill:'art/ui/exposure_fill.png',
   card_morning_tide:'art/worlds/morning_tide/card.webp', card_midday_blaze:'art/worlds/midday_blaze/card.webp',
   card_tide_pools:'art/worlds/tide_pools/card.webp', card_dunes_at_dusk:'art/worlds/dunes_at_dusk/card.webp', card_eclipse:'art/worlds/eclipse/card.webp',
+  hero_s:'art/hero/tomato_s.webp', hero_se:'art/hero/tomato_se.webp', hero_e:'art/hero/tomato_e.webp', hero_ne:'art/hero/tomato_ne.webp', hero_n:'art/hero/tomato_n.webp',
+  hero_respawn:'art/hero/tomato_respawn.webp', hero_victory:'art/hero/tomato_victory.webp', hero_states:'art/hero/exposure_states.webp', face_neutral:'art/hero/face_neutral.webp',
+  trail_classic:'art/hero/trails/ember.png', trail_cool:'art/hero/trails/cool.png', trail_mint:'art/hero/trails/aloe.png', trail_rainbow:'art/hero/trails/rainbow.png',
 };
 /* loaded on demand: each world's ground, horizon, decor sheet and key art; the Angry Sun; the share frames */
 const ASSET_LAZY={
@@ -475,10 +478,18 @@ const ASSET_LAZY={
   angry_glare:'art/sun/angry_sun_glare.webp', angry_wind_up:'art/sun/angry_sun_wind_up.webp', angry_lunge:'art/sun/angry_sun_lunge.webp',
   angry_panting:'art/sun/angry_sun_panting.webp', corona:'art/sun/eclipse_corona.webp',
   share_result:'art/sharing/result_square.webp', share_daily:'art/sharing/daily_card.webp',
+  body_strawberry:'art/hero/strawberry_body.webp', body_orange:'art/hero/orange_body.webp', body_lemon:'art/hero/lemon_body.webp', body_lime:'art/hero/lime_body.webp', body_peach:'art/hero/peach_body.webp', body_cherry:'art/hero/cherry_body.webp', body_bellpepper:'art/hero/bell_pepper_body.webp', body_eggplant:'art/hero/eggplant_body.webp', body_avocado:'art/hero/avocado_body.webp', body_heirloom:'art/hero/heirloom_body.webp', body_pickle:'art/hero/pickle_body.webp', body_golden:'art/hero/golden_body.webp', body_sunburn:'art/hero/sunburn_body.webp',
+  hat_sunhat:'art/hero/hats/sun_hat.webp', hat_cap:'art/hero/hats/ball_cap.webp', hat_sombrero:'art/hero/hats/tiny_sombrero.webp', hat_lettuce:'art/hero/hats/lettuce_cap.webp', hat_visor:'art/hero/hats/lifeguard_visor.webp', hat_umbrella:'art/hero/hats/umbrella_hat.webp', hat_crown:'art/hero/hats/sun_crown.webp', hat_shell_crown:'art/hero/hats/shell_crown.webp', hat_cone_hat:'art/hero/hats/ice_cream_hat.webp', hat_cool_shades:'art/hero/hats/cool_shades.webp', hat_gem_crown:'art/hero/hats/gem_crown.webp', hat_eclipse_halo:'art/hero/hats/eclipse_halo.webp',
+  bbody:'art/builder/body.webp', bhead_tomato:'art/builder/tomato_head.webp', bhead_strawberry:'art/builder/strawberry_head.webp', bhead_orange:'art/builder/orange_head.webp', bhead_lemon:'art/builder/lemon_head.webp', bhead_lime:'art/builder/lime_head.webp', bhead_peach:'art/builder/peach_head.webp', bhead_cherry:'art/builder/cherry_head.webp', bhead_bellpepper:'art/builder/bell_pepper_head.webp', bhead_eggplant:'art/builder/eggplant_head.webp', bhead_avocado:'art/builder/avocado_head.webp', bhead_heirloom:'art/builder/heirloom_head.webp', bhead_pickle:'art/builder/pickle_head.webp', bhead_golden:'art/builder/golden_head.webp', bhead_sunburn:'art/builder/sunburn_head.webp',
+  bhat_sunhat:'art/builder/hats/sun_hat.webp', bhat_cap:'art/builder/hats/ball_cap.webp', bhat_sombrero:'art/builder/hats/tiny_sombrero.webp', bhat_lettuce:'art/builder/hats/lettuce_cap.webp', bhat_visor:'art/builder/hats/lifeguard_visor.webp', bhat_umbrella:'art/builder/hats/umbrella_hat.webp', bhat_crown:'art/builder/hats/sun_crown.webp', bhat_shell_crown:'art/builder/hats/shell_crown.webp', bhat_cone_hat:'art/builder/hats/ice_cream_hat.webp', bhat_cool_shades:'art/builder/hats/cool_shades.webp', bhat_gem_crown:'art/builder/hats/gem_crown.webp', bhat_eclipse_halo:'art/builder/hats/eclipse_halo.webp',
 };
 const ASSETS={};
 function loadOne(k,path){ if(k in ASSETS) return; ASSETS[k]=null; const img=new Image();
-  img.onload=()=>{ ASSETS[k]=img; }; img.onerror=()=>{ ASSETS[k]=null; }; img.src=path+'?v='+ART_V; }
+  img.onload=()=>{ ASSETS[k]=img; if(screen==='builder'&&typeof drawBuilderPreview==='function') drawBuilderPreview(); };
+  img.onerror=()=>{ ASSETS[k]=null; }; img.src=path+'?v='+ART_V; }
+/* the equipped produce and hat for play, and everything the builder shows */
+function needLook(){ const b=save.cosmetics.body, h=save.cosmetics.hat; if(b!=='tomato') need('body_'+b); if(h!=='none') need('hat_'+h); }
+function needBuilder(){ need('bbody'); need('bhead_'+save.cosmetics.body); if(save.cosmetics.hat!=='none') need('bhat_'+save.cosmetics.hat); }
 function loadAssets(){ for(const k in ASSET_PATHS) loadOne(k,ASSET_PATHS[k]); needWorld(0); }
 function need(k){ if(ASSET_LAZY[k]) loadOne(k,ASSET_LAZY[k]); }
 function needWorld(w){ const d=WORLD_DIRS[w%5]; ['ground_','horizon_','decor_','key_'].forEach(p=>need(p+d));
@@ -773,7 +784,7 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
   cam.x=clamp(P.x-W/2,0,Math.max(0,L.worldW-W)); cam.y=clamp(P.y-H/2,0,Math.max(0,L.worldH-H));
   // consume loadout (single-use boosts)
   save.loadout={}; persist();
-  applyTheme(L.world); needWorld(L.world);
+  applyTheme(L.world); needWorld(L.world); needLook();
   screen='play'; mode='play'; showScreen(null); $('play-ui').classList.remove('hidden');
   $('bIce').classList.toggle('hidden', run.charges.ice<=0 && !(L.ice));
   flash(L); sync(); startMusic(L.world); }
@@ -881,6 +892,7 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
     else { const sp=Math.hypot(P.vx,P.vy); if(sp>0){ const nd=Math.max(0,sp-f.friction*dt); P.vx=P.vx/sp*nd; P.vy=P.vy/sp*nd; } }
   }
   P.x=clamp(P.x+P.vx*dt,P.r,L.worldW-P.r); P.y=clamp(P.y+P.vy*dt,P.r,L.worldH-P.r);
+  run.idleT=(mag>0.05||P.dashT>0)?0:(run.idleT||0)+dt; if(run.respawnT>0) run.respawnT=Math.max(0,run.respawnT-dt); if(run.burnFx) run.burnFx.t+=dt;
   if(run.wind){ let wx=run.wind.ax||0; if(run.wind.gust) wx+=run.wind.gust.amp*Math.sin(run.t*TAU/run.wind.gust.period);
     P.x=clamp(P.x+wx*dt,P.r,L.worldW-P.r); P.y=clamp(P.y+(run.wind.ay||0)*dt,P.r,L.worldH-P.r); } // steady lean-against drift
   collideWalls(); // awnings are solid — go around them
@@ -971,6 +983,7 @@ function burn(){ if(run.coolerBox){ run.coolerBox=false; P.exp=0; P.vx=0;P.vy=0;
     run.spawnAt=run.t; toast('COOLER BOX','#9fe0a0'); SFX.spf(); return; } // revive in place, keep combo
   run.deaths++; save.totalBurns++; persist(); toast('BURNED'); run.shake=save.settings.reduce?0:0.58; freeze=save.settings.reduce?0:0.09;
   SFX.burn(); spawnParts(P.x,P.y,24,'255,80,40',190,0.75); spawnRing(P.x,P.y,'255,95,55',72,0.5); screenFlash('255,55,30',0.55);
+  run.burnFx={x:P.x,y:P.y,t:0}; run.respawnT=save.settings.reduce?0:0.4;
   run.combo=0; P.exp=0; P.x=run.cp.x; P.y=run.cp.y; P.vx=0;P.vy=0; P.dashT=0; P.dashCd=0; P.dashStock=0; run.sinceSafe=0; run.spawnAt=run.t;
   run.screenT=Math.max(run.screenT,run.feel.respawnGrace); run.trail.length=0; }
 
@@ -1120,15 +1133,19 @@ function render(){ const inPlay=(screen==='play');
       ctx.fillStyle=rg; ctx.beginPath(); ctx.arc(x,y,lg.reach,0,TAU); ctx.fill(); } }
 
   // dash trail (cosmetic color)
-  const tc=cosmetic(save.cosmetics.trail);
-  for(const tr of run.trail){ let col=tc.color; if(col==='rainbow'){ const h=(nowT*200+tr.a*120)%360; ctx.fillStyle=`hsla(${h},90%,60%,${tr.a*0.5})`; }
+  const tc=cosmetic(save.cosmetics.trail), tsp=A('trail_'+tc.id);
+  if(tsp) for(const tr of run.trail){ const f=Math.min(3,Math.floor((1-tr.a)*4)); ctx.globalAlpha=clamp(tr.a,0,1)*0.85;
+    ctx.drawImage(tsp,f*(tsp.width/4),0,tsp.width/4,tsp.height,tr.x+ox-20,tr.y+oy-20,40,40); }
+  ctx.globalAlpha=1;
+  if(!tsp) for(const tr of run.trail){ let col=tc.color; if(col==='rainbow'){ const h=(nowT*200+tr.a*120)%360; ctx.fillStyle=`hsla(${h},90%,60%,${tr.a*0.5})`; }
     else ctx.fillStyle=`rgba(${col},${tr.a*0.5})`; ctx.beginPath(); ctx.arc(tr.x+ox,tr.y+oy,P.r*0.85,0,TAU); ctx.fill(); }
   // particles
   for(const pt of run.parts){ ctx.fillStyle=`rgba(${pt.col},${clamp(pt.t/pt.life,0,1)})`; ctx.beginPath(); ctx.arc(pt.x+ox,pt.y+oy,pt.r,0,TAU); ctx.fill(); }
   // impact rings (juice)
   for(const rg of run.rings){ const a=clamp(rg.t/rg.life,0,1); ctx.strokeStyle=`rgba(${rg.col},${a*0.75})`; ctx.lineWidth=1+a*3; ctx.beginPath(); ctx.arc(rg.x+ox,rg.y+oy,rg.r,0,TAU); ctx.stroke(); }
 
-  // player
+  // player (and where he last burned)
+  drawBurnFx(ox,oy);
   drawHero(P.x+ox,P.y+oy);
   // floating score numbers (juice)
   if(run.floats.length){ ctx.save(); ctx.font='800 17px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.lineWidth=3.5; ctx.strokeStyle='rgba(18,12,8,.8)';
@@ -1155,7 +1172,49 @@ function render(){ const inPlay=(screen==='play');
 
   sunToken(run.lunge);
 }
+/* THE HERO (step 2), Astra's v2 bearings: e se s sw w nw n ne by 45 degree sector of P.face (screen y down); sw, w and nw
+   are her mirrored exports, drawn here as se, e and ne flipped. A 256 cell is drawn 64 world px wide so his head is about
+   28 across (the collider stays radius 14; his legs and arms overhang it). Cells: 0 idle, 1 to 4 the walk at 8 fps,
+   5 and 6 the dash at 12 fps, 7 a hop. Standing still for half a second he turns to face you. */
+/* TM HERO SOCKETS (lucid-winds tools/tomato-man-tests/astra_in.py writes this line) */
+const HAT_ANCHOR={"s":[[128,41],[128,41],[128,41],[129,41],[128,42],[128,56],[129,61],[129,39]],"se":[[131,40],[133,44],[134,48],[136,52],[136,54],[141,63],[153,64],[137,43]],"e":[[129,46],[129,46],[129,46],[129,46],[129,46],[140,60],[156,65],[133,39]],"ne":[[129,42],[129,43],[135,46],[136,46],[136,47],[144,58],[157,51],[135,40]],"n":[[129,51],[129,51],[129,51],[130,51],[129,52],[130,63],[131,46],[129,40]]};
+/* /TM HERO SOCKETS */
+const HERO_B=['e','se','s','sw','w','nw','n','ne'], HERO_SRC={s:'s',se:'se',e:'e',ne:'ne',n:'n',sw:'se',w:'e',nw:'ne'};
+const HERO_FLIP={sw:1,w:1,nw:1}, HAT_DIR={s:'s',se:'e',e:'e',ne:'n',n:'n',nw:'n',w:'w',sw:'w'}, HAT_COL={s:0,e:1,n:2,w:3};
+const heroTmp=document.createElement('canvas'); heroTmp.width=heroTmp.height=128; const heroTx=heroTmp.getContext('2d');
+function heroBearing(){ if(run&&run.idleT>0.5) return 's'; let a=P.face; return HERO_B[((Math.round(a/(Math.PI/4))%8)+8)%8]; }
 function drawHero(x,y){ const body=cosmetic(save.cosmetics.body), hat=cosmetic(save.cosmetics.hat);
+  const tomato=body.id==='tomato', bb=heroBearing(), src=HERO_SRC[bb];
+  const sheet=tomato?A('hero_'+src):A('body_'+body.id);
+  if(!sheet){ drawHeroCode(x,y); return; }
+  // ground shadow and the state rings, as before
+  ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x,y+P.r*0.8,P.r*0.95,P.r*0.4,0,0,TAU); ctx.fill();
+  if(run.screenT>0){ ctx.strokeStyle='rgba(150,210,255,.95)'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(x,y,P.r+9+Math.sin(nowT*12)*1.5,0,TAU); ctx.stroke(); }
+  else if(run.slowT>0){ ctx.strokeStyle='rgba(160,240,255,.8)'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(x,y,P.r+9,0,TAU); ctx.stroke(); }
+  // the cell: a respawn plays her four frames, a dash her two, walking her four, else idle
+  const moving=Math.hypot(P.vx,P.vy)>30&&!(run.idleT>0.5);
+  let img=sheet, cell=0, cols=4;
+  if(tomato&&run.respawnT>0&&A('hero_respawn')){ img=A('hero_respawn'); cell=Math.min(3,Math.floor((0.4-run.respawnT)/0.1)); cols=4; }
+  else if(tomato){ cell=P.dashT>0?5+(Math.floor(nowT*12)%2):(moving&&!save.settings.reduce?1+(Math.floor(nowT*8)%4):0); }
+  const cw=img.width/cols, chh=tomato?(img===sheet?img.height/2:img.height):img.height;
+  // drawn into a small canvas first, so the exposure tint touches only the figure
+  heroTx.clearRect(0,0,128,128);
+  if(tomato) heroTx.drawImage(img,(cell%cols)*cw,Math.floor(cell/cols)*chh,cw,chh,0,0,128,128);
+  else { heroTx.drawImage(img,0,0,img.width,img.height,0,0,128,128); const fc=A('face_neutral'); if(fc) heroTx.drawImage(fc,0,40,128,128,22,10,84,84); }
+  if(hat.kind!=='none'){ const hs=A('hat_'+hat.id), an=(HAT_ANCHOR[src]||HAT_ANCHOR.s)[tomato?Math.min(cell,7):0];
+    if(hs&&an){ const hc=HAT_COL[HAT_DIR[src]]; heroTx.drawImage(hs,hc*128,0,128,128,(an[0]-64)/2,(an[1]-28)/2,64,64); } }
+  const burnT=clamp((P.exp-25)/75,0,1);
+  if(burnT>0){ heroTx.save(); heroTx.globalCompositeOperation='source-atop'; heroTx.fillStyle=`rgba(225,50,40,${(burnT*0.42).toFixed(3)})`; heroTx.fillRect(0,0,128,128); heroTx.restore(); }
+  ctx.save(); ctx.translate(x,y); ctx.scale(P.sx,P.sy); if(HERO_FLIP[bb]) ctx.scale(-1,1);
+  ctx.drawImage(heroTmp,-32,-32,64,64); ctx.restore();
+}
+/* where he burned: Astra's small sad char and her smoke, for a moment, while he pops back at the checkpoint */
+function drawBurnFx(ox,oy){ const b=run.burnFx; if(!b) return; const a=clamp(1-b.t/0.9,0,1); if(a<=0) return;
+  const st=A('hero_states'), sm=A('burn_smoke'); ctx.save(); ctx.globalAlpha=a;
+  if(st) ctx.drawImage(st,3*(st.width/4),0,st.width/4,st.height,b.x+ox-32,b.y+oy-32,64,64);
+  if(sm&&!save.settings.reduce){ const f=Math.min(3,Math.floor(b.t*12/2)); ctx.drawImage(sm,f*(sm.width/4),0,sm.width/4,sm.height,b.x+ox-30,b.y+oy-64,60,60); }
+  ctx.restore(); }
+function drawHeroCode(x,y){ const body=cosmetic(save.cosmetics.body), hat=cosmetic(save.cosmetics.hat);
   // ground shadow (not squashed)
   ctx.fillStyle='rgba(0,0,0,.14)'; ctx.beginPath(); ctx.ellipse(x,y+P.r*0.8,P.r*0.95,P.r*0.4,0,0,TAU); ctx.fill();
   ctx.save(); ctx.translate(x,y); ctx.scale(P.sx,P.sy);
@@ -1352,10 +1411,19 @@ function buildBuilder(){ const grid=$('buildGrid'); grid.innerHTML='';
   COSMETICS.filter(k=>k.cat===buildTab).forEach(k=>{ const isEarn=k.earn!==undefined; const owned=save.cosmetics.owned.includes(k.id)||k.price===0; const equipped=save.cosmetics[k.cat]===k.id;
     const c=card(k.name, owned?'':(isEarn?(mk('lock')+' 100% '+WORLDS[k.earn].name):'locked, buy in shop'), owned?(equipped?'ON':'wear'):mk('lock'), false);
     c.classList.toggle('equipped',equipped); c.classList.toggle('locked',!owned);
-    if(owned) c.addEventListener('click',()=>{ save.cosmetics[k.cat]=k.id; persist(); SFX.click(); buildBuilder(); drawBuilderPreview(); });
+    if(owned) c.addEventListener('click',()=>{ save.cosmetics[k.cat]=k.id; persist(); SFX.click(); needBuilder(); needLook(); buildBuilder(); drawBuilderPreview(); });
     grid.appendChild(c); });
   drawBuilderPreview(); }
-function drawBuilderPreview(){ const bc=$('builderCanvas'), bx=bc.getContext('2d'); bx.clearRect(0,0,340,340);
+/* Astra's builder figure: her headless body on a 512x840 parent at (0,180), the produce's head (with its face) at (64,6)
+   so the neck sockets meet at (256,346), the hat on the head's own 384 canvas; the old drawing until they load */
+function drawBuilderPreview(){ const bc=$('builderCanvas'), bx=bc.getContext('2d'); bx.clearRect(0,0,bc.width,bc.height);
+  const bodyA=A('bbody'), headA=A('bhead_'+save.cosmetics.body), hatId=save.cosmetics.hat, hatA=hatId==='none'?null:A('bhat_'+hatId);
+  if(bodyA&&headA&&(hatId==='none'||hatA)){ const k=Math.min(bc.width/512,bc.height/840), ox=(bc.width-512*k)/2;
+    bx.fillStyle='rgba(0,0,0,.14)'; bx.beginPath(); bx.ellipse(bc.width/2,(180+626)*k,150*k,26*k,0,0,TAU); bx.fill();
+    bx.drawImage(bodyA,ox,180*k,512*k,640*k); bx.drawImage(headA,ox+64*k,6*k,384*k,384*k);
+    if(hatA) bx.drawImage(hatA,ox+64*k,6*k,384*k,384*k); return; }
+  bx.save(); bx.translate((bc.width-340)/2,(bc.height-340)/2); drawBuilderCode(bx); bx.restore(); }
+function drawBuilderCode(bx){
   const body=cosmetic(save.cosmetics.body), hat=cosmetic(save.cosmetics.hat); const cx=170,cy=180,R=70;
   bx.fillStyle='rgba(0,0,0,.12)'; bx.beginPath(); bx.ellipse(cx,cy+R*0.85,R*0.9,R*0.3,0,0,TAU); bx.fill();
   bx.fillStyle=body.color; bx.beginPath(); bx.arc(cx,cy,R,0,TAU); bx.fill();
@@ -1450,7 +1518,7 @@ function togglePause(){ if(screen!=='play') return; if(mode==='play'){ mode='pau
 
 /* ===================== NAV WIRING ===================== */
 function go(name){ SFX.click(); if(name==='map') buildWorldMap(); if(name==='shop'){shopTab='upgrades';setTabs('#shop .tab','upgrades');buildShop();}
-  if(name==='builder'){buildTab='body';setTabs('#builder .tab','body','data-bt');buildBuilder();} if(name==='settings') syncSettings();
+  if(name==='builder'){buildTab='body';setTabs('#builder .tab','body','data-bt');needBuilder();buildBuilder();} if(name==='settings') syncSettings();
   showScreen(name); }
 $('tPlay').onclick=()=>go('map');
 $('tDaily').onclick=()=>{ SFX.click(); startDaily(); };

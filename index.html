@@ -10,14 +10,14 @@
 <meta property="og:title" content="Tomato Man">
 <meta property="og:description" content="The sun is death. Shade is the only ground, and it moves. Dash the shadows, gather aloe, don't get burned.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://stephenuffugus.github.io/Tomato_Man/">
-<meta property="og:image" content="https://stephenuffugus.github.io/Tomato_Man/thumbnail.png">
-<meta property="og:image:width" content="1024">
-<meta property="og:image:height" content="1024">
+<meta property="og:url" content="https://lucidwinds.com/satellites/tomato-man/">
+<meta property="og:image" content="https://lucidwinds.com/satellites/tomato-man/art/social_card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Tomato Man">
 <meta name="twitter:description" content="The sun is death. Shade is the only ground, and it moves. Dash the shadows, gather aloe, don't get burned.">
-<meta name="twitter:image" content="https://stephenuffugus.github.io/Tomato_Man/thumbnail.png">
+<meta name="twitter:image" content="https://lucidwinds.com/satellites/tomato-man/art/social_card.jpg">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -26,9 +26,9 @@
 <style>
   /* Sunstruck type (Astra's pack v1): Bree Serif for headings, Atkinson Hyperlegible for controls and copy. Both OFL,
      subset to Latin woff2 (lucid-winds tools/tomato-man-tests/astra_in.py) and served from art/fonts so the game is offline. */
-  @font-face{font-family:'Bree Serif';font-weight:400;font-display:swap;src:url(art/fonts/bree-serif.woff2?v=20261105a) format('woff2')}
-  @font-face{font-family:'Atkinson Hyperlegible';font-weight:400;font-display:swap;src:url(art/fonts/atkinson-regular.woff2?v=20261105a) format('woff2')}
-  @font-face{font-family:'Atkinson Hyperlegible';font-weight:700;font-display:swap;src:url(art/fonts/atkinson-bold.woff2?v=20261105a) format('woff2')}
+  @font-face{font-family:'Bree Serif';font-weight:400;font-display:swap;src:url(art/fonts/bree-serif.woff2?v=20261105b) format('woff2')}
+  @font-face{font-family:'Atkinson Hyperlegible';font-weight:400;font-display:swap;src:url(art/fonts/atkinson-regular.woff2?v=20261105b) format('woff2')}
+  @font-face{font-family:'Atkinson Hyperlegible';font-weight:700;font-display:swap;src:url(art/fonts/atkinson-bold.woff2?v=20261105b) format('woff2')}
   .mk{width:1.15em;height:1.15em;display:inline-block;vertical-align:-.2em;flex:none}
   :root{
     --paper:#fff6e6; --ink:#23314a; --tomato:#e8332a; --leaf:#4fb56a; --beam:#ffd23f;
@@ -153,7 +153,7 @@
   .big-btn:active{box-shadow:0 1px 0 #8f2a17} .big-btn.green{background:var(--calyx);color:#fff8ea;box-shadow:0 4px 0 #04503f}
   .ghost-btn{background:rgba(255,248,226,.94);color:var(--ink);border:2px solid rgba(43,42,32,.45);min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:16px}
   .iconbtn{background:rgba(255,248,226,.94);color:var(--ink);border:2px solid rgba(43,42,32,.35);width:48px;height:48px;font-size:22px}
-  .wallet{color:var(--ink);text-shadow:none;border:10px solid transparent;border-image:url(art/ui/aloe_wallet_chip_frame.png?v=20261105a) 28 fill / 10px stretch;padding:0 4px;font-size:16px}
+  .wallet{color:var(--ink);text-shadow:none;border:10px solid transparent;border-image:url(art/ui/aloe_wallet_chip_frame.png?v=20261105b) 28 fill / 10px stretch;padding:0 4px;font-size:16px}
   .wallet .ic{display:none}   /* her chip carries its own aloe */ .wallet{padding-left:22px}
   .tab{color:var(--ink);border-color:rgba(43,42,32,.4);background:rgba(255,248,226,.7);min-height:44px} .tab.on{background:var(--tomatoR);color:#fff8ea;border-color:var(--tomatoR)}
   .toggleRow{background:rgba(255,248,226,.85);color:var(--ink);min-height:52px} .sw{background:rgba(43,42,32,.25)} .sw.on{background:var(--calyx)}
@@ -165,33 +165,33 @@
   .worldCard .wchip{position:absolute;left:3%;top:5%;background:rgba(255,248,226,.9);border-radius:10px;padding:3px 9px;font:700 13px 'Atkinson Hyperlegible',sans-serif}
   .worldCard.locked{filter:grayscale(.6) brightness(.93);cursor:not-allowed}
   /* level, shop and builder cards: her paper frames */
-  .card{background:none;color:var(--ink);border:12px solid transparent;border-image:url(art/ui/level_card_frame.png?v=20261105a) 28 fill / 12px stretch;border-radius:0;padding:2px 4px 4px}
-  #shopGrid .card,#buildGrid .card{border-image:url(art/ui/shop_card_frame.png?v=20261105a) 28 fill / 12px stretch}
+  .card{background:none;color:var(--ink);border:12px solid transparent;border-image:url(art/ui/level_card_frame.png?v=20261105b) 28 fill / 12px stretch;border-radius:0;padding:2px 4px 4px}
+  #shopGrid .card,#buildGrid .card{border-image:url(art/ui/shop_card_frame.png?v=20261105b) 28 fill / 12px stretch}
   .card small{color:var(--inkSoft);opacity:1;font-size:14px;line-height:1.35} .sub2{font-size:15px} .card .price{color:var(--ink);top:2px;right:4px} .card.hascost{padding-right:48px}
   .card.equipped,.card.owned{box-shadow:0 0 0 3px var(--calyx)} .card.locked,.card.cant{opacity:.55}
   .card .lname{font:400 16px 'Bree Serif',Georgia,serif}
   .card .rec{display:flex;align-items:center;gap:4px;color:var(--ink);margin-top:6px;letter-spacing:0}
   .card .rec .sock{width:22px;height:22px} .card .rec .sock.off{opacity:.25;filter:grayscale(1)}
   .card .rec .lmedal{width:26px;height:26px;margin-left:4px} .card .rec .lbest{margin-left:auto;font-weight:700;font-size:13px}
-  #builderCanvas{border:14px solid transparent;border-image:url(art/ui/builder_frame_frame.png?v=20261105a) 28 fill / 14px stretch;box-sizing:content-box}
+  #builderCanvas{border:14px solid transparent;border-image:url(art/ui/builder_frame_frame.png?v=20261105b) 28 fill / 14px stretch;box-sizing:content-box}
   /* How to Play: four picture cards first, every rule one tap further */
   .htQuick{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:420px;margin:6px 0 10px}
-  .htQ{border:12px solid transparent;border-image:url(art/ui/level_card_frame.png?v=20261105a) 28 fill / 12px stretch;padding:4px;text-align:center;font-size:16px;line-height:1.3}
+  .htQ{border:12px solid transparent;border-image:url(art/ui/level_card_frame.png?v=20261105b) 28 fill / 12px stretch;padding:4px;text-align:center;font-size:16px;line-height:1.3}
   .htQ .mk{width:44px;height:44px;display:block;margin:2px auto 6px;color:var(--ink)}
   .htCard{background:rgba(255,248,226,.85);border-color:rgba(43,42,32,.18);color:var(--ink)} .htCard .hb{opacity:1;color:var(--inkSoft)}
   .htCard .hi .mk{width:26px;height:26px}
   /* the coach, the toast and the win in her paper */
-  #coach{background:none;border:14px solid transparent;border-image:url(art/ui/coach_bubble_frame.png?v=20261105a) 28 fill / 14px stretch;border-radius:0;box-shadow:none;color:var(--ink);font-size:16px;padding:4px 8px}
+  #coach{background:none;border:14px solid transparent;border-image:url(art/ui/coach_bubble_frame.png?v=20261105b) 28 fill / 14px stretch;border-radius:0;box-shadow:none;color:var(--ink);font-size:16px;padding:4px 8px}
   #coach .ic .mk{width:26px;height:26px}
   #toast{left:50%;right:auto;width:max-content;max-width:88vw;transform:translateX(-50%);font-size:20px;color:var(--ink)!important;text-shadow:none;
-    border:12px solid transparent;border-image:url(art/ui/toast_pill_frame.png?v=20261105a) 28 fill / 12px stretch;padding:2px 10px;letter-spacing:.02em}
+    border:12px solid transparent;border-image:url(art/ui/toast_pill_frame.png?v=20261105b) 28 fill / 12px stretch;padding:2px 10px;letter-spacing:.02em}
   #toast .tdot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:1px}
   #winTitle{color:var(--calyx)!important;font-family:'Bree Serif',Georgia,serif;font-weight:400} .medalImg{width:96px;height:96px}
   .earnLine{color:var(--calyx)}
   /* the HUD on light sand: ink with a pale edge, her meter, her buttons, the pause mark */
   #heatWrap .lbl{color:var(--ink);text-shadow:0 1px 0 rgba(255,248,226,.9);font-size:12px;opacity:1}
-  #heatBar{position:relative;height:30px;border:0;border-radius:0;background:url(art/ui/exposure_meter_frame.png?v=20261105a) center/100% 100% no-repeat;overflow:visible}
-  #heatFill{position:absolute;left:3.1%;top:20.8%;width:93.8%!important;height:58.4%;border-radius:2px;background:url(art/ui/exposure_fill.png?v=20261105a) left/100% 100% no-repeat!important;transition:clip-path .05s linear}
+  #heatBar{position:relative;height:30px;border:0;border-radius:0;background:url(art/ui/exposure_meter_frame.png?v=20261105b) center/100% 100% no-repeat;overflow:visible}
+  #heatFill{position:absolute;left:3.1%;top:20.8%;width:93.8%!important;height:58.4%;border-radius:2px;background:url(art/ui/exposure_fill.png?v=20261105b) left/100% 100% no-repeat!important;transition:clip-path .05s linear}
   #heatFill.spf{background:#7fd0ff!important} #heatFill.dark{background:#9fb0ff!important}
   #topRight{color:var(--ink);text-shadow:0 1px 0 rgba(255,248,226,.95),0 0 6px rgba(255,248,226,.8)}
   #lvlFlash{color:var(--ink);text-shadow:0 2px 0 rgba(255,248,226,.95),0 0 10px rgba(255,248,226,.9);font-family:'Bree Serif',Georgia,serif;font-weight:400}
@@ -205,13 +205,20 @@
   .srOnly{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   #pauseBtn{width:48px;height:48px;background:rgba(255,248,226,.92);color:var(--ink);border:2px solid rgba(43,42,32,.4);font-size:22px}
   #btns .btn{position:relative;border:0;background-color:rgba(35,49,74,.5);background-position:center;background-size:100% 100%;background-repeat:no-repeat;color:var(--ink)}
-  #bDash{background-image:url(art/ui/button_dash.svg?v=20261105a)} #bShade{background-image:url(art/ui/button_shade.svg?v=20261105a)}
-  #bScreen{background-image:url(art/ui/button_spf.svg?v=20261105a)} #bIce{background-image:url(art/ui/button_ice.svg?v=20261105a)}
+  #bDash{background-image:url(art/ui/button_dash.svg?v=20261105b)} #bShade{background-image:url(art/ui/button_shade.svg?v=20261105b)}
+  #bScreen{background-image:url(art/ui/button_spf.svg?v=20261105b)} #bIce{background-image:url(art/ui/button_ice.svg?v=20261105b)}
   #btns .btn .w{position:absolute;left:-10px;right:-10px;bottom:-17px;text-align:center;font-size:11px;font-weight:700;text-shadow:0 1px 0 rgba(255,248,226,.95)}
   #btns .btn .c{position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;border-radius:11px;background:var(--ink);color:#fff8ea;font-size:12px;display:flex;align-items:center;justify-content:center;opacity:1;margin:0}
-  #btns .btn.empty{opacity:1} #btns .btn.empty::after{content:'';position:absolute;inset:0;background:url(art/ui/disabled_overlay.svg?v=20261105a) center/100% 100% no-repeat;pointer-events:none}
+  #btns .btn.empty{opacity:1} #btns .btn.empty::after{content:'';position:absolute;inset:0;background:url(art/ui/disabled_overlay.svg?v=20261105b) center/100% 100% no-repeat;pointer-events:none}
   #bDash::before{content:'';position:absolute;inset:8%;border-radius:50%;background:conic-gradient(rgba(43,42,32,.5) calc(var(--cd,0)*360deg),transparent 0);pointer-events:none}
   #bDash.stock{box-shadow:0 0 0 4px rgba(127,208,255,.85)}
+  /* the walk (step 7): labels clear of the next button; the level name below the right column; the HUD in cream
+     under an eclipse; the titles clear of the back and wallet chips */
+  #btns{gap:22px}
+  #lvlFlash{top:calc(env(safe-area-inset-top,0px) + 166px)}
+  #play-ui.night #topRight,#play-ui.night #heatWrap .lbl,#play-ui.night #btns .btn .w{color:#fff8ea;text-shadow:0 1px 0 rgba(20,18,30,.95),0 0 6px rgba(20,18,30,.85)}
+  h2.title{padding:0 50px} #builder h2.title{padding:0;margin-top:50px;font-size:clamp(22px,7vw,30px)}
+  h1.logo{margin-top:46px}
 
 </style>
 <link rel="canonical" href="https://lucidwinds.com/satellites/tomato-man/">
@@ -273,7 +280,7 @@
 
 <!-- ===== TITLE ===== -->
 <div id="title" class="overlay center show">
-  <h1 class="logo"><img src="art/ui/logo_on_sand.svg?v=20261105a" alt="Tomato Man" onerror="this.remove()"><span class="txt">TOMATO<span class="two">MAN</span></span></h1>
+  <h1 class="logo"><img src="art/ui/logo_on_sand.svg?v=20261105b" alt="Tomato Man" onerror="this.remove()"><span class="txt">TOMATO<span class="two">MAN</span></span></h1>
   <div class="tag">The sun is death. Shade is the only ground, and it moves.</div>
   <div class="menuCol">
     <button class="big-btn green" id="tPlay">PLAY</button>
@@ -320,6 +327,7 @@
     <button class="big-btn green" id="winNext">Next <svg class="mk" aria-hidden="true"><use href="#tm-next"/></svg></button>
     <button class="ghost-btn" id="winRetry"><svg class="mk" aria-hidden="true"><use href="#tm-retry"/></svg> Again</button>
     <button class="ghost-btn" id="winMenu">Levels</button>
+    <button class="ghost-btn" id="winShare"><svg class="mk" aria-hidden="true"><use href="#tm-next"/></svg> Share</button>
   </div>
 </div>
 
@@ -523,7 +531,7 @@ function stopMusic(){ if(Audio2.musicTimer){ clearInterval(Audio2.musicTimer); A
    through A(key): null until it has loaded, so every draw keeps its code drawn fallback. One ART_V token on every URL.
    The first visit loads the title, the HUD, the pickups, the sun and Morning Tide; a world's ground, horizon and decor
    load when that world is first shown (needWorld), the Angry Sun with the Eclipse world, the share frames on a share. */
-const ART_V='20261105a';
+const ART_V='20261105b';
 const WORLD_DIRS=['morning_tide','midday_blaze','tide_pools','dunes_at_dusk','eclipse'];
 const ASSET_PATHS={
   menu:'art/ui/menu_plate.webp', logo_sand:'art/ui/logo_on_sand.svg', logo_dark:'art/ui/logo_on_dark.svg',
@@ -900,7 +908,7 @@ function flash(L){ const f=$('lvlFlash'); f.innerHTML=`${L.name}<small>${L.sub}<
 /* the toast: her pill, ink text, a dot in the call's colour (internal strings only, they may carry a mark) */
 function toast(msg,col){ const t=$('toast'); t.innerHTML=`<span class="tdot" style="background:${col||'var(--tomato)'}"></span>`+msg;
   t.style.transition='none'; t.style.opacity='1'; requestAnimationFrame(()=>{ t.style.transition='opacity .7s'; t.style.opacity='0'; }); }
-function burnStrip(msg){ const b=$('burnStrip'); if(!b) return; b.textContent=msg; b.classList.add('show'); clearTimeout(burnStrip._t); burnStrip._t=setTimeout(()=>b.classList.remove('show'),2000); }
+function burnStrip(msg){ const b=$('burnStrip'); if(!b) return; const lf=$('lvlFlash'); if(lf) lf.style.opacity='0'; b.textContent=msg; b.classList.add('show'); clearTimeout(burnStrip._t); burnStrip._t=setTimeout(()=>b.classList.remove('show'),2000); }
 function showCombo(n){ const c=$('comboTag'); c.textContent='x'+n+' COMBO'; c.style.transition='none'; c.style.opacity='1';
   requestAnimationFrame(()=>{ c.style.transition='opacity .6s'; c.style.opacity='0'; }); }
 
@@ -1076,10 +1084,10 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
 }
 function updateHUD(onHot){ const f=run.feel;
   const hf=$('heatFill'); hf.style.clipPath='inset(0 '+(100-P.exp).toFixed(1)+'% 0 0)'; hf.style.webkitClipPath=hf.style.clipPath;
-  hf.className=run.screenT>0?'spf':(run.darkT>0?'dark':'');
+  hf.className=run.screenT>0?'spf':(run.darkT>0?'dark':''); $('play-ui').classList.toggle('night',run.darkT>0);
   $('heatLbl').textContent=run.graceT>0?'get ready…':(run.screenT>0?'SPF active':(run.darkT>0?'eclipse':(run.slowT>0?'ICE · time slow':(onHot?'HOT SAND':'Exposure'))));
   $('timeT').textContent=run.t.toFixed(1);
-  if(run.findId){ const bt=save.best[run.findId]; $('bestT').style.display=''; $('bestT').textContent=bt?('best '+bt.toFixed(1)+'s'):'best · ';
+  if(run.findId){ const bt=save.best[run.findId]; $('bestT').style.display=bt?'':'none'; $('bestT').textContent=bt?('best '+bt.toFixed(1)+'s'):'';
     const total=run.finds.length, have=run.finds.filter(f=>f.got).length;
     $('findRun').style.display=total?'':'none'; if(total){ const ft=collectOf(run.L.world).kind+'|'+have+'/'+total; if($('findRun')._v!==ft){ $('findRun')._v=ft; $('findRun').innerHTML=mk(collectOf(run.L.world).kind)+' '+have+'/'+total; } }
   } else { $('bestT').style.display='none'; $('findRun').style.display='none'; }
@@ -1125,16 +1133,20 @@ function winLevel(){ mode='win'; const L=run.L; SFX.win(); stopMusic(); freeze=0
   $('winDeaths').innerHTML=`Burns ${run.deaths} ${noDeath?', flawless '+mk('check'):''}  ·  ${mk('aloe')} ${run.beamsGot}${run.comboMax>1?'  ·  x'+run.comboMax:''}`+(fcw.total?`  ·  ${mk(collectOf(L.world).kind)} ${fcw.have}/${fcw.total}${fcw.have>=fcw.total?' '+mk('check'):' <span style="opacity:.6">(replay for more)</span>'}`:'');
   $('winEarn').innerHTML=`<div class="earnLine">+ ${earn} aloe ${mk('aloe')}</div>`+(first?`<div class="earnLine">first clear bonus</div>`:'');
   $('winNext').style.display=(!endless && nextLevelIndex()!==-1)?'':'none';
-  run.winInfo={name:L.name, world:L.world, t:run.t, par:L.par, medal, isNewBest, deaths:run.deaths, finds:fcw, kind:collectOf(L.world).kind, endless};
-  need('share_result'); need('m_'+medal); need('sock_'+run.winInfo.kind);
+  run.winInfo={name:L.name, world:L.world, t:run.t, par:L.par, medal, isNewBest, deaths:run.deaths, finds:fcw, kind:collectOf(L.world).kind, endless, daily:!!dailyKey};
+  need(dailyKey?'share_daily':'share_result'); need('m_'+medal); need('sock_'+run.winInfo.kind);
   $('play-ui').classList.add('hidden'); showScreen('win'); updateWallet(); drawWinCard();
 }
 /* THE POSTCARD (step 6): Astra's result frame; in its window the world's ground under one long cool shadow and him
    waving in it; the level's name in her top band, the time and the medal in the next, the treasures and burns in the
    last. Redrawn as her pieces load. */
-function drawWinCard(){ const c=$('winCv'); if(!c||!run||!run.winInfo) return; const g=c.getContext('2d'), S=c.width/1080, w=run.winInfo;
+const CARD_LAYOUT={
+  result:{frame:'share_result',win:[100,290,880,540],bands:[[80,222,920,52],[80,866,920,70],[80,950,920,64]]},
+  daily:{frame:'share_daily',win:[100,376,880,484],bands:[[80,238,920,58],[80,306,920,58],[80,900,920,100]]} };
+function drawWinCard(){ const c=$('winCv'); if(!c||!run||!run.winInfo) return; drawPostcard(c,run.winInfo); }
+function drawPostcard(c,w){ const g=c.getContext('2d'), S=c.width/1080, Lay=CARD_LAYOUT[w.daily?'daily':'result'];
   g.clearRect(0,0,c.width,c.height);
-  const wx=100*S, wy=290*S, ww=880*S, wh=540*S;
+  const wx=Lay.win[0]*S, wy=Lay.win[1]*S, ww=Lay.win[2]*S, wh=Lay.win[3]*S;
   g.save(); g.beginPath(); g.rect(wx,wy,ww,wh); g.clip();
   const gt=A('ground_'+WORLD_DIRS[w.world]); if(gt){ g.fillStyle=g.createPattern(gt,'repeat'); } else g.fillStyle='#ead7a0'; g.fillRect(wx,wy,ww,wh);
   g.fillStyle='rgba(101,126,148,.55)'; g.beginPath(); g.moveTo(wx+ww*0.52,wy); g.lineTo(wx+ww*0.86,wy); g.lineTo(wx+ww*0.5,wy+wh); g.lineTo(wx+ww*0.16,wy+wh); g.closePath(); g.fill();
@@ -1143,15 +1155,29 @@ function drawWinCard(){ const c=$('winCv'); if(!c||!run||!run.winInfo) return; c
   if(save.cosmetics.body==='tomato'&&vic){ const cw=vic.width/4; g.drawImage(vic,3*cw,0,cw,vic.height,hx,hy,hs,hs); }
   else { const b=A('body_'+save.cosmetics.body); if(b) g.drawImage(b,hx,hy,hs,hs); }
   g.restore();
-  const fr=A('share_result'); if(fr) g.drawImage(fr,0,0,c.width,c.height); else { g.strokeStyle='#8a7a56'; g.lineWidth=3; g.strokeRect(wx,wy,ww,wh); }
-  const band=(r,txt,font)=>{ g.font=font; g.fillStyle='#2b2a20'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(txt,(r[0]+r[2]/2)*S,(r[1]+r[3]/2)*S); };
-  band([80,222,920,52],w.endless?'Shadow Run':w.name,`400 ${Math.round(44*S)}px "Bree Serif",Georgia,serif`);
+  const fr=A(Lay.frame); if(fr) g.drawImage(fr,0,0,c.width,c.height); else { g.strokeStyle='#8a7a56'; g.lineWidth=3; g.strokeRect(wx,wy,ww,wh); }
+  const B=Lay.bands, band=(r,txt,font)=>{ g.font=font; g.fillStyle='#2b2a20'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(txt,(r[0]+r[2]/2)*S,(r[1]+r[3]/2)*S); };
+  const bree=n=>`400 ${Math.round(n*S)}px "Bree Serif",Georgia,serif`, atk=n=>`700 ${Math.round(n*S)}px "Atkinson Hyperlegible",sans-serif`;
+  const burns=w.deaths?('burned '+w.deaths+(w.deaths===1?' time':' times')):'never burned';
+  if(w.daily){ const d=new Date(), MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    band(B[0],'DAILY CHALLENGE',bree(46)); band(B[1],d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear()+'   seed '+seedWord(dailyKey||dateKey())+'   rules '+RULES_V,atk(30));
+    band(B[2],'Time '+w.t.toFixed(1)+' s   '+burns,atk(42)); return; }
+  band(B[0],w.endless?'Shadow Run':w.name,bree(44));
   const md=A('m_'+w.medal), ms=62*S;
-  band([80,866,920,70],'Time '+w.t.toFixed(1)+' s'+(w.endless?'':'   par '+w.par+' s')+(w.isNewBest?'   new best':''),`700 ${Math.round(40*S)}px "Atkinson Hyperlegible",sans-serif`);
-  if(md&&!w.endless) g.drawImage(md,96*S,(866+35)*S-ms/2,ms,ms);
+  band(B[1],'Time '+w.t.toFixed(1)+' s'+(w.endless?'':'   par '+w.par+' s')+(w.isNewBest?'   new best':''),atk(40));
+  if(md&&!w.endless) g.drawImage(md,96*S,(B[1][1]+B[1][3]/2)*S-ms/2,ms,ms);
   const sk=A('sock_'+w.kind);
-  band([80,950,920,64],(w.finds.total?w.finds.have+' of '+w.finds.total+' found   ':'')+(w.deaths?('burned '+w.deaths+(w.deaths===1?' time':' times')):'never burned'),`700 ${Math.round(34*S)}px "Atkinson Hyperlegible",sans-serif`);
-  if(sk&&w.finds.total) g.drawImage(sk,96*S,(950+32)*S-26*S,52*S,52*S); }
+  band(B[2],(w.finds.total?w.finds.have+' of '+w.finds.total+' found   ':'')+burns,atk(34));
+  if(sk&&w.finds.total) g.drawImage(sk,96*S,(B[2][1]+B[2][3]/2)*S-26*S,52*S,52*S); }
+/* Share (step 7): the postcard at 1080 as a file after the tap (the system sheet), else a download, else the words */
+function shareWin(){ if(!run||!run.winInfo) return; const w=run.winInfo, c=document.createElement('canvas'); c.width=c.height=1080; drawPostcard(c,w);
+  const url='https://lucidwinds.com/satellites/tomato-man/', txt=w.daily?('Tomato Man daily challenge in '+w.t.toFixed(1)+' s, '+(w.deaths?'burned '+w.deaths:'never burned')):('Tomato Man, '+w.name+' in '+w.t.toFixed(1)+' s');
+  const words=()=>{ try{ if(navigator.share){ navigator.share({text:txt,url}).catch(()=>{}); return; } }catch(e){} try{ navigator.clipboard.writeText(txt+' '+url); toast('copied','var(--leaf)'); }catch(e){} };
+  if(!c.toBlob){ words(); return; }
+  c.toBlob(b=>{ if(!b){ words(); return; } const name=(w.daily?'tomato-man-daily':'tomato-man-'+w.name.toLowerCase().replace(/[^a-z0-9]+/g,'-'))+'.png'; let f=null;
+    try{ f=new File([b],name,{type:'image/png'}); }catch(e){}
+    try{ if(f&&navigator.canShare&&navigator.canShare({files:[f]})){ navigator.share({files:[f],text:txt+' '+url}).catch(()=>{}); return; } }catch(e){}
+    try{ const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500); }catch(e){ words(); } },'image/png'); }
 function nextLevelIndex(){ const w=LEVELS[li].world, wl=levelsOfWorld(w), pos=wl.findIndex(o=>o.i===li);
   if(pos>=0 && pos<wl.length-1) return wl[pos+1].i;                                  // next level within this world
   for(let nw=w+1;nw<WORLDS.length;nw++){ const nl=levelsOfWorld(nw); if(nl.length&&worldUnlocked(nw)) return nl[0].i; } // else first of next world
@@ -1587,7 +1613,7 @@ function openWorld(wi){ curWorld=wi; $('lvlWorldName').textContent=WORLDS[wi].na
 let shopTab='upgrades';
 function buildShop(){ updateWallet(); const grid=$('shopGrid'); grid.innerHTML='';
   if(shopTab==='upgrades'){ UPGRADES.forEach(u=>{ const t=upgTier(u.id), maxed=t>=UPG_MAX, price=upgPrice(u), gated=upgGateLocked(u);
-    const sub=u.desc+', '+(maxed?'maxed out':'next: '+u.eff(t+1))+(gated?` · needs ${GOLD_GATE} gold medals (have ${goldCount()})`:'');
+    const sub=u.desc.replace(/\.$/,'')+', '+(maxed?'maxed out':'next: '+u.eff(t+1))+(gated?` · needs ${GOLD_GATE} gold medals (have ${goldCount()})`:'');
     const label=maxed?'MAX':(gated?mk('lock'):price);
     const c=card(`${u.name} <span class="badge">${t}/${UPG_MAX}</span>`, sub, label, maxed||gated||save.beams<price);
     if(!maxed&&!gated) c.addEventListener('click',()=>{ if(save.beams>=price){ save.beams-=price; save.upgrades[u.id]=t+1; persist(); SFX.buy(); buildShop(); } else SFX.deny(); });
@@ -1680,7 +1706,7 @@ function buildHowto(){ save.seenHowto=true; persist(); const q=$('htQuick');
    can't perform right now never wedges the tutorial). Informational tips keep
    the 5.2s read time. A 5s quiet gap of real play still separates marks. */
 let coachHideT=0, coachGapT=0, coachDone=null, coachSnap=null;
-function coach(text,ic,d){ const c=$('coach'); if(!c) return; c.innerHTML=(ic?`<span class="ic">${mk(ic)}</span>`:'')+text; c.classList.add('show');
+function coach(text,ic,d){ const c=$('coach'); if(!c) return; const lf=$('lvlFlash'); if(lf) lf.style.opacity='0'; c.innerHTML=(ic?`<span class="ic">${mk(ic)}</span>`:'')+text; c.classList.add('show');
   coachDone=d||null;
   coachSnap={x:(typeof P!=='undefined'?P.x:0), y:(typeof P!=='undefined'?P.y:0),
              sh:run&&run.charges?run.charges.shade:0, sp:run&&run.charges?run.charges.spf:0,
@@ -1743,6 +1769,7 @@ $('shopBack').onclick=()=>{SFX.click();showScreen('title');}; $('buildBack').onc
 $('winMenu').onclick=()=>{SFX.click(); if(endless){showScreen('title');} else {openWorld(LEVELS[li].world);} };
 $('winRetry').onclick=()=>{SFX.click(); if(endless) startEndless(); else startLevel(li);};
 $('winNext').onclick=()=>{SFX.click(); const n=nextLevelIndex(); if(n!==-1) startLevel(n);};
+$('winShare').onclick=()=>{ SFX.click(); shareWin(); };
 $('pResume').onclick=()=>{SFX.click();togglePause();};
 $('pHow').onclick=()=>{ SFX.click(); buildHowto(); $('pause').classList.remove('show'); $('howto').classList.add('show'); howFromPause=true; }; $('pRetry').onclick=()=>{SFX.click(); if(endless)startEndless(); else startLevel(li);};
 $('pMenu').onclick=()=>{SFX.click(); stopMusic(); if(endless)showScreen('title'); else openWorld(LEVELS[li].world);};
@@ -1754,8 +1781,12 @@ function dateKey(){ const d=new Date(); return d.getFullYear()*10000+(d.getMonth
 function keyToDate(k){ const y=Math.floor(k/10000),m=Math.floor(k/100)%100,d=k%100; return new Date(y,m-1,d).getTime(); }
 function bumpStreak(k){ if(save.dailyLast===k) return; const prev=save.dailyLast; save.dailyLast=k;
   if(prev){ const diff=Math.round((keyToDate(k)-keyToDate(prev))/86400000); save.dailyStreak=(diff===1)?save.dailyStreak+1:1; } else save.dailyStreak=1; }
+const SEED_WORDS=['SALT','TIDE','DUNE','KELP','SHELL','GULL','CRAB','REEF','SURF','WAVE','SAND','PIER','PALM','CONE','LIME',
+  'MANGO','PEACH','MELON','BASIL','OLIVE','CORAL','PEARL','AMBER','EMBER','BLAZE','NOON','DUSK','DAWN','HAZE','GLARE'];
+const RULES_V='v7';   // the daily's ruleset: bump when genLevel or the physics change, so two cards compare like for like
+function seedWord(k){ return SEED_WORDS[(k*7919)%SEED_WORDS.length]; }
 function startDaily(){ const k=dateKey(); const world=k%5; const L=genLevel(world,5,k);
-  L.name='Daily Challenge'; L.sub='Everyone gets the same climb today.';
+  L.name='Daily Challenge'; L.sub='Seed '+seedWord(k)+'. Everyone gets the same climb today.';
   const done=!!save.dailyBest[k];
   startLevel(0,{level:L,endless:true,daily:k});
   if(done) setTimeout(()=>toast('today\'s best '+save.dailyBest[k].toFixed(1)+'s','var(--beam)'),900); }
@@ -1779,7 +1810,10 @@ window.__TM={save,LEVELS,WORLDS,genLevel,startLevel,frame,P,keys,winLevel,burn,_
   // the shot tool's handles (lucid-winds tools/tomato-man-tests/shoot.mjs): screens, a held clock, simulated time
   go, showScreen, openWorld, startDaily, togglePause, buildHowto, render:()=>render(),
   hold:on=>{ devHold=!!on; }, exposure:v=>{ P.exp=v; },
-  seek:t=>{ const n=Math.round(t*60); for(let k=0;k<n;k++){ if(screen==='play'&&mode==='play') update(1/60); } render(); }};
+  seek:t=>{ const n=Math.round(t*60); for(let k=0;k<n;k++){ if(screen==='play'&&mode==='play') update(1/60); } render(); },
+  look:(b,h)=>{ if(!save.cosmetics.owned.includes(b)) save.cosmetics.owned.push(b); if(h&&!save.cosmetics.owned.includes(h)) save.cosmetics.owned.push(h);
+    save.cosmetics.body=b; save.cosmetics.hat=h||'none'; needLook(); needBuilder(); },
+  postcard:()=>{ if(!run||!run.winInfo) return null; const c=document.createElement('canvas'); c.width=c.height=1080; drawPostcard(c,run.winInfo); return c.toDataURL('image/png'); }};
 })();
 </script>
 <script>

@@ -801,10 +801,10 @@ function mvVec(){ if(stick.active){ let x=stick.dx/stick.max,y=stick.dy/stick.ma
   const m=Math.hypot(x,y); if(m>1){x/=m;y/=m;} return {x,y}; }
 
 /* ===================== LOOP ===================== */
-let last=performance.now(), nowT=0;
+let last=performance.now(), nowT=0, devHold=false;   // devHold: the shot tool stops the clock (window.__TM.hold)
 function frame(ts){ let dt=Math.min((ts-last)/1000,0.05); last=ts; nowT=ts/1000;
   if(freeze>0){ freeze-=dt; dt=0; }
-  if(screen==='play'&&mode==='play') update(dt);
+  if(screen==='play'&&mode==='play'&&!devHold) update(dt);
   render(); requestAnimationFrame(frame); }
 
 function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
@@ -1448,7 +1448,11 @@ $('resetSave').onclick=()=>{ if(confirm('Reset ALL progress, aloe and unlocks?')
 loadAssets(); resize(); updateWallet(); buildWorldMap(); showScreen('title');
 if(!save.seenHowto){ buildHowto(); showScreen('howto'); }   // first-ever launch: teach before you play
 requestAnimationFrame(frame);
-window.__TM={save,LEVELS,WORLDS,genLevel,startLevel,frame,P,keys,winLevel,burn,_run:()=>run,_mode:()=>mode}; // debug hook
+window.__TM={save,LEVELS,WORLDS,genLevel,startLevel,frame,P,keys,winLevel,burn,_run:()=>run,_mode:()=>mode, // debug hook
+  // the shot tool's handles (lucid-winds tools/tomato-man-tests/shoot.mjs): screens, a held clock, simulated time
+  go, showScreen, openWorld, startDaily, togglePause, buildHowto, render:()=>render(),
+  hold:on=>{ devHold=!!on; }, exposure:v=>{ P.exp=v; },
+  seek:t=>{ const n=Math.round(t*60); for(let k=0;k<n;k++){ if(screen==='play'&&mode==='play') update(1/60); } render(); }};
 })();
 </script>
 <script>

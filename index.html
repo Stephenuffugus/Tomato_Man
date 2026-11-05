@@ -125,11 +125,11 @@
   .toptabs{position:fixed;top:calc(env(safe-area-inset-top,8px) + 8px);right:14px;z-index:20;display:flex;gap:8px;}
   .badge{display:inline-block;background:var(--leaf);color:#06250e;font-size:11px;font-weight:900;border-radius:8px;padding:2px 6px;margin-left:6px;}
   /* ---------- coach marks (inline tutorial) ---------- */
-  #coach{position:fixed;left:50%;top:43%;transform:translate(-50%,-50%);
+  #coach{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 150px);transform:translate(-50%,0);
     max-width:min(84vw,410px);background:rgba(11,22,38,.92);border:2px solid rgba(255,210,120,.65);border-radius:16px;
     padding:11px 16px;color:#fff6e6;font-weight:700;font-size:14px;line-height:1.35;text-align:center;z-index:9;
     opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;box-shadow:0 6px 24px rgba(0,0,0,.45);}
-  #coach.show{opacity:1;transform:translate(-50%,calc(-50% - 4px));}
+  #coach.show{opacity:1;transform:translate(-50%,-4px);}
   #coach .ic{font-size:21px;display:block;margin-bottom:1px;}
   /* ---------- how to play ---------- */
   #howto .htList{display:flex;flex-direction:column;gap:9px;width:100%;max-width:440px;margin-top:4px;text-align:left;}
@@ -154,7 +154,7 @@
   .ghost-btn{background:rgba(255,248,226,.94);color:var(--ink);border:2px solid rgba(43,42,32,.45);min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:16px}
   .iconbtn{background:rgba(255,248,226,.94);color:var(--ink);border:2px solid rgba(43,42,32,.35);width:48px;height:48px;font-size:22px}
   .wallet{color:var(--ink);text-shadow:none;border:10px solid transparent;border-image:url(art/ui/aloe_wallet_chip_frame.png?v=20261105a) 28 fill / 10px stretch;padding:0 4px;font-size:16px}
-  .wallet .ic{color:var(--aloeG)}
+  .wallet .ic{display:none}   /* her chip carries its own aloe */ .wallet{padding-left:22px}
   .tab{color:var(--ink);border-color:rgba(43,42,32,.4);background:rgba(255,248,226,.7);min-height:44px} .tab.on{background:var(--tomatoR);color:#fff8ea;border-color:var(--tomatoR)}
   .toggleRow{background:rgba(255,248,226,.85);color:var(--ink);min-height:52px} .sw{background:rgba(43,42,32,.25)} .sw.on{background:var(--calyx)}
   /* world postcards: her scene, the name in her band, the finds on a chip */
@@ -197,6 +197,12 @@
   #lvlFlash{color:var(--ink);text-shadow:0 2px 0 rgba(255,248,226,.95),0 0 10px rgba(255,248,226,.9);font-family:'Bree Serif',Georgia,serif;font-weight:400}
   #lvlFlash small{font-family:'Atkinson Hyperlegible',sans-serif;font-weight:700}
   #comboTag{text-shadow:0 3px 0 #7a5a00,0 0 8px rgba(43,42,32,.4)}
+  #burnStrip{top:calc(env(safe-area-inset-top,8px) + 96px);left:50%;transform:translateX(-50%);white-space:nowrap;opacity:0;transition:opacity .25s;
+    background:rgba(255,248,226,.94);color:#8f2a17;border:2px solid rgba(143,42,23,.5);border-radius:14px;padding:6px 14px;font:400 18px 'Bree Serif',Georgia,serif;text-shadow:none}
+  #burnStrip.show{opacity:1}
+  #winCard{width:min(92vw,400px);aspect-ratio:1;margin:0 auto}
+  #winCv{width:100%;height:100%;display:block}
+  .srOnly{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   #pauseBtn{width:48px;height:48px;background:rgba(255,248,226,.92);color:var(--ink);border:2px solid rgba(43,42,32,.4);font-size:22px}
   #btns .btn{position:relative;border:0;background-color:rgba(35,49,74,.5);background-position:center;background-size:100% 100%;background-repeat:no-repeat;color:var(--ink)}
   #bDash{background-image:url(art/ui/button_dash.svg?v=20261105a)} #bShade{background-image:url(art/ui/button_shade.svg?v=20261105a)}
@@ -254,6 +260,7 @@
   <div id="pauseBtn" role="button" aria-label="Pause"><svg class="mk" aria-hidden="true"><use href="#tm-pause"/></svg></div>
   <div id="comboTag"></div>
   <div id="lvlFlash" class="panel"></div>
+  <div id="burnStrip" class="panel" role="status"></div>
   <div id="btns">
     <div id="bIce" class="btn hidden" role="button" aria-label="Ice"><span class="w">ICE</span><span class="c" id="cIce">0</span></div>
     <div id="bScreen" class="btn" role="button" aria-label="SPF"><span class="w">SPF</span><span class="c" id="cScreen">0</span></div>
@@ -303,15 +310,16 @@
 
 <!-- ===== WIN ===== -->
 <div id="win" class="overlay center">
-  <h2 class="title" id="winTitle" style="color:var(--leaf)">YOU MADE IT</h2>
-  <div class="medal" id="winMedal"></div>
-  <div class="statline" id="winTime"></div>
-  <div class="statline" id="winDeaths"></div>
-  <div id="winEarn" style="margin:10px 0"></div>
-  <div class="row">
-    <button class="ghost-btn" id="winMenu">Levels</button>
-    <button class="ghost-btn" id="winRetry">Retry</button>
+  <div id="winCard"><canvas id="winCv" width="760" height="760" aria-hidden="true"></canvas></div>
+  <h2 class="title srOnly" id="winTitle">YOU MADE IT</h2>
+  <div class="medal srOnly" id="winMedal"></div>
+  <div class="statline srOnly" id="winTime"></div>
+  <div class="statline srOnly" id="winDeaths"></div>
+  <div id="winEarn" style="margin:8px 0 2px"></div>
+  <div class="row" style="margin-top:8px">
     <button class="big-btn green" id="winNext">Next <svg class="mk" aria-hidden="true"><use href="#tm-next"/></svg></button>
+    <button class="ghost-btn" id="winRetry"><svg class="mk" aria-hidden="true"><use href="#tm-retry"/></svg> Again</button>
+    <button class="ghost-btn" id="winMenu">Levels</button>
   </div>
 </div>
 
@@ -322,6 +330,7 @@
     <button class="big-btn green" id="pResume">Resume</button>
     <button class="ghost-btn" id="pRetry">Restart Level</button>
     <button class="ghost-btn" id="pMenu">Quit to Levels</button>
+    <button class="ghost-btn" id="pHow">How to Play</button>
   </div>
 </div>
 
@@ -547,6 +556,8 @@ const ASSET_LAZY={
   angry_glare:'art/sun/angry_sun_glare.webp', angry_wind_up:'art/sun/angry_sun_wind_up.webp', angry_lunge:'art/sun/angry_sun_lunge.webp',
   angry_panting:'art/sun/angry_sun_panting.webp', corona:'art/sun/eclipse_corona.webp',
   share_result:'art/sharing/result_square.webp', share_daily:'art/sharing/daily_card.webp',
+  m_gold:'art/ui/medal_gold.svg', m_silver:'art/ui/medal_silver.svg', m_bronze:'art/ui/medal_bronze.svg',
+  sock_shell:'art/ui/progress_shell.png', sock_cone:'art/ui/progress_cone.png', sock_gem:'art/ui/progress_gem.png',
   body_strawberry:'art/hero/strawberry_body.webp', body_orange:'art/hero/orange_body.webp', body_lemon:'art/hero/lemon_body.webp', body_lime:'art/hero/lime_body.webp', body_peach:'art/hero/peach_body.webp', body_cherry:'art/hero/cherry_body.webp', body_bellpepper:'art/hero/bell_pepper_body.webp', body_eggplant:'art/hero/eggplant_body.webp', body_avocado:'art/hero/avocado_body.webp', body_heirloom:'art/hero/heirloom_body.webp', body_pickle:'art/hero/pickle_body.webp', body_golden:'art/hero/golden_body.webp', body_sunburn:'art/hero/sunburn_body.webp',
   hat_sunhat:'art/hero/hats/sun_hat.webp', hat_cap:'art/hero/hats/ball_cap.webp', hat_sombrero:'art/hero/hats/tiny_sombrero.webp', hat_lettuce:'art/hero/hats/lettuce_cap.webp', hat_visor:'art/hero/hats/lifeguard_visor.webp', hat_umbrella:'art/hero/hats/umbrella_hat.webp', hat_crown:'art/hero/hats/sun_crown.webp', hat_shell_crown:'art/hero/hats/shell_crown.webp', hat_cone_hat:'art/hero/hats/ice_cream_hat.webp', hat_cool_shades:'art/hero/hats/cool_shades.webp', hat_gem_crown:'art/hero/hats/gem_crown.webp', hat_eclipse_halo:'art/hero/hats/eclipse_halo.webp',
   bbody:'art/builder/body.webp', bhead_tomato:'art/builder/tomato_head.webp', bhead_strawberry:'art/builder/strawberry_head.webp', bhead_orange:'art/builder/orange_head.webp', bhead_lemon:'art/builder/lemon_head.webp', bhead_lime:'art/builder/lime_head.webp', bhead_peach:'art/builder/peach_head.webp', bhead_cherry:'art/builder/cherry_head.webp', bhead_bellpepper:'art/builder/bell_pepper_head.webp', bhead_eggplant:'art/builder/eggplant_head.webp', bhead_avocado:'art/builder/avocado_head.webp', bhead_heirloom:'art/builder/heirloom_head.webp', bhead_pickle:'art/builder/pickle_head.webp', bhead_golden:'art/builder/golden_head.webp', bhead_sunburn:'art/builder/sunburn_head.webp',
@@ -555,7 +566,8 @@ const ASSET_LAZY={
 const ASSETS={};
 function loadOne(k,path){ if(k in ASSETS) return; ASSETS[k]=null; const img=new Image();
   img.onload=()=>{ ASSETS[k]=img; if(screen==='builder'&&typeof drawBuilderPreview==='function') drawBuilderPreview();
-    if(k==='menu') document.documentElement.style.setProperty('--tm-menu','url("'+img.src+'")'); };
+    if(k==='menu') document.documentElement.style.setProperty('--tm-menu','url("'+img.src+'")');
+    if(screen==='win'&&typeof drawWinCard==='function') drawWinCard(); };
   img.onerror=()=>{ ASSETS[k]=null; }; img.src=path+'?v='+ART_V; }
 /* the equipped produce and hat for play, and everything the builder shows */
 function needLook(){ const b=save.cosmetics.body, h=save.cosmetics.hat; if(b!=='tomato') need('body_'+b); if(h!=='none') need('hat_'+h); }
@@ -888,6 +900,7 @@ function flash(L){ const f=$('lvlFlash'); f.innerHTML=`${L.name}<small>${L.sub}<
 /* the toast: her pill, ink text, a dot in the call's colour (internal strings only, they may carry a mark) */
 function toast(msg,col){ const t=$('toast'); t.innerHTML=`<span class="tdot" style="background:${col||'var(--tomato)'}"></span>`+msg;
   t.style.transition='none'; t.style.opacity='1'; requestAnimationFrame(()=>{ t.style.transition='opacity .7s'; t.style.opacity='0'; }); }
+function burnStrip(msg){ const b=$('burnStrip'); if(!b) return; b.textContent=msg; b.classList.add('show'); clearTimeout(burnStrip._t); burnStrip._t=setTimeout(()=>b.classList.remove('show'),2000); }
 function showCombo(n){ const c=$('comboTag'); c.textContent='x'+n+' COMBO'; c.style.transition='none'; c.style.opacity='1';
   requestAnimationFrame(()=>{ c.style.transition='opacity .6s'; c.style.opacity='0'; }); }
 
@@ -1077,7 +1090,7 @@ function updateHUD(onHot){ const f=run.feel;
 }
 function burn(){ if(run.coolerBox){ run.coolerBox=false; P.exp=0; P.vx=0;P.vy=0; run.screenT=Math.max(run.screenT,1.2);
     run.spawnAt=run.t; toast('COOLER BOX','#9fe0a0'); SFX.spf(); return; } // revive in place, keep combo
-  run.deaths++; save.totalBurns++; persist(); toast('BURNED'); run.shake=save.settings.reduce?0:0.58; freeze=save.settings.reduce?0:0.09;
+  run.deaths++; save.totalBurns++; persist(); burnStrip('Burned at '+run.t.toFixed(1)+' s'); run.shake=save.settings.reduce?0:0.58; freeze=save.settings.reduce?0:0.09;
   SFX.burn(); spawnParts(P.x,P.y,24,'255,80,40',190,0.75); spawnRing(P.x,P.y,'255,95,55',72,0.5); screenFlash('255,55,30',0.55);
   run.burnFx={x:P.x,y:P.y,t:0}; run.respawnT=save.settings.reduce?0:0.4;
   run.combo=0; P.exp=0; P.x=run.cp.x; P.y=run.cp.y; P.vx=0;P.vy=0; P.dashT=0; P.dashCd=0; P.dashStock=0; run.sinceSafe=0; run.spawnAt=run.t;
@@ -1112,8 +1125,33 @@ function winLevel(){ mode='win'; const L=run.L; SFX.win(); stopMusic(); freeze=0
   $('winDeaths').innerHTML=`Burns ${run.deaths} ${noDeath?', flawless '+mk('check'):''}  ·  ${mk('aloe')} ${run.beamsGot}${run.comboMax>1?'  ·  x'+run.comboMax:''}`+(fcw.total?`  ·  ${mk(collectOf(L.world).kind)} ${fcw.have}/${fcw.total}${fcw.have>=fcw.total?' '+mk('check'):' <span style="opacity:.6">(replay for more)</span>'}`:'');
   $('winEarn').innerHTML=`<div class="earnLine">+ ${earn} aloe ${mk('aloe')}</div>`+(first?`<div class="earnLine">first clear bonus</div>`:'');
   $('winNext').style.display=(!endless && nextLevelIndex()!==-1)?'':'none';
-  $('play-ui').classList.add('hidden'); showScreen('win'); updateWallet();
+  run.winInfo={name:L.name, world:L.world, t:run.t, par:L.par, medal, isNewBest, deaths:run.deaths, finds:fcw, kind:collectOf(L.world).kind, endless};
+  need('share_result'); need('m_'+medal); need('sock_'+run.winInfo.kind);
+  $('play-ui').classList.add('hidden'); showScreen('win'); updateWallet(); drawWinCard();
 }
+/* THE POSTCARD (step 6): Astra's result frame; in its window the world's ground under one long cool shadow and him
+   waving in it; the level's name in her top band, the time and the medal in the next, the treasures and burns in the
+   last. Redrawn as her pieces load. */
+function drawWinCard(){ const c=$('winCv'); if(!c||!run||!run.winInfo) return; const g=c.getContext('2d'), S=c.width/1080, w=run.winInfo;
+  g.clearRect(0,0,c.width,c.height);
+  const wx=100*S, wy=290*S, ww=880*S, wh=540*S;
+  g.save(); g.beginPath(); g.rect(wx,wy,ww,wh); g.clip();
+  const gt=A('ground_'+WORLD_DIRS[w.world]); if(gt){ g.fillStyle=g.createPattern(gt,'repeat'); } else g.fillStyle='#ead7a0'; g.fillRect(wx,wy,ww,wh);
+  g.fillStyle='rgba(101,126,148,.55)'; g.beginPath(); g.moveTo(wx+ww*0.52,wy); g.lineTo(wx+ww*0.86,wy); g.lineTo(wx+ww*0.5,wy+wh); g.lineTo(wx+ww*0.16,wy+wh); g.closePath(); g.fill();
+  const hs=wh*0.92, hx=wx+ww*0.5-hs/2, hy=wy+wh-hs*0.98, vic=A('hero_victory');
+  g.fillStyle='rgba(0,0,0,.14)'; g.beginPath(); g.ellipse(wx+ww*0.5,wy+wh-hs*0.1,hs*0.2,hs*0.06,0,0,TAU); g.fill();
+  if(save.cosmetics.body==='tomato'&&vic){ const cw=vic.width/4; g.drawImage(vic,3*cw,0,cw,vic.height,hx,hy,hs,hs); }
+  else { const b=A('body_'+save.cosmetics.body); if(b) g.drawImage(b,hx,hy,hs,hs); }
+  g.restore();
+  const fr=A('share_result'); if(fr) g.drawImage(fr,0,0,c.width,c.height); else { g.strokeStyle='#8a7a56'; g.lineWidth=3; g.strokeRect(wx,wy,ww,wh); }
+  const band=(r,txt,font)=>{ g.font=font; g.fillStyle='#2b2a20'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(txt,(r[0]+r[2]/2)*S,(r[1]+r[3]/2)*S); };
+  band([80,222,920,52],w.endless?'Shadow Run':w.name,`400 ${Math.round(44*S)}px "Bree Serif",Georgia,serif`);
+  const md=A('m_'+w.medal), ms=62*S;
+  band([80,866,920,70],'Time '+w.t.toFixed(1)+' s'+(w.endless?'':'   par '+w.par+' s')+(w.isNewBest?'   new best':''),`700 ${Math.round(40*S)}px "Atkinson Hyperlegible",sans-serif`);
+  if(md&&!w.endless) g.drawImage(md,96*S,(866+35)*S-ms/2,ms,ms);
+  const sk=A('sock_'+w.kind);
+  band([80,950,920,64],(w.finds.total?w.finds.have+' of '+w.finds.total+' found   ':'')+(w.deaths?('burned '+w.deaths+(w.deaths===1?' time':' times')):'never burned'),`700 ${Math.round(34*S)}px "Atkinson Hyperlegible",sans-serif`);
+  if(sk&&w.finds.total) g.drawImage(sk,96*S,(950+32)*S-26*S,52*S,52*S); }
 function nextLevelIndex(){ const w=LEVELS[li].world, wl=levelsOfWorld(w), pos=wl.findIndex(o=>o.i===li);
   if(pos>=0 && pos<wl.length-1) return wl[pos+1].i;                                  // next level within this world
   for(let nw=w+1;nw<WORLDS.length;nw++){ const nl=levelsOfWorld(nw); if(nl.length&&worldUnlocked(nw)) return nl[0].i; } // else first of next world
@@ -1650,15 +1688,15 @@ function coach(text,ic,d){ const c=$('coach'); if(!c) return; c.innerHTML=(ic?`<
   coachHideT=d?12:5.2; }
 function hideCoach(){ const c=$('coach'); if(c) c.classList.remove('show'); coachHideT=0; coachDone=null; }
 const TUT=[
-  {id:'move', ic:'move', x:'Drag your left thumb to move. The sun cooks you, get into the shadow.', t:()=>run.t<3,
+  {id:'move', ic:'move', x:'Stay in the shade. Move with your left thumb.', t:()=>run.t<3,
     d:s=>dist(P.x,P.y,s.x,s.y)>70},
   {id:'shade', ic:'shade', x:'You’re on shade, safe ground. It slides with the sun, so ride it upward.', t:()=>run.t>1.6 && shadedGeom(P.x,P.y)},
   {id:'aloe', ic:'aloe', x:'A glowing aloe. Dash into the sunlight to grab it, then dash back to shade.', t:()=>run.beams.some(b=>!b.got&&b.lit&&dist(P.x,P.y,b.x,b.y)<230),
     d:()=>run.beams.some(b=>b.got)},
   {id:'find', ic:'shell', x:'Hidden treasure. Grab all 3 in a level to 100% it, some are off the beaten path.', t:()=>run.finds.some(f=>!f.got&&dist(P.x,P.y,f.x,f.y)<250)},
-  {id:'dash', ic:'dash', x:'Tap DASH to burst across a thin strip of sun.', t:()=>run.t>6,
+  {id:'dash', ic:'dash', x:'A thin strip of sun ahead? Tap DASH and cross it fast.', t:()=>run.t>6,
     d:s=>(run.dashUses||0)>s.da},
-  {id:'shadeDrop', ic:'shade', x:'No shadow ahead? Tap SHADE to drop your own safe ground and inch across.', t:()=>run.charges.shade>0 && run.t>4 && !shadedGeom(P.x,P.y),
+  {id:'shadeDrop', ic:'shade', x:'No shade ahead? Tap SHADE to drop your own.', t:()=>run.charges.shade>0 && run.t>4 && !shadedGeom(P.x,P.y),
     d:s=>run.charges.shade<s.sh},
   {id:'checkpoint', ic:'check', x:'Checkpoint. Burn now and you respawn right here.', t:()=>run.cpHit.some(Boolean)},
   {id:'burn', ic:'sun', x:'Burned. Keep an eye on the Exposure bar, reach shade before it fills.', t:()=>run.deaths>0},
@@ -1697,14 +1735,16 @@ $('tEndless').onclick=()=>{ SFX.click(); startEndless(); };
 $('tShop').onclick=()=>go('shop'); $('tBuild').onclick=()=>go('builder'); $('tSet').onclick=()=>go('settings');
 $('tHow').onclick=()=>{ SFX.click(); buildHowto(); showScreen('howto'); };
 $('tExit').onclick=()=>{ SFX.click(); window.SWS_EXIT(); };
-$('howBack').onclick=()=>{ SFX.click(); showScreen('title'); };
-$('howPlay').onclick=()=>{ SFX.click(); go('map'); };
+let howFromPause=false;   // How to Play opened from pause goes back to pause, not to the title
+$('howBack').onclick=()=>{ SFX.click(); if(howFromPause){ howFromPause=false; $('howto').classList.remove('show'); $('pause').classList.add('show'); return; } showScreen('title'); };
+$('howPlay').onclick=()=>{ SFX.click(); if(howFromPause){ howFromPause=false; $('howto').classList.remove('show'); $('pause').classList.add('show'); return; } go('map'); };
 $('mapBack').onclick=()=>{SFX.click();showScreen('title');}; $('lvlBack').onclick=()=>{SFX.click();buildWorldMap();showScreen('map');};
 $('shopBack').onclick=()=>{SFX.click();showScreen('title');}; $('buildBack').onclick=()=>{SFX.click();showScreen('title');}; $('setBack').onclick=()=>{SFX.click();showScreen('title');};
 $('winMenu').onclick=()=>{SFX.click(); if(endless){showScreen('title');} else {openWorld(LEVELS[li].world);} };
 $('winRetry').onclick=()=>{SFX.click(); if(endless) startEndless(); else startLevel(li);};
 $('winNext').onclick=()=>{SFX.click(); const n=nextLevelIndex(); if(n!==-1) startLevel(n);};
-$('pResume').onclick=()=>{SFX.click();togglePause();}; $('pRetry').onclick=()=>{SFX.click(); if(endless)startEndless(); else startLevel(li);};
+$('pResume').onclick=()=>{SFX.click();togglePause();};
+$('pHow').onclick=()=>{ SFX.click(); buildHowto(); $('pause').classList.remove('show'); $('howto').classList.add('show'); howFromPause=true; }; $('pRetry').onclick=()=>{SFX.click(); if(endless)startEndless(); else startLevel(li);};
 $('pMenu').onclick=()=>{SFX.click(); stopMusic(); if(endless)showScreen('title'); else openWorld(LEVELS[li].world);};
 function startEndless(){ endlessWorld=Math.min(4, Math.floor(save.levelsCleared/3));
   const seed=(Date.now()%1000000)+save.levelsCleared*7; const diff=3+Math.min(8,Math.floor(save.endlessBest/4));
@@ -1732,7 +1772,8 @@ $('resetSave').onclick=()=>{ if(confirm('Reset ALL progress, aloe and unlocks?')
 
 /* ===================== BOOT ===================== */
 loadAssets(); resize(); updateWallet(); buildWorldMap(); showScreen('title');
-if(!save.seenHowto){ buildHowto(); showScreen('howto'); }   // first-ever launch: teach before you play
+/* step 6 (DECISION 4): no How to Play wall before the first move; Dawn Ribbon's coach marks teach in play, and How to
+   Play is one tap away on the title and from pause */
 requestAnimationFrame(frame);
 window.__TM={save,LEVELS,WORLDS,genLevel,startLevel,frame,P,keys,winLevel,burn,_run:()=>run,_mode:()=>mode, // debug hook
   // the shot tool's handles (lucid-winds tools/tomato-man-tests/shoot.mjs): screens, a held clock, simulated time

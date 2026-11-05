@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b1626">
 <title>TOMATO MAN</title>
@@ -18,19 +18,25 @@
 <meta name="twitter:title" content="Tomato Man">
 <meta name="twitter:description" content="The sun is death. Shade is the only ground, and it moves. Dash the shadows, gather aloe, don't get burned.">
 <meta name="twitter:image" content="https://stephenuffugus.github.io/Tomato_Man/thumbnail.png">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%8D%85</text></svg>">
+<link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Tomato Man">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
+  /* Sunstruck type (Astra's pack v1): Bree Serif for headings, Atkinson Hyperlegible for controls and copy. Both OFL,
+     subset to Latin woff2 (lucid-winds tools/tomato-man-tests/astra_in.py) and served from art/fonts so the game is offline. */
+  @font-face{font-family:'Bree Serif';font-weight:400;font-display:swap;src:url(art/fonts/bree-serif.woff2?v=20261105a) format('woff2')}
+  @font-face{font-family:'Atkinson Hyperlegible';font-weight:400;font-display:swap;src:url(art/fonts/atkinson-regular.woff2?v=20261105a) format('woff2')}
+  @font-face{font-family:'Atkinson Hyperlegible';font-weight:700;font-display:swap;src:url(art/fonts/atkinson-bold.woff2?v=20261105a) format('woff2')}
+  .mk{width:1.15em;height:1.15em;display:inline-block;vertical-align:-.2em;flex:none}
   :root{
     --paper:#fff6e6; --ink:#23314a; --tomato:#e8332a; --leaf:#4fb56a; --beam:#ffd23f;
     --sky1:#13243f; --sky2:#0b1626; --accent:#ff8a4c;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;overflow:hidden;background:#0b1626;color:var(--paper);
-    font-family:ui-rounded,"Segoe UI",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none;}
+    font-family:"Atkinson Hyperlegible",ui-rounded,"Segoe UI",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none;}
   #game{display:block;width:100vw;height:100vh;}
 
   /* ---------- in-game HUD ---------- */
@@ -75,7 +81,7 @@
     color:var(--tomato);text-shadow:0 4px 0 #7a140f,0 0 22px rgba(232,51,42,.4);}
   h1.logo .two{display:block;color:var(--leaf);text-shadow:0 4px 0 #1f5a32;font-size:46px;}
   .tag{font-size:14px;opacity:.85;max-width:360px;line-height:1.55;margin:8px auto 16px;}
-  h2.title{font-size:30px;font-weight:900;letter-spacing:.04em;margin:6px 0 4px;}
+  h2.title{font-family:'Bree Serif',Georgia,serif;font-size:30px;font-weight:400;letter-spacing:.02em;margin:6px 0 4px;}
   .sub2{font-size:13px;opacity:.7;margin-bottom:16px;}
   .menuCol{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px;margin-top:8px;}
   .big-btn{padding:16px 30px;border-radius:30px;border:none;font-weight:900;font-size:18px;
@@ -159,10 +165,13 @@
   if(SWS_EMBED&&parent!==window){try{parent.postMessage({sws:'ready'},'*');}catch(e){}}
 })();
 </script>
+<!-- TM ICONS (lucid-winds tools/tomato-man-tests/astra_in.py writes this line) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><symbol id="tm-aloe" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M32 4q11 15 9 23 17-12 22-8-3 18-18 20 10 14 6 23-18-4-19-17-7 16-21 17-3-16 10-23Q3 37 1 19q16-2 24 8-2-14 7-23z"/></g></symbol><symbol id="tm-back" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M31 8l-24 24 24 24 6-6-14-14h34v-8H23l14-14z"/></g></symbol><symbol id="tm-builder" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M30 3l6 9 13-4-4 12q15 5 15 20 0 21-28 21S4 61 4 40q0-17 18-21l-8-9 15 4z"/></g></symbol><symbol id="tm-check" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M8 31l13 13L53 10l7 7-39 41L1 38z"/></g></symbol><symbol id="tm-cone" viewBox="0 0 96 96"><g fill="currentColor" transform="scale(1.5)"><path d="M13 25q-7-13 5-16 2-15 14-5 14-7 15 6 13 4 5 15zM16 31h32L32 61z"/></g></symbol><symbol id="tm-daily" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M10 12h7V4h7v8h16V4h7v8h7v47H10zm7 14v26h30V26zm6 6h18v6H23zm0 11h12v5H23z"/></g></symbol><symbol id="tm-dash" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M27 8h24L38 26h17L25 58l7-23H18zM4 17h15v5H4zM2 29h13v5H2zM7 41h11v5H7z"/></g></symbol><symbol id="tm-gem" viewBox="0 0 96 96"><g fill="currentColor" transform="scale(1.5)"><path d="M16 7h32l14 19-30 35L2 26zm3 6L10 25h17zm6 0l7 12 7-12zm20 0L37 25h17z"/></g></symbol><symbol id="tm-heart-off" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M32 57C2 37 1 23 9 13q12-13 23 2 11-15 23-2 16 19-23 44zM14 18c-8 10 1 22 18 32 17-10 26-22 18-32-6-7-13-3-18 7-5-10-12-14-18-7z"/></g></symbol><symbol id="tm-heart-on" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M32 57C2 37 1 23 9 13q12-13 23 2 11-15 23-2 16 19-23 44z"/></g></symbol><symbol id="tm-ice" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M8 17l24-12 24 12v30L32 60 8 47zm8 5v20l12 7V29zm19 7v20l13-7V22z"/></g></symbol><symbol id="tm-lock" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M18 27V18a14 14 0 0128 0v9h6v32H12V27zm7 0h14v-9a7 7 0 00-14 0zm4 12v11h6V39z"/></g></symbol><symbol id="tm-move" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M32 3l10 12h-7v14h14v-7l12 10-12 10v-7H35v14h7L32 61 22 49h7V35H15v7L3 32l12-10v7h14V15h-7z"/></g></symbol><symbol id="tm-next" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M33 8l24 24-24 24-6-6 14-14H7v-8h34L27 14z"/></g></symbol><symbol id="tm-pause" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M15 9h12v46H15zM37 9h12v46H37z"/></g></symbol><symbol id="tm-retry" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M13 23V7l8 7a25 25 0 11-11 30l7-3a17 17 0 1010-20l8 7H13z"/></g></symbol><symbol id="tm-settings" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M26 4h12l3 9 9 4 9-1 4 12-7 6-1 10 3 8-10 8-9-4-9 2-7 5-10-7 1-10-5-8-8-5 3-12 10-2 7-7zm6 17a11 11 0 100 22 11 11 0 000-22z"/></g></symbol><symbol id="tm-shade" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M5 30C7 3 57 3 59 30H5zm24 4h6v15q0 10 11 4l3 5q-19 11-20-9z"/></g></symbol><symbol id="tm-shell" viewBox="0 0 96 96"><g fill="currentColor" transform="scale(1.5)"><path d="M30 58C-2 46 0 20 13 11l16 38-10-43q8-5 13-1l1 44 9-44q10 3 13 12L40 51l20-28q8 25-23 35z"/></g></symbol><symbol id="tm-shop" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path d="M9 7h46l6 18q-5 10-14 2-8 9-15 0-8 9-15 0-9 8-14-2zm1 26h7v20h30V33h7v27H10zm15 3h14v17H25z"/></g></symbol><symbol id="tm-spf" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><path fill-rule="evenodd" d="M24 4h16v10H24zm-7 13h30l5 9v32H12V26zm15 11a9 9 0 100 18 9 9 0 000-18z"/></g></symbol><symbol id="tm-star" viewBox="0 0 96 96"><g fill="currentColor" transform="scale(1.5)"><path d="M32 3l9 18 20 3-15 14 4 22-18-10-18 10 4-22L3 24l20-3z"/></g></symbol><symbol id="tm-sun" viewBox="0 0 128 128"><g fill="currentColor" transform="scale(2)"><circle cx="32" cy="32" r="13"/><path d="M29 3h6v10h-6zM29 51h6v10h-6zM3 29h10v6H3zM51 29h10v6H51zM9 12l4-4 8 8-4 4zM44 48l4-4 8 8-4 4zM9 52l8-8 4 4-8 8zM44 16l8-8 4 4-8 8z"/></g></symbol></svg>
+<!-- /TM ICONS -->
 <canvas id="game"></canvas>
 
 <!-- wallet (persistent on menus) -->
-<div id="wallet" class="wallet"><span class="ic">🌿</span><span id="walletN">0</span></div>
+<div id="wallet" class="wallet"><span class="ic"><svg class="mk" aria-hidden="true"><use href="#tm-aloe"/></svg></span><span id="walletN">0</span></div>
 
 <!-- ===== in-game HUD ===== -->
 <div id="play-ui" class="hidden">
@@ -171,7 +180,7 @@
     <div><b id="timeT">0.0</b>s</div>
     <div id="bestT" style="opacity:.8;font-size:11px;margin:1px 0 3px">best · </div>
     <div id="findRun" style="font-size:15px"></div>
-    <div id="beamRun">🌿 <span id="beamRunN">0</span></div>
+    <div id="beamRun"><svg class="mk" aria-hidden="true"><use href="#tm-aloe"/></svg> <span id="beamRunN">0</span></div>
     <div id="deathT" style="opacity:.8">burns 0</div>
   </div>
   <div id="pauseBtn">II</div>
@@ -193,15 +202,15 @@
   <div class="tag">The sun is death. Shade is the only ground. Sweep through the shadows, gather the aloe, beat the heat, and don't get burned.</div>
   <div class="menuCol">
     <button class="big-btn green" id="tPlay">PLAY</button>
-    <button class="ghost-btn" id="tDaily">📅 Daily Challenge</button>
-    <button class="ghost-btn" id="tEndless">☀️ Shadow Run (Endless)</button>
-    <button class="ghost-btn" id="tHow">❓ How to Play</button>
+    <button class="ghost-btn" id="tDaily"><svg class="mk" aria-hidden="true"><use href="#tm-daily"/></svg> Daily Challenge</button>
+    <button class="ghost-btn" id="tEndless"><svg class="mk" aria-hidden="true"><use href="#tm-sun"/></svg> Shadow Run</button>
+    <button class="ghost-btn" id="tHow">How to Play</button>
     <div class="row" style="margin-top:4px">
-      <button class="ghost-btn" id="tShop">🛒 Shop</button>
-      <button class="ghost-btn" id="tBuild">🍅 Customize</button>
-      <button class="ghost-btn" id="tSet">⚙︎</button>
+      <button class="ghost-btn" id="tShop"><svg class="mk" aria-hidden="true"><use href="#tm-shop"/></svg> Shop</button>
+      <button class="ghost-btn" id="tBuild"><svg class="mk" aria-hidden="true"><use href="#tm-builder"/></svg> Customize</button>
+      <button class="ghost-btn" id="tSet" aria-label="Settings"><svg class="mk" aria-hidden="true"><use href="#tm-settings"/></svg></button>
     </div>
-    <button class="ghost-btn" id="tExit" style="font-size:14px;opacity:.8">← All Sky Wolf games</button>
+    <button class="ghost-btn" id="tExit" style="font-size:14px;opacity:.8"><svg class="mk" aria-hidden="true"><use href="#tm-back"/></svg> All Sky Wolf games</button>
   </div>
   <div class="hintline">The sun is death. Shade is the only ground, and it moves. New here? Tap <b>How to Play</b>.</div>
 </div>
@@ -227,14 +236,14 @@
 <!-- ===== WIN ===== -->
 <div id="win" class="overlay center">
   <h2 class="title" id="winTitle" style="color:var(--leaf)">YOU MADE IT</h2>
-  <div class="medal" id="winMedal">🥉</div>
+  <div class="medal" id="winMedal"></div>
   <div class="statline" id="winTime"></div>
   <div class="statline" id="winDeaths"></div>
   <div id="winEarn" style="margin:10px 0"></div>
   <div class="row">
     <button class="ghost-btn" id="winMenu">Levels</button>
     <button class="ghost-btn" id="winRetry">Retry</button>
-    <button class="big-btn green" id="winNext">Next →</button>
+    <button class="big-btn green" id="winNext">Next <svg class="mk" aria-hidden="true"><use href="#tm-next"/></svg></button>
   </div>
 </div>
 
@@ -251,7 +260,7 @@
 <!-- ===== SHOP ===== -->
 <div id="shop" class="overlay">
   <div class="backRow"><div class="iconbtn" id="shopBack">‹</div></div>
-  <h2 class="title">🌿 Aloe Shop</h2>
+  <h2 class="title"><svg class="mk" aria-hidden="true"><use href="#tm-aloe"/></svg> Aloe Shop</h2>
   <div class="sub2" id="shopWallet">0 aloe</div>
   <div class="tabs">
     <button class="tab on" data-tab="upgrades">Upgrades</button>
@@ -284,16 +293,16 @@
   <div class="toggleRow">Music <div class="sw on" id="swMusic"><div class="k"></div></div></div>
   <div class="toggleRow">Reduce Motion <div class="sw" id="swReduce"><div class="k"></div></div></div>
   <div class="row"><button class="ghost-btn" id="resetSave">Reset All Progress</button></div>
-  <div class="hintline">Tomato Man v6, a sunburnt platformer. Made with ☀️.</div>
+  <div class="hintline">Tomato Man v7, a sunburnt platformer, made in the sun.</div>
 </div>
 
 <!-- ===== HOW TO PLAY ===== -->
 <div id="howto" class="overlay">
   <div class="backRow"><div class="iconbtn" id="howBack">‹</div></div>
   <h2 class="title">How to Play</h2>
-  <div class="htHero">You're <b>Tomato Man</b> ☀️🍅. Direct sun cooks you in about a second, so <b>shade is the only safe ground, and it slides as the sun sweeps the sky.</b> Ride the moving shadows up to the green flag.</div>
+  <div class="htHero">You're <b>Tomato Man</b>. Direct sun cooks you in about a second, so <b>shade is the only safe ground, and it slides as the sun sweeps the sky.</b> Ride the moving shadows up to the green flag.</div>
   <div class="htList" id="htList"></div>
-  <button class="big-btn green" id="howPlay" style="margin-top:14px;max-width:320px">Got it, play ▶</button>
+  <button class="big-btn green" id="howPlay" style="margin-top:14px;max-width:320px">Got it, play</button>
   <div class="pad"></div>
 </div>
 
@@ -432,14 +441,51 @@ function stopMusic(){ if(Audio2.musicTimer){ clearInterval(Audio2.musicTimer); A
 
 /* ===================== ASSETS (optional drop-in art) ===================== */
 // Manifest of optional images. If art/<path> exists it's used, else procedural fallback.
+/* Astra's packs (Sunstruck Stop Motion), dropped in by lucid-winds tools/tomato-man-tests/astra_in.py. Every image goes
+   through A(key): null until it has loaded, so every draw keeps its code drawn fallback. One ART_V token on every URL.
+   The first visit loads the title, the HUD, the pickups, the sun and Morning Tide; a world's ground, horizon and decor
+   load when that world is first shown (needWorld), the Angry Sun with the Eclipse world, the share frames on a share. */
+const ART_V='20261105a';
+const WORLD_DIRS=['morning_tide','midday_blaze','tide_pools','dunes_at_dusk','eclipse'];
 const ASSET_PATHS={
-  hero_body:'art/hero/tomato_body.png',
-  logo:'art/ui/logo.png',
+  menu:'art/ui/menu_plate.webp', logo_sand:'art/ui/logo_on_sand.svg', logo_dark:'art/ui/logo_on_dark.svg',
+  sun:'art/sun/roaming_sun.webp', sun_rays:'art/sun/sun_rays.webp', sun_hud:'art/sun/sun_position_hud.png',
+  awning_striped:'art/casters/striped_awning.webp', awning_solid:'art/casters/solid_awning.webp', umbrella:'art/casters/umbrella.webp',
+  carts:'art/casters/vendor_cart_reskins.webp', cloud_platform:'art/casters/cloud_platform.webp', cloud_elevator:'art/casters/cloud_elevator.webp',
+  far:'art/casters/far_silhouette.png',
+  aloe_lit:'art/pickups/aloe_lit.webp', aloe_dim:'art/pickups/aloe_dim.webp', popsicle:'art/pickups/popsicle.webp',
+  shade_pool:'art/pickups/shade_pool.webp', checkpoints:'art/pickups/checkpoint_pair.webp', exit_flag:'art/pickups/exit_flag.webp',
+  find_shell:'art/pickups/seashell.webp', find_cone:'art/pickups/ice_cream.webp', find_gem:'art/pickups/gem.webp', sparkle:'art/pickups/sparkle.webp',
+  hot_patch:'art/fx/hot_sand_patch.webp', shimmer:'art/fx/heat_shimmer.webp', wind_streak:'art/fx/wind_streak.webp',
+  collect_burst:'art/fx/collect_burst.webp', respawn_flash:'art/fx/respawn_flash.webp', burn_smoke:'art/fx/burn_smoke.webp',
+  dash_puff:'art/fx/dash_puff.webp', near_burn:'art/fx/near_burn_vignette.webp', eclipse_vig:'art/fx/eclipse_dark_vignette.webp',
+  btn_dash:'art/ui/button_dash.svg', btn_shade:'art/ui/button_shade.svg', btn_spf:'art/ui/button_spf.svg', btn_ice:'art/ui/button_ice.svg',
+  btn_off:'art/ui/disabled_overlay.svg', stick_base:'art/ui/joystick_base.png', stick_thumb:'art/ui/joystick_thumb.png',
+  meter_frame:'art/ui/exposure_meter_frame.png', meter_fill:'art/ui/exposure_fill.png',
+  card_morning_tide:'art/worlds/morning_tide/card.webp', card_midday_blaze:'art/worlds/midday_blaze/card.webp',
+  card_tide_pools:'art/worlds/tide_pools/card.webp', card_dunes_at_dusk:'art/worlds/dunes_at_dusk/card.webp', card_eclipse:'art/worlds/eclipse/card.webp',
+};
+/* loaded on demand: each world's ground, horizon, decor sheet and key art; the Angry Sun; the share frames */
+const ASSET_LAZY={
+  ground_morning_tide:'art/worlds/morning_tide/ground.webp', horizon_morning_tide:'art/worlds/morning_tide/horizon.webp', decor_morning_tide:'art/worlds/morning_tide/decor.webp', key_morning_tide:'art/worlds/morning_tide/key_art.webp',
+  ground_midday_blaze:'art/worlds/midday_blaze/ground.webp', horizon_midday_blaze:'art/worlds/midday_blaze/horizon.webp', decor_midday_blaze:'art/worlds/midday_blaze/decor.webp', key_midday_blaze:'art/worlds/midday_blaze/key_art.webp',
+  ground_tide_pools:'art/worlds/tide_pools/ground.webp', horizon_tide_pools:'art/worlds/tide_pools/horizon.webp', decor_tide_pools:'art/worlds/tide_pools/decor.webp', key_tide_pools:'art/worlds/tide_pools/key_art.webp',
+  ground_dunes_at_dusk:'art/worlds/dunes_at_dusk/ground.webp', horizon_dunes_at_dusk:'art/worlds/dunes_at_dusk/horizon.webp', decor_dunes_at_dusk:'art/worlds/dunes_at_dusk/decor.webp', key_dunes_at_dusk:'art/worlds/dunes_at_dusk/key_art.webp',
+  ground_eclipse:'art/worlds/eclipse/ground.webp', horizon_eclipse:'art/worlds/eclipse/horizon.webp', decor_eclipse:'art/worlds/eclipse/decor.webp', key_eclipse:'art/worlds/eclipse/key_art.webp',
+  angry_glare:'art/sun/angry_sun_glare.webp', angry_wind_up:'art/sun/angry_sun_wind_up.webp', angry_lunge:'art/sun/angry_sun_lunge.webp',
+  angry_panting:'art/sun/angry_sun_panting.webp', corona:'art/sun/eclipse_corona.webp',
+  share_result:'art/sharing/result_square.webp', share_daily:'art/sharing/daily_card.webp',
 };
 const ASSETS={};
-function loadAssets(){ for(const k in ASSET_PATHS){ const img=new Image();
-  img.onload=()=>{ ASSETS[k]=img; }; img.onerror=()=>{ ASSETS[k]=null; }; img.src=ASSET_PATHS[k]; } }
+function loadOne(k,path){ if(k in ASSETS) return; ASSETS[k]=null; const img=new Image();
+  img.onload=()=>{ ASSETS[k]=img; }; img.onerror=()=>{ ASSETS[k]=null; }; img.src=path+'?v='+ART_V; }
+function loadAssets(){ for(const k in ASSET_PATHS) loadOne(k,ASSET_PATHS[k]); needWorld(0); }
+function need(k){ if(ASSET_LAZY[k]) loadOne(k,ASSET_LAZY[k]); }
+function needWorld(w){ const d=WORLD_DIRS[w%5]; ['ground_','horizon_','decor_','key_'].forEach(p=>need(p+d));
+  if(w===4){ ['angry_glare','angry_wind_up','angry_lunge','angry_panting','corona'].forEach(need); } }
 const A=k=>ASSETS[k]||null;
+/* one of Astra's one colour marks from the inline sprite, sized by the text around it */
+function mk(n){ return '<svg class="mk" aria-hidden="true"><use href="#tm-'+n+'"/></svg>'; }
 
 /* ===================== FEEL (movement + tuning) ===================== */
 // Base constants; upgrades modify them per-run via FEEL()
@@ -556,8 +602,8 @@ const WORLDS=[
 // 5 worlds x 4 levels. world: 0-based. Tunable data — edit freely on a phone.
 let LEVELS=[
 {"name":"Dawn Ribbon","sub":"the sun is up and the floor sways with the shade","worldW":2000,"worldH":2600,"start":[1000,2480],"exit":[1000,150],"sun":{"azC":1.57,"azAmp":0.42,"azSpeed":0.45,"elev":0.55},"shade":2,"spf":0,"par":24,"casters":[["R",840,2440,360,90,440],["R",900,2090,340,66,440],["R",780,1790,340,66,440],["R",900,1500,340,66,460],["R",1020,1220,340,66,460],["R",880,940,340,66,460],["R",780,680,340,66,440],["R",900,410,340,66,440],["R",860,150,360,70,400]],"clouds":[],"checkpoints":[[1010,2475],[1070,1533],[950,713]],"beams":[[1320,1700],[600,1010]],"world":0},
-{"name":"Sliver Step","sub":"when the sun swings, a gap opens - dash it","worldW":2000,"worldH":2600,"start":[1000,2480],"exit":[1000,150],"sun":{"azC":1.57,"azAmp":0.46,"azSpeed":0.5,"elev":0.58},"shade":3,"spf":0,"par":32,"casters":[["R",840,2440,360,90,440],["R",900,2090,340,66,440],["R",820,1810,340,66,440],["R",980,1260,330,64,440],["R",860,980,340,66,460],["R",1000,700,340,66,460],["R",880,400,340,66,440],["R",900,200,340,66,420],["R",860,150,300,60,380]],"clouds":[],"checkpoints":[[1010,2475],[1010,1290],[1030,730]],"beams":[[1280,1560],[700,900]],"world":0},
-{"name":"Cloud Ferry","sub":"the shade quits - catch the morning cloud across","worldW":2200,"worldH":2600,"start":[760,2480],"exit":[1480,150],"sun":{"azC":1.57,"azAmp":0.4,"azSpeed":0.45,"elev":0.6},"shade":2,"spf":0,"par":36,"casters":[["R",600,2440,340,90,440],["R",620,2110,320,66,440],["R",560,1820,320,66,440],["R",600,1560,320,64,440],["R",1320,1560,320,64,440],["R",1360,1280,320,66,460],["R",1300,1000,320,66,460],["R",1380,720,320,66,440],["R",1320,420,320,66,420],["R",1320,150,340,70,400]],"clouds":[{"x":760,"y":1500,"r":165,"vx":80,"minx":760,"maxx":1380}],"checkpoints":[[770,2475],[755,1593],[1480,1593]],"beams":[[1060,1430],[1080,1720]],"world":0},
+{"name":"Sliver Step","sub":"when the sun swings, a gap opens, dash it","worldW":2000,"worldH":2600,"start":[1000,2480],"exit":[1000,150],"sun":{"azC":1.57,"azAmp":0.46,"azSpeed":0.5,"elev":0.58},"shade":3,"spf":0,"par":32,"casters":[["R",840,2440,360,90,440],["R",900,2090,340,66,440],["R",820,1810,340,66,440],["R",980,1260,330,64,440],["R",860,980,340,66,460],["R",1000,700,340,66,460],["R",880,400,340,66,440],["R",900,200,340,66,420],["R",860,150,300,60,380]],"clouds":[],"checkpoints":[[1010,2475],[1010,1290],[1030,730]],"beams":[[1280,1560],[700,900]],"world":0},
+{"name":"Cloud Ferry","sub":"the shade quits, catch the morning cloud across","worldW":2200,"worldH":2600,"start":[760,2480],"exit":[1480,150],"sun":{"azC":1.57,"azAmp":0.4,"azSpeed":0.45,"elev":0.6},"shade":2,"spf":0,"par":36,"casters":[["R",600,2440,340,90,440],["R",620,2110,320,66,440],["R",560,1820,320,66,440],["R",600,1560,320,64,440],["R",1320,1560,320,64,440],["R",1360,1280,320,66,460],["R",1300,1000,320,66,460],["R",1380,720,320,66,440],["R",1320,420,320,66,420],["R",1320,150,340,70,400]],"clouds":[{"x":760,"y":1500,"r":165,"vx":80,"minx":760,"maxx":1380}],"checkpoints":[[770,2475],[755,1593],[1480,1593]],"beams":[[1060,1430],[1080,1720]],"world":0},
 {"name":"The Rising Tide","sub":"ribbon, sliver, and a long ride to the flag","worldW":2200,"worldH":2900,"start":[1100,2780],"exit":[1100,160],"sun":{"azC":1.57,"azAmp":0.4,"azSpeed":0.52,"elev":0.6},"shade":3,"spf":0,"par":48,"casters":[["R",940,2740,360,90,440],["R",1000,2380,340,66,440],["R",900,2110,340,66,440],["R",1020,1540,330,64,440],["R",860,1500,360,66,460],["R",960,420,360,66,460],["R",1000,250,340,66,420],["R",940,150,340,70,400]],"clouds":[{"x":1080,"y":948,"r":165,"vy":-80,"miny":300,"maxy":948}],"checkpoints":[[1110,2775],[1090,1560],[1010,453]],"beams":[[1340,1980],[820,900],[1320,560]],"world":0},
 {"name":"Sand Underfoot","sub":"orange means gone","worldW":2200,"worldH":2600,"start":[1100,2460],"exit":[1100,160],"sun":{"azC":1.57,"azAmp":0.45,"azSpeed":0.5,"elev":0.85},"shade":2,"spf":1,"par":40,"casters":[["R",920,2400,360,70,440],["R",940,2120,340,64,440],["R",900,1840,340,64,440],["R",960,1560,340,64,440],["U",1100,1340,95,0,360],["R",920,1060,340,64,460],["R",980,780,340,64,460],["R",900,520,340,64,440],["R",940,220,360,70,420]],"movers":[],"clouds":[],"hot":[[1300,2120,80],[900,1560,80],[1280,780,80],[1140,420,70]],"pops":[],"checkpoints":[[1100,2440],[1100,1340],[1080,540]],"beams":[[1340,1980],[820,1180],[1330,400]],"world":1},
 {"name":"Popsicle Run","sub":"keep the cold close","worldW":2000,"worldH":2800,"start":[1000,2660],"exit":[1000,160],"sun":{"azC":1.57,"azAmp":0.4,"azSpeed":0.55,"elev":0.9},"shade":2,"spf":1,"par":46,"casters":[["R",860,2620,300,70,420],["R",880,2120,260,64,420],["R",870,1620,260,64,420],["R",880,1120,260,64,420],["R",870,620,260,64,420],["R",880,220,300,70,400]],"movers":[],"clouds":[],"hot":[[1140,1870,70],[860,1370,70],[1140,870,70]],"pops":[[1000,2150],[1000,1650],[1000,650]],"checkpoints":[[1000,2640],[1000,1150],[1000,250]],"beams":[[1140,2370],[860,870],[1140,400]],"world":1},
@@ -582,13 +628,13 @@ let LEVELS=[
 {"name":"Reef Ferry","sub":"ride the tide-cart, then round the big awning","world":2,"worldW":2200,"worldH":2600,"start":[640,2460],"exit":[1480,300],"sun":{"azC":1.57,"azAmp":0.44,"azSpeed":0.5,"elev":0.72},"shade":2,"spf":0,"ice":1,"par":40,"casters":[["R",460,2400,360,80,440],["U",640,2120,95,1.57,360],["U",640,1840,95,1.57,360],["U",1460,2060,95,1.57,360],["R",1120,1180,620,80,500],["U",1480,720,95,1.57,360],["R",1300,300,360,80,440]],"movers":[{"x":1360,"y":1900,"w":240,"d":60,"sh":440,"vx":-120,"minx":560,"maxx":1560}],"checkpoints":[[640,2460],[640,1700],[1460,1780],[1480,760]],"beams":[[1080,1740],[1748,1300],[900,2050]]},
 {"name":"The Long Dark","sub":"cross the blackout maze while the sun blinks","world":4,"worldW":1900,"worldH":2600,"start":[980,2460],"exit":[980,220],"sun":{"azC":1.57,"azAmp":0.24,"azSpeed":0.5,"elev":1.2,"dark":{"period":4,"dur":2.7}},"shade":2,"spf":1,"ice":0,"par":60,"casters":[["R",800,2400,360,90,470],["R",620,1780,340,90,490],["R",960,1160,340,90,490],["R",620,300,340,90,490],["R",800,150,360,90,460]],"checkpoints":[[980,2460],[790,1660],[1130,1040],[790,460]],"beams":[[1150,2050],[790,1420],[1150,900]]}
 ];
-/* per-world hidden collectibles: 🐚 shells (beach worlds) · 🍦 ice-cream (blaze) · 💎 treasure (dunes/eclipse). 3 per campaign level. */
+/* per-world hidden collectibles: shells (beach worlds), ice cream (the blaze), gems (dunes and eclipse). 3 per campaign level. */
 const COLLECT=[
-  {emoji:'🐚',name:'Seashell',plural:'Seashells',kind:'shell'},   // W0 Morning Tide
-  {emoji:'🍦',name:'Ice Cream',plural:'Ice Creams',kind:'cone'},  // W1 Midday Blaze
-  {emoji:'🐚',name:'Seashell',plural:'Seashells',kind:'shell'},   // W2 Tide Pools
-  {emoji:'💎',name:'Gem',plural:'Buried Gems',kind:'gem'},        // W3 Dunes at Dusk
-  {emoji:'💎',name:'Gem',plural:'Buried Gems',kind:'gem'},        // W4 Eclipse
+  {name:'Seashell',plural:'Seashells',kind:'shell'},   // W0 Morning Tide
+  {name:'Ice Cream',plural:'Ice Creams',kind:'cone'},  // W1 Midday Blaze
+  {name:'Seashell',plural:'Seashells',kind:'shell'},   // W2 Tide Pools
+  {name:'Gem',plural:'Buried Gems',kind:'gem'},        // W3 Dunes at Dusk
+  {name:'Gem',plural:'Buried Gems',kind:'gem'},        // W4 Eclipse
 ];
 function collectOf(w){ return COLLECT[w%COLLECT.length]; }
 const FINDS={0:[[1620,1788],[1668,1452],[1788,636]],1:[[1620,1860],[1644,1452],[1740,660]],2:[[228,1812],[204,1188],[228,924]],3:[[1692,1932],[516,1524],[468,900]],4:[[1572,1788],[1596,1212],[612,708]],5:[[1404,1860],[612,1332],[1404,828]],6:[[180,1860],[156,1236],[2244,828]],7:[[852,2052],[348,1380],[2364,756]],8:[[1548,1740],[444,1164],[1572,900]],9:[[1644,1860],[1644,1260],[612,660]],10:[[1764,1788],[2244,1260],[2268,900]],11:[[1788,2076],[2244,1356],[2268,1044]],12:[[1812,1644],[1884,1140],[84,636]],13:[[204,1788],[204,1428],[252,636]],14:[[2004,1668],[2004,1188],[2172,660]],15:[[2076,1812],[2340,1212],[2436,948]],16:[[1476,1692],[1476,1116],[1476,780]],17:[[1572,1932],[1572,1380],[1572,660]],18:[[540,1716],[420,1356],[420,636]],19:[[708,2052],[1860,1476],[708,708]],20:[[1332,1524],[1332,1212],[1332,564]],21:[[1212,1836],[1212,1092],[1212,612]],22:[[228,1236],[1188,756],[348,420]],23:[[1284,1260],[276,780],[324,420]],24:[[1908,1908],[1932,1524],[2100,804]],25:[[468,1716],[1428,1212],[1452,924]]};
@@ -727,14 +773,14 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
   cam.x=clamp(P.x-W/2,0,Math.max(0,L.worldW-W)); cam.y=clamp(P.y-H/2,0,Math.max(0,L.worldH-H));
   // consume loadout (single-use boosts)
   save.loadout={}; persist();
-  applyTheme(L.world);
+  applyTheme(L.world); needWorld(L.world);
   screen='play'; mode='play'; showScreen(null); $('play-ui').classList.remove('hidden');
   $('bIce').classList.toggle('hidden', run.charges.ice<=0 && !(L.ice));
   flash(L); sync(); startMusic(L.world); }
 
 function flash(L){ const f=$('lvlFlash'); f.innerHTML=`${L.name}<small>${L.sub}</small>`;
   f.style.opacity='1'; clearTimeout(flash._t); flash._t=setTimeout(()=>f.style.opacity='0',2100); }
-function toast(msg,col){ const t=$('toast'); t.textContent=msg; t.style.color=col||'var(--tomato)';
+function toast(msg,col){ const t=$('toast'); t.innerHTML=msg;   // internal strings only; may carry a mark t.style.color=col||'var(--tomato)';
   t.style.transition='none'; t.style.opacity='1'; requestAnimationFrame(()=>{ t.style.transition='opacity .7s'; t.style.opacity='0'; }); }
 function showCombo(n){ const c=$('comboTag'); c.textContent='x'+n+' COMBO'; c.style.transition='none'; c.style.opacity='1';
   requestAnimationFrame(()=>{ c.style.transition='opacity .6s'; c.style.opacity='0'; }); }
@@ -754,13 +800,13 @@ function collectFind(fnd){ fnd.got=true; run.findsRun++;
   addBeams(12);                                                    // bonus aloe per find (addBeams persists)
   SFX.pop(); spawnParts(fnd.x,fnd.y,22,'255,225,150',160,0.65);
   spawnRing(fnd.x,fnd.y,'255,225,150',52); floatText(fnd.x,fnd.y-6,'+12','255,230,150'); popSquash(0.78,1.26); jShake(0.14);
-  if(have>=total){ addBeams(40); spawnRing(fnd.x,fnd.y,'255,235,120',110,0.6); screenFlash('255,220,120',0.3); jShake(0.32); floatText(fnd.x,fnd.y-30,'ALL '+total+'!','255,235,140'); toast(cd.emoji+'  all '+total+'! +40 aloe','var(--beam)'); SFX.win(); }
-  else toast(cd.emoji+'  '+cd.name+'!  +12','var(--beam)');
+  if(have>=total){ addBeams(40); spawnRing(fnd.x,fnd.y,'255,235,120',110,0.6); screenFlash('255,220,120',0.3); jShake(0.32); floatText(fnd.x,fnd.y-30,'ALL '+total,'255,235,140'); toast(mk(cd.kind)+' all '+total+' found, +40 aloe','var(--beam)'); SFX.win(); }
+  else toast(mk(cd.kind)+' '+cd.name+', +12','var(--beam)');
   // world 100% → unlock that world's exclusive hat (once)
   const w=run.L.world, rid=WORLD_REWARD[w];
   if(rid && !save.cosmetics.owned.includes(rid) && worldFindsComplete(w)){
     save.cosmetics.owned.push(rid); persist();
-    setTimeout(()=>toast('🏆 WORLD 100%! Unlocked: '+cosmetic(rid).name,'var(--leaf)'),700); SFX.win(); } }
+    setTimeout(()=>toast('World complete. Unlocked '+cosmetic(rid).name,'var(--leaf)'),700); SFX.win(); } }
 function levelFindCount(id,L){ const arr=save.finds[id]||[]; const n=(L.finds||[]).length; let c=0; for(let i=0;i<n;i++) if(arr[i]) c++; return {have:c,total:n}; }
 
 /* ===================== INPUT ===================== */
@@ -857,7 +903,7 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
   // ---- wilting awnings ----
   for(const wlt of run.wilts){ const dir=run.az+Math.PI,ux=Math.cos(dir),uy=Math.sin(dir);
     const poly=sweptRect(wlt.x,wlt.y,wlt.w,wlt.d,wlt.sh,ux,uy,L.sun.elev); const under=inPoly(P.x,P.y,poly);
-    if(!wlt.closed){ if(under){ wlt.campT+=dt; if(wlt.campT>=(wlt.camp||3)){ wlt.closed=true; wlt.regrow=2.4; toast('shade wilted!','#cda'); } }
+    if(!wlt.closed){ if(under){ wlt.campT+=dt; if(wlt.campT>=(wlt.camp||3)){ wlt.closed=true; wlt.regrow=2.4; toast('shade wilted','#cda'); } }
       else wlt.campT=Math.max(0,wlt.campT-dt*0.6); }
     else { wlt.regrow-=dt; if(wlt.regrow<=0 && !under){ wlt.closed=false; wlt.campT=0; } } }
 
@@ -892,7 +938,7 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
       SFX.beam(run.combo); spawnParts(b.x,b.y,14,'140,240,180',150,0.6);
       spawnRing(b.x,b.y,'150,245,190',30+mult*7); floatText(b.x,b.y-4,'+'+val, mult>1?'255,214,90':'150,245,190');
       popSquash(0.82,1.2); if(mult>1)jShake(0.10+mult*0.02);
-      if(near>1){ toast('SIZZLE! ×2','#ffd23f'); screenFlash('255,180,60',0.18); } else if(mult>1) showCombo(mult); } }
+      if(near>1){ toast('SIZZLE ×2','#ffd23f'); screenFlash('255,180,60',0.18); } else if(mult>1) showCombo(mult); } }
   run.comboT-=dt; if(run.comboT<=0&&run.combo>0){ run.combo=Math.max(0,run.combo-comboNotch()); run.comboT=run.combo>0?comboWindow():0; }
   for(const p of run.pops){ if(!p.got && dist(P.x,P.y,p.x,p.y)<40+P.r){ p.got=true; P.dashCd=0; P.dashStock++; SFX.pop();  // forgiving grab (was 26): a near-miss still counts
       spawnParts(p.x,p.y,16,'120,200,255',150,0.55); spawnRing(p.x,p.y,'130,205,255',40); floatText(p.x,p.y-4,'+DASH','130,205,255'); popSquash(0.8,1.24); jShake(0.12); toast('+dash','#7fd0ff'); } }
@@ -914,7 +960,7 @@ function updateHUD(onHot){ const f=run.feel;
   $('timeT').textContent=run.t.toFixed(1);
   if(run.findId){ const bt=save.best[run.findId]; $('bestT').style.display=''; $('bestT').textContent=bt?('best '+bt.toFixed(1)+'s'):'best · ';
     const total=run.finds.length, have=run.finds.filter(f=>f.got).length;
-    $('findRun').style.display=total?'':'none'; if(total) $('findRun').textContent=collectOf(run.L.world).emoji+' '+have+'/'+total;
+    $('findRun').style.display=total?'':'none'; if(total){ const ft=collectOf(run.L.world).kind+'|'+have+'/'+total; if($('findRun')._v!==ft){ $('findRun')._v=ft; $('findRun').innerHTML=mk(collectOf(run.L.world).kind)+' '+have+'/'+total; } }
   } else { $('bestT').style.display='none'; $('findRun').style.display='none'; }
   $('beamRunN').textContent=run.beamsGot;
   $('deathT').textContent='burns '+run.deaths;
@@ -922,15 +968,16 @@ function updateHUD(onHot){ const f=run.feel;
   $('bDash').style.background=(P.dashStock>0)?'rgba(120,200,255,.7)':(P.dashCd>0?`conic-gradient(rgba(35,49,74,.7) ${frac*360}deg, rgba(232,93,60,.6) 0)`:'rgba(232,93,60,.6)');
 }
 function burn(){ if(run.coolerBox){ run.coolerBox=false; P.exp=0; P.vx=0;P.vy=0; run.screenT=Math.max(run.screenT,1.2);
-    run.spawnAt=run.t; toast('COOLER BOX!','#9fe0a0'); SFX.spf(); return; } // revive in place, keep combo
+    run.spawnAt=run.t; toast('COOLER BOX','#9fe0a0'); SFX.spf(); return; } // revive in place, keep combo
   run.deaths++; save.totalBurns++; persist(); toast('BURNED'); run.shake=save.settings.reduce?0:0.58; freeze=save.settings.reduce?0:0.09;
   SFX.burn(); spawnParts(P.x,P.y,24,'255,80,40',190,0.75); spawnRing(P.x,P.y,'255,95,55',72,0.5); screenFlash('255,55,30',0.55);
   run.combo=0; P.exp=0; P.x=run.cp.x; P.y=run.cp.y; P.vx=0;P.vy=0; P.dashT=0; P.dashCd=0; P.dashStock=0; run.sinceSafe=0; run.spawnAt=run.t;
   run.screenT=Math.max(run.screenT,run.feel.respawnGrace); run.trail.length=0; }
 
+const MEDAL={gold:'art/ui/medal_gold.svg',silver:'art/ui/medal_silver.svg',bronze:'art/ui/medal_bronze.svg'};
 function winLevel(){ mode='win'; const L=run.L; SFX.win(); stopMusic(); freeze=0;
   const noDeath=run.deaths===0, underPar=run.t<=L.par;
-  const medal=(noDeath&&underPar)?'🥇':(noDeath||underPar)?'🥈':'🥉';
+  const medal=(noDeath&&underPar)?'gold':(noDeath||underPar)?'silver':'bronze';
   const score=(noDeath?1:0)+(underPar?1:0)+1; // 1..3 stars
   // ---- earn aloe ----
   let earn=ECON.levelComplete + run.beamScore;
@@ -950,11 +997,11 @@ function winLevel(){ mode='win'; const L=run.L; SFX.win(); stopMusic(); freeze=0
   addBeams(earn);
   // ---- win screen ----
   $('winTitle').textContent=endless?'NICE RUN':'YOU MADE IT';
-  $('winMedal').textContent=medal;
-  $('winTime').innerHTML=`Time ${run.t.toFixed(1)}s  (par ${L.par}s) ${underPar?'✓':''}`+(isNewBest?`  <span style="color:var(--beam)">🏆 NEW BEST!</span>`:(prevBest?`  ·  <span style="opacity:.7">best ${prevBest.toFixed(1)}s</span>`:''));
+  $('winMedal').innerHTML='<img class="medalImg" src="'+MEDAL[medal]+'?v='+ART_V+'" alt="'+medal+' medal" width="96" height="96">';
+  $('winTime').innerHTML=`Time ${run.t.toFixed(1)}s  (par ${L.par}s) ${underPar?mk('check'):''}`+(isNewBest?`  <span style="color:var(--beam)">NEW BEST</span>`:(prevBest?`  ·  <span style="opacity:.7">best ${prevBest.toFixed(1)}s</span>`:''));
   const fcw = endless?{have:0,total:0}:levelFindCount(id,L);
-  $('winDeaths').innerHTML=`Burns ${run.deaths} ${noDeath?', flawless ✓':''}  ·  🌿 ${run.beamsGot}${run.comboMax>1?'  ·  x'+run.comboMax:''}`+(fcw.total?`  ·  ${collectOf(L.world).emoji} ${fcw.have}/${fcw.total}${fcw.have>=fcw.total?' ✓':' <span style="opacity:.6">(replay for more)</span>'}`:'');
-  $('winEarn').innerHTML=`<div class="earnLine">+ ${earn} aloe 🌿</div>`+(first?`<div class="earnLine">first clear bonus!</div>`:'');
+  $('winDeaths').innerHTML=`Burns ${run.deaths} ${noDeath?', flawless '+mk('check'):''}  ·  ${mk('aloe')} ${run.beamsGot}${run.comboMax>1?'  ·  x'+run.comboMax:''}`+(fcw.total?`  ·  ${mk(collectOf(L.world).kind)} ${fcw.have}/${fcw.total}${fcw.have>=fcw.total?' '+mk('check'):' <span style="opacity:.6">(replay for more)</span>'}`:'');
+  $('winEarn').innerHTML=`<div class="earnLine">+ ${earn} aloe ${mk('aloe')}</div>`+(first?`<div class="earnLine">first clear bonus</div>`:'');
   $('winNext').style.display=(!endless && nextLevelIndex()!==-1)?'':'none';
   $('play-ui').classList.add('hidden'); showScreen('win'); updateWallet();
 }
@@ -1252,12 +1299,12 @@ function unlockedLevel(i){ const L=LEVELS[i]; const wl=levelsOfWorld(L.world); c
 function buildWorldMap(){ const list=$('worldList'); list.innerHTML='';
   WORLDS.forEach((w,wi)=>{ const unlocked=worldUnlocked(wi); const lv=levelsOfWorld(wi);
     const cleared=lv.filter(o=>save.stars[levelId(o.L,o.i)]).length; const stars=lv.reduce((a,o)=>a+(save.stars[levelId(o.L,o.i)]||0),0);
-    const em=collectOf(wi).emoji; const fTot=lv.reduce((a,o)=>a+((o.L.finds||[]).length),0);
+    const em=mk(collectOf(wi).kind); const fTot=lv.reduce((a,o)=>a+((o.L.finds||[]).length),0);
     const fGot=lv.reduce((a,o)=>{ const arr=save.finds[levelId(o.L,o.i)]||[]; return a+arr.filter(Boolean).length; },0);
     const done100=unlocked&&worldFindsComplete(wi);
     const c=document.createElement('div'); c.className='worldCard'+(unlocked?'':' locked');
     c.style.background=`linear-gradient(120deg,${w.pal.sky1},${w.pal.accent}55)`;
-    c.innerHTML=`${wi+1}. ${w.name}<span class="wsub">${w.sub}${unlocked?`  ·  ${em} ${fGot}/${fTot}${done100?' 🏆 hat!':''}`:''}</span><span class="wprog">${unlocked?(cleared+'/'+lv.length+' ✓  ⭐'+stars):'🔒 locked'}</span>`;
+    c.innerHTML=`${wi+1}. ${w.name}<span class="wsub">${w.sub}${unlocked?`  ·  ${em} ${fGot}/${fTot}${done100?', hat earned':''}`:''}</span><span class="wprog">${unlocked?(cleared+'/'+lv.length+' '+mk('check')+'  '+mk('star')+stars):mk('lock')+' locked'}</span>`;
     if(unlocked) c.addEventListener('click',()=>{SFX.click();openWorld(wi);});
     list.appendChild(c); }); }
 let curWorld=0;
@@ -1265,9 +1312,9 @@ function openWorld(wi){ curWorld=wi; $('lvlWorldName').textContent=WORLDS[wi].na
   const grid=$('lvlGrid'); grid.innerHTML='';
   levelsOfWorld(wi).forEach(o=>{ const i=o.i,L=o.L; const id=levelId(L,i); const st=save.stars[id]||0; const unlocked=unlockedLevel(i);
     const b=document.createElement('div'); b.className='card'+(unlocked?'':' locked');
-    const stars=st?'★'.repeat(st)+'☆'.repeat(3-st):'';
-    const fc=levelFindCount(id,L); const findStr=fc.total?`  ·  ${collectOf(L.world).emoji} ${fc.have}/${fc.total}${fc.have===fc.total?'✓':''}`:'';
-    b.innerHTML=`${L.name}<small>${L.sub}</small>${unlocked?`<div class="rec">${st?stars:'play ▶'}${save.best[id]?'  ·  '+save.best[id].toFixed(1)+'s':''}${findStr}</div>`:'<div class="rec">🔒 clear previous</div>'}`;
+    const stars=st?mk('star').repeat(st)+'<span style="opacity:.3">'+mk('star').repeat(3-st)+'</span>':'';
+    const fc=levelFindCount(id,L); const findStr=fc.total?`  ·  ${mk(collectOf(L.world).kind)} ${fc.have}/${fc.total}${fc.have===fc.total?' '+mk('check'):''}`:'';
+    b.innerHTML=`${L.name}<small>${L.sub}</small>${unlocked?`<div class="rec">${st?stars:'Play'}${save.best[id]?'  ·  '+save.best[id].toFixed(1)+'s':''}${findStr}</div>`:'<div class="rec">'+mk('lock')+' clear previous</div>'}`;
     if(unlocked) b.addEventListener('click',()=>{SFX.click();startLevel(i);});
     grid.appendChild(o.b=b); });
   showScreen('levels'); }
@@ -1276,18 +1323,18 @@ function openWorld(wi){ curWorld=wi; $('lvlWorldName').textContent=WORLDS[wi].na
 let shopTab='upgrades';
 function buildShop(){ updateWallet(); const grid=$('shopGrid'); grid.innerHTML='';
   if(shopTab==='upgrades'){ UPGRADES.forEach(u=>{ const t=upgTier(u.id), maxed=t>=UPG_MAX, price=upgPrice(u), gated=upgGateLocked(u);
-    const sub=u.desc+' — '+(maxed?'maxed out':'next: '+u.eff(t+1))+(gated?` · needs ${GOLD_GATE}🥇 (have ${goldCount()})`:'');
-    const label=maxed?'MAX':(gated?'🔒':price);
+    const sub=u.desc+', '+(maxed?'maxed out':'next: '+u.eff(t+1))+(gated?` · needs ${GOLD_GATE} gold medals (have ${goldCount()})`:'');
+    const label=maxed?'MAX':(gated?mk('lock'):price);
     const c=card(`${u.name} <span class="badge">${t}/${UPG_MAX}</span>`, sub, label, maxed||gated||save.beams<price);
     if(!maxed&&!gated) c.addEventListener('click',()=>{ if(save.beams>=price){ save.beams-=price; save.upgrades[u.id]=t+1; persist(); SFX.buy(); buildShop(); } else SFX.deny(); });
     grid.appendChild(c); }); }
   else if(shopTab==='consumables'){ CONSUMABLES.forEach(k=>{ const have=save.loadout[k.id]||0, full=have>=(k.cap||9);
     const c=card(`${k.name}${have?` <span class="badge">×${have} queued</span>`:''}`, k.desc+(full?' · max queued':''), k.price, full||save.beams<k.price);
-    if(!full) c.addEventListener('click',()=>{ if(save.beams>=k.price){ save.beams-=k.price; save.loadout[k.id]=have+1; persist(); SFX.buy(); toast('queued for next run!','#9fe0a0'); buildShop(); } else SFX.deny(); });
+    if(!full) c.addEventListener('click',()=>{ if(save.beams>=k.price){ save.beams-=k.price; save.loadout[k.id]=have+1; persist(); SFX.buy(); toast('queued for next run','#9fe0a0'); buildShop(); } else SFX.deny(); });
     grid.appendChild(c); }); }
   else { COSMETICS.forEach(k=>{ const isEarn=k.earn!==undefined;
     const owned=save.cosmetics.owned.includes(k.id)||k.price===0; const equipped=save.cosmetics[k.cat]===k.id;
-    const label=owned?(equipped?'worn':'wear'):(isEarn?'🔒':k.price);
+    const label=owned?(equipped?'worn':'wear'):(isEarn?mk('lock'):k.price);
     const sub=isEarn&&!owned?('earn: 100% '+WORLDS[k.earn].name):k.cat;
     const c=card(k.name, sub, label, !owned&&(isEarn||save.beams<k.price));
     c.classList.toggle('owned',owned); c.classList.toggle('equipped',equipped);
@@ -1297,13 +1344,13 @@ function buildShop(){ updateWallet(); const grid=$('shopGrid'); grid.innerHTML='
     grid.appendChild(c); }); }
 }
 function card(title,sub,price,cant){ const c=document.createElement('div'); c.className='card hascost'+(cant?' cant':'');
-  c.innerHTML=`${title}<small>${sub}</small><span class="price">${typeof price==='number'?'🌿'+price:price}</span>`; return c; }
+  c.innerHTML=`${title}<small>${sub}</small><span class="price">${typeof price==='number'?mk('aloe')+price:price}</span>`; return c; }
 
 /* ----- builder ----- */
 let buildTab='body';
 function buildBuilder(){ const grid=$('buildGrid'); grid.innerHTML='';
   COSMETICS.filter(k=>k.cat===buildTab).forEach(k=>{ const isEarn=k.earn!==undefined; const owned=save.cosmetics.owned.includes(k.id)||k.price===0; const equipped=save.cosmetics[k.cat]===k.id;
-    const c=card(k.name, owned?'':(isEarn?('🔒 100% '+WORLDS[k.earn].name):'locked, buy in shop'), owned?(equipped?'ON':'wear'):'🔒', false);
+    const c=card(k.name, owned?'':(isEarn?(mk('lock')+' 100% '+WORLDS[k.earn].name):'locked, buy in shop'), owned?(equipped?'ON':'wear'):mk('lock'), false);
     c.classList.toggle('equipped',equipped); c.classList.toggle('locked',!owned);
     if(owned) c.addEventListener('click',()=>{ save.cosmetics[k.cat]=k.id; persist(); SFX.click(); buildBuilder(); drawBuilderPreview(); });
     grid.appendChild(c); });
@@ -1328,24 +1375,24 @@ function drawBuilderPreview(){ const bc=$('builderCanvas'), bx=bc.getContext('2d
 
 /* ----- how to play ----- */
 const HOWTO=[
-  {i:'☀️',t:'The sun is death',b:'Direct sunlight fills your Exposure bar in about a second. Fill it and you burn (and respawn at your last checkpoint).'},
-  {i:'🌑',t:'Shade is the only ground',b:'Stand in a shadow to stay cool and drop your Exposure. Shadows slide as the sun sweeps, so ride them like moving platforms.'},
-  {i:'🕹️',t:'Move',b:'Drag your left thumb anywhere on the left half of the screen to walk. Let go to stop.'},
-  {i:'💨',t:'Dash',b:'Tap DASH for a fast burst, just enough to cross a thin sliver of sun. It burns you quicker in the open, so aim it.'},
-  {i:'⛱️',t:'Drop Shade',b:'Tap SHADE to drop a circle of safe ground right under you. Only a few charges, so save them for the impossible-looking gaps.'},
-  {i:'🧴',t:'SPF',b:'Tap SPF for a few seconds of total sun-proof. Perfect for sprinting across wide-open light.'},
-  {i:'🧊',t:'Ice Water',b:'Tap ICE to slow the sun’s sweep way down, buys you time when the shadows move too fast.'},
-  {i:'🌿',t:'Aloe = money',b:'Green stars GLOW when the sun lights them, grab a glowing one to bank aloe for the shop. Dim buds are asleep in the shade; wait for the sun to reach them.'},
-  {i:'🐚',t:'Hidden treasure',b:'Every level hides 3 collectibles · 🐚 shells, 🍦 ice-cream or 💎 gems, depending on the world. The level shows how many you’ve found; grab all 3 to 100% it. Some are tucked away!'},
-  {i:'⏱️',t:'Beat your time',b:'Your best time shows while you play, race yourself. A gold medal needs no burns AND finishing under the target time.'},
-  {i:'🚩',t:'Flag & checkpoints',b:'Reach the green flag at the top to win. Ringed dots are checkpoints, touch them so a burn sends you back there, not to the start.'},
-  {i:'🔥',t:'Hot sand',b:'Glowing orange patches scorch you even out of direct sun. Don’t linger on them.'},
-  {i:'🌥️',t:'Clouds & carts',b:'Cloud and cart shadows drift across the map. Step aboard and let them ferry you over the bright gaps.'},
-  {i:'😡',t:'Late-game trouble',b:'Striped awnings wilt if you camp under them; the Angry Sun lunges where you’re standing (move when it flashes); an eclipse turns everything safe-dark for a moment, fly!'},
+  {i:'sun',t:'The sun is death',b:'Direct sunlight fills your Exposure bar in about a second. Fill it and you burn (and respawn at your last checkpoint).'},
+  {i:'shade',t:'Shade is the only ground',b:'Stand in a shadow to stay cool and drop your Exposure. Shadows slide as the sun sweeps, so ride them like moving platforms.'},
+  {i:'move',t:'Move',b:'Drag your left thumb anywhere on the left half of the screen to walk. Let go to stop.'},
+  {i:'dash',t:'Dash',b:'Tap DASH for a fast burst, just enough to cross a thin sliver of sun. It burns you quicker in the open, so aim it.'},
+  {i:'shade',t:'Drop Shade',b:'Tap SHADE to drop a circle of safe ground right under you. Only a few charges, so save them for the gaps that look impossible.'},
+  {i:'spf',t:'SPF',b:'Tap SPF for a few seconds of total sunproofing. Perfect for sprinting across wide open light.'},
+  {i:'ice',t:'Ice Water',b:'Tap ICE to slow the sun’s sweep way down, buys you time when the shadows move too fast.'},
+  {i:'aloe',t:'Aloe = money',b:'Green stars GLOW when the sun lights them, grab a glowing one to bank aloe for the shop. Dim buds are asleep in the shade; wait for the sun to reach them.'},
+  {i:'shell',t:'Hidden treasure',b:'Every level hides 3 collectibles: shells, ice cream or gems, depending on the world. The level shows how many you’ve found; grab all 3 to 100% it. Some are tucked away.'},
+  {i:'star',t:'Beat your time',b:'Your best time shows while you play, race yourself. A gold medal needs no burns AND finishing under the target time.'},
+  {i:'check',t:'Flag & checkpoints',b:'Reach the green flag at the top to win. Ringed dots are checkpoints, touch them so a burn sends you back there, not to the start.'},
+  {i:'sun',t:'Hot sand',b:'Glowing orange patches scorch you even out of direct sun. Don’t linger on them.'},
+  {i:'shade',t:'Clouds & carts',b:'Cloud and cart shadows drift across the map. Step aboard and let them ferry you over the bright gaps.'},
+  {i:'sun',t:'Late game trouble',b:'Striped awnings wilt if you camp under them; the Angry Sun lunges where you’re standing (move when it flashes); an eclipse makes everything dark and safe for a moment, so fly.'},
 ];
 function buildHowto(){ save.seenHowto=true; persist(); const l=$('htList'); if(!l) return; l.innerHTML='';
   HOWTO.forEach(c=>{ const d=document.createElement('div'); d.className='htCard';
-    d.innerHTML=`<div class="hi">${c.i}</div><div><div class="ht">${c.t}</div><div class="hb">${c.b}</div></div>`; l.appendChild(d); }); }
+    d.innerHTML=`<div class="hi">${mk(c.i)}</div><div><div class="ht">${c.t}</div><div class="hb">${c.b}</div></div>`; l.appendChild(d); }); }
 
 /* ----- inline coach marks (first-run tutorial, each fires once ever) -----
    Jessie 2026-07-15: the marks chained back-to-back — "by the time I was done
@@ -1356,7 +1403,7 @@ function buildHowto(){ save.seenHowto=true; persist(); const l=$('htList'); if(!
    can't perform right now never wedges the tutorial). Informational tips keep
    the 5.2s read time. A 5s quiet gap of real play still separates marks. */
 let coachHideT=0, coachGapT=0, coachDone=null, coachSnap=null;
-function coach(text,ic,d){ const c=$('coach'); if(!c) return; c.innerHTML=(ic?`<span class="ic">${ic}</span>`:'')+text; c.classList.add('show');
+function coach(text,ic,d){ const c=$('coach'); if(!c) return; c.innerHTML=(ic?`<span class="ic">${mk(ic)}</span>`:'')+text; c.classList.add('show');
   coachDone=d||null;
   coachSnap={x:(typeof P!=='undefined'?P.x:0), y:(typeof P!=='undefined'?P.y:0),
              sh:run&&run.charges?run.charges.shade:0, sp:run&&run.charges?run.charges.spf:0,
@@ -1364,28 +1411,28 @@ function coach(text,ic,d){ const c=$('coach'); if(!c) return; c.innerHTML=(ic?`<
   coachHideT=d?12:5.2; }
 function hideCoach(){ const c=$('coach'); if(c) c.classList.remove('show'); coachHideT=0; coachDone=null; }
 const TUT=[
-  {id:'move', ic:'🕹️', x:'Drag your left thumb to move. The sun cooks you, get into the shadow.', t:()=>run.t<3,
+  {id:'move', ic:'move', x:'Drag your left thumb to move. The sun cooks you, get into the shadow.', t:()=>run.t<3,
     d:s=>dist(P.x,P.y,s.x,s.y)>70},
-  {id:'shade', ic:'🌑', x:'You’re on shade, safe ground. It slides with the sun, so ride it upward.', t:()=>run.t>1.6 && shadedGeom(P.x,P.y)},
-  {id:'aloe', ic:'🌿', x:'A glowing aloe! Dash into the sunlight to grab it, then dash back to shade.', t:()=>run.beams.some(b=>!b.got&&b.lit&&dist(P.x,P.y,b.x,b.y)<230),
+  {id:'shade', ic:'shade', x:'You’re on shade, safe ground. It slides with the sun, so ride it upward.', t:()=>run.t>1.6 && shadedGeom(P.x,P.y)},
+  {id:'aloe', ic:'aloe', x:'A glowing aloe. Dash into the sunlight to grab it, then dash back to shade.', t:()=>run.beams.some(b=>!b.got&&b.lit&&dist(P.x,P.y,b.x,b.y)<230),
     d:()=>run.beams.some(b=>b.got)},
-  {id:'find', ic:'🐚', x:'Hidden treasure! Grab all 3 in a level to 100% it, some are off the beaten path.', t:()=>run.finds.some(f=>!f.got&&dist(P.x,P.y,f.x,f.y)<250)},
-  {id:'dash', ic:'💨', x:'Tap DASH to burst across a thin strip of sun.', t:()=>run.t>6,
+  {id:'find', ic:'shell', x:'Hidden treasure. Grab all 3 in a level to 100% it, some are off the beaten path.', t:()=>run.finds.some(f=>!f.got&&dist(P.x,P.y,f.x,f.y)<250)},
+  {id:'dash', ic:'dash', x:'Tap DASH to burst across a thin strip of sun.', t:()=>run.t>6,
     d:s=>(run.dashUses||0)>s.da},
-  {id:'shadeDrop', ic:'⛱️', x:'No shadow ahead? Tap SHADE to drop your own safe ground and inch across.', t:()=>run.charges.shade>0 && run.t>4 && !shadedGeom(P.x,P.y),
+  {id:'shadeDrop', ic:'shade', x:'No shadow ahead? Tap SHADE to drop your own safe ground and inch across.', t:()=>run.charges.shade>0 && run.t>4 && !shadedGeom(P.x,P.y),
     d:s=>run.charges.shade<s.sh},
-  {id:'checkpoint', ic:'🚩', x:'Checkpoint! Burn now and you respawn right here.', t:()=>run.cpHit.some(Boolean)},
-  {id:'burn', ic:'🔥', x:'Burned. Keep an eye on the Exposure bar, reach shade before it fills.', t:()=>run.deaths>0},
-  {id:'hot', ic:'🔥', x:'Orange sand scorches you even off the sun. Don’t stand on it.', t:()=>run.hot.length>0 && run.t>1.2},
-  {id:'spf', ic:'🧴', x:'You have SPF · pop it for a few seconds of sun-proof to cross the open.', t:()=>run.charges.spf>0 && run.t>2,
+  {id:'checkpoint', ic:'check', x:'Checkpoint. Burn now and you respawn right here.', t:()=>run.cpHit.some(Boolean)},
+  {id:'burn', ic:'sun', x:'Burned. Keep an eye on the Exposure bar, reach shade before it fills.', t:()=>run.deaths>0},
+  {id:'hot', ic:'sun', x:'Orange sand scorches you even off the sun. Don’t stand on it.', t:()=>run.hot.length>0 && run.t>1.2},
+  {id:'spf', ic:'spf', x:'You have SPF. Pop it for a few seconds of sunproofing to cross the open.', t:()=>run.charges.spf>0 && run.t>2,
     d:s=>run.charges.spf<s.sp},
-  {id:'cart', ic:'🛒', x:'That cart’s shadow moves. Board it at the right moment and ride.', t:()=>run.movers.length>0 && run.t>1.2},
-  {id:'cloud', ic:'🌥️', x:'A drifting cloud is a moving island of shade, hop on.', t:()=>run.clouds.length>0 && run.t>1.2},
-  {id:'wilt', ic:'🥀', x:'Striped awnings wilt if you camp under them. Keep moving.', t:()=>run.wilts.length>0 && run.t>1.2},
-  {id:'ice', ic:'🧊', x:'ICE slows the sun’s sweep. Sip it when the timing is brutal.', t:()=>run.charges.ice>0 && run.t>2,
+  {id:'cart', ic:'shade', x:'That cart’s shadow moves. Board it at the right moment and ride.', t:()=>run.movers.length>0 && run.t>1.2},
+  {id:'cloud', ic:'shade', x:'A drifting cloud is a moving island of shade, hop on.', t:()=>run.clouds.length>0 && run.t>1.2},
+  {id:'wilt', ic:'shade', x:'Striped awnings wilt if you camp under them. Keep moving.', t:()=>run.wilts.length>0 && run.t>1.2},
+  {id:'ice', ic:'ice', x:'ICE slows the sun’s sweep. Sip it when the timing is brutal.', t:()=>run.charges.ice>0 && run.t>2,
     d:s=>run.charges.ice<s.ic2},
-  {id:'lunge', ic:'😡', x:'The Angry Sun is winding up a lunge, move off the flashing ring!', t:()=>run.lunge&&run.lunge.state==='warn'},
-  {id:'eclipse', ic:'🌚', x:'Eclipse! Everything is safe-dark for a moment, sprint!', t:()=>run.darkT>0},
+  {id:'lunge', ic:'sun', x:'The Angry Sun is winding up a lunge. Move off the flashing ring.', t:()=>run.lunge&&run.lunge.state==='warn'},
+  {id:'eclipse', ic:'sun', x:'Eclipse. Everything is dark and safe for a moment, so sprint.', t:()=>run.darkT>0},
 ];
 function checkTut(dt){
   if(coachHideT>0){

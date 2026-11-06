@@ -1302,17 +1302,14 @@ function render(){ const inPlay=(screen==='play');
 
   // SHADE (step 3): every shadow, dropped pool and cloud shadow drawn ONCE into a mask, then laid down once in her safe
   // shade (#657E94 at 0.55), so overlaps never stack into black walls and cool always means safe on her light ground
-  if(!render.sc){ render.sc=document.createElement('canvas'); render.sx=render.sc.getContext('2d'); }
-  const sc=render.sc, sx=render.sx;
-  if(sc.width!==cv.width||sc.height!==cv.height){ sc.width=cv.width; sc.height=cv.height; }
-  sx.setTransform(1,0,0,1,0,0); sx.globalCompositeOperation='source-over'; sx.clearRect(0,0,sc.width,sc.height);
-  sx.setTransform(DPR,0,0,DPR,0,0); sx.fillStyle='#000';
-  for(const poly of run.shadePolys){ sx.beginPath(); poly.forEach((p,i)=>{const X=p.x+ox,Y=p.y+oy; i?sx.lineTo(X,Y):sx.moveTo(X,Y);}); sx.closePath(); sx.fill(); }
-  for(const e of run.shadeEll){ sx.save(); sx.translate(e.cx+ox,e.cy+oy); sx.rotate(e.ang); sx.beginPath(); sx.ellipse(0,0,e.major,e.minor,0,0,TAU); sx.fill(); sx.restore(); }
-  for(const p of run.popups){ sx.beginPath(); sx.arc(p.x+ox,p.y+oy,p.r,0,TAU); sx.fill(); }
-  for(const cl of run.clouds){ sx.beginPath(); sx.arc(cl.x+ox,cl.y+oy,cl.r,0,TAU); sx.fill(); }
-  sx.setTransform(1,0,0,1,0,0); sx.globalCompositeOperation='source-in'; sx.fillStyle='#657e94'; sx.fillRect(0,0,sc.width,sc.height);
-  ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.globalAlpha=gt?0.55:0.62; ctx.drawImage(sc,0,0); ctx.restore();
+  // (perf) one path, filled once: every outline winds the way arc(0..TAU) does, so under nonzero the overlaps are one union
+  // and never stack; the same picture as the old offscreen mask without its three full-screen passes
+  ctx.save(); ctx.globalAlpha=gt?0.55:0.62; ctx.fillStyle='#657e94'; ctx.beginPath();
+  for(const poly of run.shadePolys){ for(let i=0;i<poly.length;i++){ const X=poly[i].x+ox,Y=poly[i].y+oy; i?ctx.lineTo(X,Y):ctx.moveTo(X,Y); } ctx.closePath(); }
+  for(const e of run.shadeEll){ const X=e.cx+ox,Y=e.cy+oy; ctx.moveTo(X+Math.cos(e.ang)*e.major,Y+Math.sin(e.ang)*e.major); ctx.ellipse(X,Y,e.major,e.minor,e.ang,0,TAU); ctx.closePath(); }
+  for(const p of run.popups){ ctx.moveTo(p.x+ox+p.r,p.y+oy); ctx.arc(p.x+ox,p.y+oy,p.r,0,TAU); ctx.closePath(); }
+  for(const cl of run.clouds){ ctx.moveTo(cl.x+ox+cl.r,cl.y+oy); ctx.arc(cl.x+ox,cl.y+oy,cl.r,0,TAU); ctx.closePath(); }
+  ctx.fill(); ctx.restore();
   // a dropped shade is her soft cool pool over its circle (the circle is the truth)
   const pool=A('shade_pool');
   for(const p of run.popups){ if(pool){ ctx.globalAlpha=0.45; ctx.drawImage(pool,p.x+ox-p.r*1.12,p.y+oy-p.r*1.12,p.r*2.24,p.r*2.24); ctx.globalAlpha=1; }

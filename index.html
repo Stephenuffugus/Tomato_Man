@@ -818,6 +818,21 @@ function worldFindsComplete(w){ const lv=levelsOfWorld(w); if(!lv.length) return
   return lv.every(o=>{ const a=save.finds[levelId(o.L,o.i)]||[]; const n=(o.L.finds||[]).length; if(!n) return false;
     for(let i=0;i<n;i++) if(!a[i]) return false; return true; }); }
 function levelsOfWorld(w){ return LEVELS.map((L,i)=>({L,i})).filter(o=>o.L.world===w); }
+/* THE PRESSURE step 3 (Stephen, 8 Nov: "that pressure on nearly every level and early"): one row a world. From Morning Tide's third
+   level every level carries the world's fair lunge unless it has its own (the Eclipse keeps its own lunges and dark windows; its row is
+   the run's), lead seconds before the first; critters by the level's place IN ITS WORLD (one from Morning Tide's second level, the placed
+   ones counted); the sun burns 150/s in the first two worlds and 170/s from the Tide Pools (Thicker Skin scales it); shade cools 200/s. */
+const PRESSURE=[
+  {lunge:{period:16,warn:1.6,dur:2.0,reach:100,lead:6}, critters:1, burn:150},   // Morning Tide: one lunge a crossing
+  {lunge:{period:14,warn:1.5,dur:2.0,reach:100,lead:5}, critters:1, burn:150},   // Midday Blaze
+  {lunge:{period:13,warn:1.5,dur:2.2,reach:105,lead:5}, critters:2, burn:170},   // Tide Pools
+  {lunge:{period:12,warn:1.4,dur:2.2,reach:110,lead:5}, critters:2, burn:170},   // Dunes at Dusk, and the mirage
+  {lunge:{period:10,warn:1.4,dur:2.2,reach:110,lead:4}, critters:3, burn:170},   // Eclipse
+];
+function placeInWorld(L,i){ const k=levelsOfWorld(L.world||0).findIndex(o=>o.i===i); return k<0?0:k; }
+function pressureLunge(L,i){ const w=L.world||0; if(w>=4||(w===0&&placeInWorld(L,i)<2)) return null; return {...PRESSURE[w].lunge}; }
+function sunBurnFor(w){ return Math.round(FEEL().burnSun*PRESSURE[w%5].burn/150); }
+function runLunge(w,lead){ const s=PRESSURE[w%5].lunge; return {...s,timer:Math.max(0,s.period-lead),state:'idle',zx:P.x,zy:P.y,calm:0}; }
 
 /* ===================== PROCEDURAL GENERATOR (endless / daily) ===================== */
 // Builds a solvable-by-construction vertical level by stacking overlapping shade bands.
@@ -903,7 +918,8 @@ function runBandNext(){ const g=run.gen, L=run.L, f=run.feel, r=(a,b)=>a+g.rnd()
   if(W>=1&&g.rnd()<0.25) run.hot.push([clamp(cx+(g.rnd()<0.5?-1:1)*r(260,420),120,L.worldW-120),y+120,60]);
   // the critters, by the world: a scorpion on the lane between the bands, a crab on this band's front edge, one mirage from the Dunes
   const budget=0.6+W*0.25+(g.diff-1)*0.15;
-  if(W>=1&&g.rnd()<budget*0.6){ const hx=clamp(cx-g.side*r(120,260),160,L.worldW-160), hy=y+120;
+  if((W>=1||L.start[1]-y>=BASE_FEEL.runMile)&&g.rnd()<budget*0.6){   // THE PRESSURE: a critter budget from mile 1
+    const hx=clamp(cx-g.side*r(120,260),160,L.worldW-160), hy=y+120;
     run.critters.push({kind:'scorpion',x:hx,y:hy,hx,hy,ax:Math.max(80,hx-150),ay:hy,bx:Math.min(L.worldW-80,hx+150),by:hy,dir:1,state:'patrol',pin:0,sink:0,rise:0,lostT:0,face:0,t:0,hits:0}); }
   if(W>=2&&g.rnd()<budget*0.35) run.critters.push({kind:'crab',x:cx-w/2,y:y+74,ax:cx-w/2,bx:cx+w/2,dir:1,state:'crab',pin:0,sink:0,rise:0,hits:0,flipped:false,cool:0,face:0,t:0,lostT:0});
   if(W>=3&&!run.critters.some(c=>c.kind==='mirage')) run.critters.push({kind:'mirage',x:P.x,y:P.y,on:false,fade:0,cool:0,born:0,pin:0,t:0,state:'mirage',sink:0,rise:0});
@@ -913,13 +929,13 @@ function startRun(seed,daily){ const L=genRun(seed); if(daily){ L.name='Daily Ru
   run.isRun=true; run.planet=null; run.gen={rnd:mulberry32(seed|0),y:L.start[1]-40-240,cx:L.worldW/2,side:1,n:0,world:0,diff:1,fi:0,prev:{x:L.worldW/2-180,y:L.start[1]-40,w:360,d:70,sh:440}};
   cam.y=clamp(P.y-(H-f.runLineH-160),0,Math.max(0,L.worldH-H)); run.graceT=Math.max(run.graceT||0,1.5);   // he starts 160 px over the burn line with a breath and a half before it bites
   run.scroll=f.runScroll; run.scrollY=cam.y; run.dist=0; run.miles=0; run.pods=[]; run.motes=[]; run.gulls=[]; run.seeds=f.runPouch; run.regenT=0; run.fireT=0; run.fireId=null;
-  run.moteT=f.runMoteEvery; run.gullT=f.runGullEvery; run.flareT=0; run.worldMask=1; run.pins=0; run.cacti=[]; run.decor=[];
+  run.moteT=f.runMoteEvery; run.gullT=f.runGullEvery; run.flareT=0; run.lunge=runLunge(0,8); run.worldMask=1; run.pins=0; run.cacti=[]; run.decor=[];
   for(let i=0;i<14;i++) runBandNext(); sync();
   ['sun_wind_up','sun_lunge','sun_recovery','ring_boss','lane','angry_glare','angry_wind_up','angry_lunge','angry_panting','corona','umb_states','wilt_solid','cloud_platform',
    'mote','gull_fly','gull_swoop','gull_hit','gull_knocked','gull_carry','crab_walk','crab_pinned','crab_flipped','burn_line','seed_pod','run_card_ornament'].forEach(need); needWorld(1); }
 function startFlare(){ const f=run.feel; run.flareT=f.runFlare; run.lunge={period:5.5,warn:1.1,dur:2.4,reach:160+run.miles*4,timer:0,state:'idle',zx:P.x,zy:P.y,calm:0};
   toast('mile '+run.miles+', the sun flares','#ff6a2c'); jShake(0.2); SFX.burn&&spawnRing(P.x,P.y,'255,120,40',120,0.6); }
-function shiftWorld(){ const w=(run.L.world+1)%5; run.L.world=w; run.gen.world=w; if(w===0) run.gen.diff++; run.worldMask|=1<<w;
+function shiftWorld(){ const w=(run.L.world+1)%5; run.L.world=w; run.gen.world=w; run.feel.burnSun=sunBurnFor(w); if(w===0) run.gen.diff++; run.worldMask|=1<<w;
   applyTheme(w); needWorld(w); needWorld((w+1)%5); run.wind=w===3?{ax:55,ay:0,spin:0.16}:null; startMusic(w); toast(WORLDS[w].name,'var(--leaf)'); }
 function spawnMotes(){ const f=run.feel, L=run.L, n=3+Math.floor(Math.random()*3), top=cam.y-20, W4=L.world;
   if(W4>=2&&Math.random()<0.5){ const slots=7, gap=Math.floor(clamp((P.x-cam.x)/W*slots,0,slots-1));   // a wall with one gap, nearest him
@@ -1039,7 +1055,7 @@ let cam={x:0,y:0};
 let freeze=0; // freeze-frame timer (juice)
 
 function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(opts.level?li:i); endless=!!opts.endless; dailyKey=opts.daily||0;
-  const ch=startCharges(L); const feel=FEEL();
+  const ch=startCharges(L); const feel=FEEL(); if(!opts.level) feel.burnSun=sunBurnFor(L.world||0);   // THE PRESSURE: the sun burns harder from the Tide Pools
   // tag umbrella casters with facing index for wind re-tilt
   let fi=0; const facings={}; for(const c of L.casters){ if(c[0]==='U'){ c.__fi=fi; facings[fi]=c[4]; fi++; } }
   run={ L,t:0,act:null,hotAt:-9,az:L.sun.azC,deaths:0,screenT:0,darkT:0,slowT:0,shake:0,lastSafe:true,grazeT:0,sinceSafe:0,graceT:1.0,
@@ -1052,7 +1068,7 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
         pops:(L.pops||[]).map(p=>({x:p[0],y:p[1],got:false})),
         pickups:(L.pickups||[]).map(p=>({x:p.x,y:p.y,kind:p.kind,got:false})),   // THE PRESSURE: SPF, SHADE and ICE you pick up on the route (step 2 the lesson's SPF; step 4 the rest)
         wind:L.wind||null,
-        lunge:L.sun.lunge?{...L.sun.lunge,timer:0,state:'idle',zx:0,zy:0}:null,
+        lunge:(()=>{ const s=L.sun.lunge||(opts.level?null:pressureLunge(L,i)); return s?{...s,timer:s.lead?s.period-s.lead:0,state:'idle',zx:0,zy:0}:null; })(),   // THE PRESSURE: the level's own lunge, or its world's
         dark:L.sun.dark?{...L.sun.dark,timer:0}:null,
         beams:(L.beams||[]).map(b=>({x:b[0],y:b[1],got:false,t:Math.random()*6})),
         findId: endless?null:levelId(L,li),
@@ -1087,7 +1103,7 @@ function startLevel(i,opts){ opts=opts||{}; const L=opts.level||LEVELS[i]; li=(o
 /* m2 step 9: the moving world's art, loaded with the level that uses it */
 function needLevel(L){ need('cactus_blink'); if(L.wind) need('cactus_wind'); if(L.world===3||L.world===4) PLANET_KEYS.forEach(need);
   if((L.wilts||[]).length) need('wilt_solid'); if((L.casters||[]).some(c=>c[0]==='U')) need('umb_states');
-  if(L.sun&&L.sun.lunge){ need('sun_wind_up'); need('sun_lunge'); need('sun_recovery'); need('ring_boss'); need('lane'); }
+  if((L.sun&&L.sun.lunge)||(run&&run.lunge)){ need('sun_wind_up'); need('sun_lunge'); need('sun_recovery'); need('ring_boss'); need('lane'); }
   if(L.sun&&L.sun.dark) need('ring_safe'); }
 /* her cactus spectators: two per level, one each side of the route, near enough to its line to stand at the screen's
    edges, clear of casters, carts, pickups and the decor; scenery only (no shade, no collision) */
@@ -1236,12 +1252,12 @@ function updateSeeds(dt){ const f=run.feel;
 /* SUN CRITTERS (6 Nov): things that live in the light and chase him across it. He cannot hurt them; he loses them by reaching shade, and a seed pins one for two seconds.
    A sand scorpion walks a lane in the sun square across his route, charges when he steps into the light within sight, and stops at the edge of any shadow (it lives in the light), sinks, and comes back to its lane. So a crossing is timed against it.
    A heat mirage walks his own last steps a third of a second behind him while he is in the sun: stop or double back and it catches him, so a crossing is a commitment; shade dissolves it.
-   They come in by the world, never in Morning Tide, never in a custom level (the lab tests the shade). No LEVELS data: a scorpion's home comes from the level's shape, seeded, so a level always has the same ones. Placeholder art, drawn in code. */
+   They come by the level's place in its world (PRESSURE, from Morning Tide's second level), never in a custom level (the lab tests the shade). No LEVELS data: a scorpion's home comes from the level's shape, seeded, so a level always has the same ones. Placeholder art, drawn in code. */
 function makeCritters(L,opts){ const out=[]; if(!L) return out;
   /* THE PRESSURE step 2: a critter the level places itself (Sliver Step's lone scorpion that guards the seed lesson) */
   if(!endless) for(const c of (L.critters||[])) out.push({kind:'scorpion',x:c.x,y:c.y,hx:c.x,hy:c.y,ax:c.ax,ay:c.ay,bx:c.bx,by:c.by,dir:1,state:'patrol',pin:0,sink:0,rise:0,lostT:0,face:0,t:0});
-  if(opts.level||L.world===0&&!endless) return out;
-  const j=li%4, w=L.world||0, nS=w===1?(j>=1?1:0):w===2?(j>=1?2:1):w===3?2:3, rnd=mulberry32(((L.worldW*7+L.worldH*11+w*97+j*13)|0)+5);
+  if(opts.level) return out;
+  const w=L.world||0, j=placeInWorld(L,li), nS=Math.max(0,(w===0&&j<1?0:PRESSURE[w].critters)-out.length), rnd=mulberry32(((L.worldW*7+L.worldH*11+w*97+j*13)|0)+5);
   const keep=[L.start,L.exit,...(L.checkpoints||[])], homes=[], route=[L.start,...(L.checkpoints||[]).filter(c=>c[0]!==L.start[0]||c[1]!==L.start[1]),L.exit];
   const blocked=(x,y)=>shadedGeom(x,y)||(L.casters||[]).some(c=>c[0]==='R'?(x>c[1]-16&&x<c[1]+c[3]+16&&y>c[2]-16&&y<c[2]+c[4]+16):dist(x,y,c[1],c[2])<c[3]+16);
   /* a scorpion's lane crosses the route: a sun lane between two shadows the player has to cross, walked square to his way, spread along the level */
@@ -1253,7 +1269,7 @@ function makeCritters(L,opts){ const out=[]; if(!L) return out;
     if(a+b<80) continue;
     homes.push({x,y,ax:x-nx*a,ay:y-ny*a,bx:x+nx*b,by:y+ny*b}); }
   for(const h of homes) out.push({kind:'scorpion',x:h.x,y:h.y,hx:h.x,hy:h.y,ax:h.ax,ay:h.ay,bx:h.bx,by:h.by,dir:1,state:'patrol',pin:0,sink:0,rise:0,lostT:0,face:0,t:0});
-  if(w>=3&&j>=1) out.push({kind:'mirage',x:L.start[0],y:L.start[1],on:false,fade:0,cool:0,born:0,pin:0,t:0,state:'mirage',sink:0,rise:0});
+  if(w===3||(w>=4&&j>=1)) out.push({kind:'mirage',x:L.start[0],y:L.start[1],on:false,fade:0,cool:0,born:0,pin:0,t:0,state:'mirage',sink:0,rise:0});
   return out; }
 function pinCritter(c){ c.pin=run.feel.pinFor; SFX.sprout(); spawnRing(c.x,c.y,'150,230,120',46,0.35); spawnParts(c.x,c.y,10,'130,190,90',110,0.4); floatText(c.x,c.y-18,'PINNED','170,235,130'); run.pins=(run.pins||0)+1; }
 function stingBy(c,amount){ P.exp=clamp(P.exp+amount,0,run.feel.burnThreshold); SFX.sting(); fxAt('sting',P.x,P.y,72,0.18); jShake(0.16); screenFlash('255,120,50',0.22); floatText(P.x,P.y-24,'STING','255,150,90'); spawnParts(P.x,P.y,10,'255,120,60',150,0.4); run.stings=(run.stings||0)+1; }
@@ -1423,7 +1439,7 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
     run.scroll=Math.min(f.runScrollCap,f.runScroll+f.runScrollRamp*Math.floor(run.t/20)); run.scrollY-=run.scroll*dt;
     while(run.gen.y>run.scrollY-H*1.5) runBandNext();
     run.dist=Math.max(run.dist,L.start[1]-P.y); const mile=Math.floor(run.dist/f.runMile); if(mile>run.miles){ run.miles=mile; startFlare(); }
-    if(run.flareT>0){ run.flareT-=dt; if(run.flareT<=0){ run.flareT=0; run.lunge=null; run.darkT=f.runDark; shiftWorld(); } }
+    if(run.flareT>0){ run.flareT-=dt; if(run.flareT<=0){ run.flareT=0; run.darkT=f.runDark; shiftWorld(); run.lunge=runLunge(run.L.world,PRESSURE[run.L.world].lunge.lead+f.runDark); } }   // THE PRESSURE: the world's lunge between flares
     run.regenT+=dt; if(run.seeds<f.runPouch&&run.regenT>=f.runRegen){ run.regenT=0; run.seeds++; sync(); }
     if((run.fireId!=null||keys['r'])&&run.seeds>0){ run.fireT-=dt; if(run.fireT<=0){ run.fireT=f.runFire; toss(); } } else run.fireT=0;
     updateMotes(dt); updateGulls(dt);

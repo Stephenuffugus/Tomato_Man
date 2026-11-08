@@ -326,7 +326,7 @@
 <div id="map" class="overlay">
   <div class="backRow"><div class="iconbtn" id="mapBack" role="button" aria-label="Back"><svg class="mk" aria-hidden="true"><use href="#tm-back"/></svg></div></div>
   <h2 class="title">Choose a World</h2>
-  <div class="sub2">Clear levels to unlock the next world.</div>
+  <div class="sub2">Clear every level of a world to open the next.</div>
   <div class="menuCol" id="worldList" style="max-width:380px"></div>
   <div class="pad"></div>
 </div>
@@ -2192,8 +2192,13 @@ function showScreen(name){ screen=name||'play'; if(name==='title') drawTitleRun(
 function stopMusicMaybe(name){ if(name==='title'||name==='map'||name==='shop'||name==='builder'||name==='settings'||name==='levels'||name==='howto') stopMusic(); }
 function updateWallet(){ $('walletN').textContent=save.beams; const sw=$('shopWallet'); if(sw) sw.textContent=save.beams+' aloe'; }
 
-// world unlocking: world w unlocked if previous world has >=1 cleared level (or w==0)
-function worldUnlocked(w){ if(w===0) return true; const prev=levelsOfWorld(w-1); return prev.some(o=>save.stars[levelId(o.L,o.i)]); }
+/* THE PRESSURE step 6 (Stephen, 8 Nov: worlds opened progressively, not all at once): a world opens when the world before is COMPLETE,
+   every one of its levels starred. A save already past that keeps what it has: a world with a starred level stays open (never lock a
+   world the player has played). Levels inside a world still open one after another (unlockedLevel). */
+function worldCleared(w){ const lv=levelsOfWorld(w); return { got:lv.filter(o=>save.stars[levelId(o.L,o.i)]).length, tot:lv.length }; }
+function worldUnlocked(w){ if(w===0) return true;
+  if(levelsOfWorld(w).some(o=>save.stars[levelId(o.L,o.i)])) return true;   // played under the old rule: keep it
+  const c=worldCleared(w-1); return c.tot>0&&c.got===c.tot&&worldUnlocked(w-1); }
 function unlockedLevel(i){ const L=LEVELS[i]; const wl=levelsOfWorld(L.world); const pos=wl.findIndex(o=>o.i===i);
   if(!worldUnlocked(L.world)) return false; if(pos===0) return true; const prev=wl[pos-1]; return !!save.stars[levelId(prev.L,prev.i)]; }
 
@@ -2207,7 +2212,7 @@ function buildWorldMap(){ const list=$('worldList'); list.innerHTML='';
     const done100=unlocked&&worldFindsComplete(wi);
     const c=document.createElement('div'); c.className='worldCard'+(unlocked?'':' locked'); c.title=w.sub;
     c.style.backgroundImage=`url(${CARD_SRC[wi]}?v=${ART_V})`;      // her postcard; the name rides in her band
-    c.innerHTML=`<span class="wchip">${unlocked?`${em} ${fGot}/${fTot}${done100?', hat earned':''}`:mk('lock')+' Locked'}</span><span class="wname"><span>${w.name}</span><span class="wprog">${unlocked?(cleared+'/'+lv.length+' cleared · '+stars+' '+mk('star')):'clear a level in '+(wi>0?WORLDS[wi-1].name:'')}</span></span>`;
+    c.innerHTML=`<span class="wchip">${unlocked?`${em} ${fGot}/${fTot}${done100?', hat earned':''}`:mk('lock')+' Locked'}</span><span class="wname"><span>${w.name}</span><span class="wprog">${unlocked?(cleared+'/'+lv.length+' cleared · '+stars+' '+mk('star')):(wi>0?(()=>{ const c=worldCleared(wi-1); return c.got+' of '+c.tot+' levels to open, clear all of '+WORLDS[wi-1].name; })():'')}</span></span>`;
     if(unlocked) c.addEventListener('click',()=>{SFX.click();openWorld(wi);});
     list.appendChild(c); }); }
 let curWorld=0;
@@ -2302,6 +2307,7 @@ const HOWTO=[
   {i:'shell',t:'Hidden treasure',b:'Every level hides 3 collectibles: shells, ice cream or gems, depending on the world. The level shows how many you’ve found; grab all 3 to 100% it. Some are tucked away.'},
   {i:'star',t:'Beat your time',b:'Your best time shows while you play, race yourself. A gold medal needs no burns AND finishing under the target time.'},
   {i:'check',t:'Flag & checkpoints',b:'Reach the green flag at the top to win. Ringed dots are checkpoints, touch them so a burn sends you back there, not to the start.'},
+  {i:'star',t:'Worlds open in turn',b:'Levels open one after another. Clear every level of a world, one star is enough, and the next world opens.'},
   {i:'sun',t:'Hot sand',b:'Glowing orange patches scorch you even out of direct sun. Don’t linger on them.'},
   {i:'shade',t:'Clouds & carts',b:'Cloud and cart shadows drift across the map. Step aboard and let them ferry you over the bright gaps.'},
   {i:'sun',t:'Late game trouble',b:'Striped awnings wilt if you camp under them; the Angry Sun lunges where its ring locks (move off it, or dash at the flash); an eclipse makes everything dark and safe for a moment, so fly.'},

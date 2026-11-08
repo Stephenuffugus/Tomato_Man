@@ -180,7 +180,7 @@
   .card .lname{font:400 16px 'Bree Serif',Georgia,serif}
   .card .rec{display:flex;align-items:center;gap:4px;color:var(--ink);margin-top:6px;letter-spacing:0}
   .card .rec .sock{width:22px;height:22px} .card .rec .sock.off{opacity:.25;filter:grayscale(1)}
-  .card .rec .lmedal{width:26px;height:26px;margin-left:4px} .card .rec .lbest{margin-left:auto;font-weight:700;font-size:13px}
+  .card .lfind{font-size:16px;font-weight:700;color:var(--inkSoft);margin-top:4px} .card .rec .lmedal{width:26px;height:26px;margin-left:4px} .card .rec .lbest{margin-left:auto;font-weight:700;font-size:13px}
   #builderCanvas{border:14px solid transparent;border-image:url(art/ui/builder_frame_frame.png?v=20261107a) 28 fill / 14px stretch;box-sizing:content-box}
   /* How to Play: four picture cards first, every rule one tap further */
   .htQuick{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:420px;margin:6px 0 10px}
@@ -810,9 +810,13 @@ const COLLECT=[
 ];
 function collectOf(w){ return COLLECT[w%COLLECT.length]; }
 const PICKUP_NAME={spf:'SPF',shade:'SHADE',ice:'ICE',pod:'SEEDS'}, PICKUP_COL={spf:'#ffe7a0',shade:'#9fd6c0',ice:'#bfe6ff',pod:'#c9e3a0'};   // THE PRESSURE step 4: a seed pod (+3) is a pickup in the levels
-const FINDS={0:[[1120,1700],[900,1000],[1110,500]],1:[[1110,1600],[900,1000],[1100,300]],2:[[228,1812],[204,1188],[228,924]],3:[[1692,1932],[516,1524],[468,900]],4:[[1572,1788],[1596,1212],[612,708]],5:[[1404,1860],[612,1332],[1404,828]],6:[[180,1860],[156,1236],[2244,828]],7:[[852,2052],[348,1380],[2364,756]],8:[[1548,1740],[444,1164],[1572,900]],9:[[1644,1860],[1644,1260],[612,660]],10:[[1764,1788],[2244,1260],[2268,900]],11:[[1788,2076],[2244,1356],[2268,1044]],12:[[1812,1644],[1884,1140],[84,636]],13:[[204,1788],[204,1428],[252,636]],14:[[2004,1668],[2004,1188],[2172,660]],15:[[2076,1812],[2340,1212],[2436,948]],16:[[1476,1692],[1476,1116],[1476,780]],17:[[1572,1932],[1572,1380],[1572,660]],18:[[540,1716],[420,1356],[420,636]],19:[[708,2052],[1860,1476],[708,708]],20:[[1332,1524],[1332,1212],[1332,564]],21:[[1212,1836],[1212,1092],[1212,612]],22:[[228,1236],[1188,756],[348,420]],23:[[1284,1260],[276,780],[324,420]],24:[[1908,1908],[1932,1524],[2100,804]],25:[[468,1716],[1428,1212],[1452,924]]};
+/* THE PRESSURE step 5 (Stephen, 8 Nov: the unlockables he could not find): every find sits in the shade the level is played through, inside or
+   just off an awning (within 90 px of it, a checkpoint or a pickup), shaded at the sun's two ends and its centre, off hot sand, and the
+   first of each level beside the start awning in view from the start. The indices are the save's, so a find already taken stays taken. */
+const FINDS={0:[[850,2480],[920,1200],[920,640]],1:[[850,2480],[920,1150],[920,500]],2:[[640,2390],[750,1500],[1460,750]],3:[[980,2690],[1140,1440],[1130,460]],4:[[980,2370],[1100,1420],[1000,540]],5:[[910,2540],[920,1150],[920,250]],6:[[1110,2440],[520,1480],[1250,290]],7:[[1210,2740],[1200,1780],[1220,300]],8:[[850,2360],[980,1210],[880,570]],9:[[950,2460],[1030,1700],[1000,900]],10:[[1050,2560],[1610,1500],[1120,700]],11:[[1050,2760],[1590,1560],[1600,640]],12:[[820,2380],[710,1140],[840,360]],13:[[930,2420],[950,1640],[780,900]],14:[[910,2280],[740,1670],[1260,370]],15:[[870,2520],[770,1800],[1450,730]],16:[[850,2360],[700,1020],[670,440]],17:[[950,2560],[1270,1620],[770,420]],18:[[900,2460],[720,1360],[720,360]],19:[[1050,2760],[840,1380],[870,540]],20:[[700,2180],[770,1180],[770,500]],21:[[700,2280],[770,1180],[770,760]],22:[[600,1650],[750,970],[620,530]],23:[[600,1650],[570,970],[710,400]],24:[[490,2460],[1350,1220],[1400,760]],25:[[830,2460],[710,1660],[580,460]]};
 function levelId(L,idx){ return WORLDS[L.world].key+'_'+idx; }
 LEVELS.forEach((L,i)=>{ L.finds=FINDS[i]||[]; });
+const FIND_COL={shell:'#f28ab0',cone:'#ffb35c',gem:'#37b6e0'}, FIND_WORD={shell:'shells',cone:'ice creams',gem:'gems'};   // the compass and the level card
 const WORLD_REWARD=['shell_crown','cone_hat','cool_shades','gem_crown','eclipse_halo']; // exclusive hat per world
 function worldFindsComplete(w){ const lv=levelsOfWorld(w); if(!lv.length) return false;
   return lv.every(o=>{ const a=save.finds[levelId(o.L,o.i)]||[]; const n=(o.L.finds||[]).length; if(!n) return false;
@@ -924,10 +928,13 @@ function runBandNext(){ const g=run.gen, L=run.L, f=run.feel, r=(a,b)=>a+g.rnd()
     run.critters.push({kind:'scorpion',x:hx,y:hy,hx,hy,ax:Math.max(80,hx-150),ay:hy,bx:Math.min(L.worldW-80,hx+150),by:hy,dir:1,state:'patrol',pin:0,sink:0,rise:0,lostT:0,face:0,t:0,hits:0}); }
   if(W>=2&&g.rnd()<budget*0.35) run.critters.push({kind:'crab',x:cx-w/2,y:y+74,ax:cx-w/2,bx:cx+w/2,dir:1,state:'crab',pin:0,sink:0,rise:0,hits:0,flipped:false,cool:0,face:0,t:0,lostT:0});
   if(W>=3&&!run.critters.some(c=>c.kind==='mirage')) run.critters.push({kind:'mirage',x:P.x,y:P.y,on:false,fade:0,cool:0,born:0,pin:0,t:0,state:'mirage',sink:0,rise:0});
+  if((roll<0.5||g.n<6)&&L.casters[L.casters.length-1][5]>1&&L.start[1]-y>=(g.fm+0.5)*BASE_FEEL.runMile){   // THE PRESSURE step 5: one find a mile, in a band's awning shade (never a wilting one), the world's collectible
+    let fx=cx+g.side*(w/2-40); const busy=x=>[...run.beams,...run.pods,...run.pops,...run.pickups].some(o=>Math.abs(o.x-x)<50&&Math.abs(o.y-(y+32))<70);
+    if(busy(fx)) fx=cx-g.side*(w/2-40); if(!busy(fx)){ g.fm++; run.finds.push({x:fx,y:y+32,i:run.finds.length,got:false,kind:collectOf(W).kind}); } }
   g.prev={x:cx-w/2,y,w,d:64,sh:440}; g.cx=cx; g.y-=240; g.n++; }
 function startRun(seed,daily){ const L=genRun(seed); if(daily){ L.name='Daily Run'; L.sub='Seed '+seedWord(daily)+'. Everyone runs the same sand today.'; }
   endlessWorld=0; startLevel(0,{level:L,endless:true,daily:daily||0}); const f=run.feel;
-  run.isRun=true; run.planet=null; run.gen={rnd:mulberry32(seed|0),y:L.start[1]-40-240,cx:L.worldW/2,side:1,n:0,world:0,diff:1,fi:0,prev:{x:L.worldW/2-180,y:L.start[1]-40,w:360,d:70,sh:440}};
+  run.isRun=true; run.planet=null; run.gen={fm:0,rnd:mulberry32(seed|0),y:L.start[1]-40-240,cx:L.worldW/2,side:1,n:0,world:0,diff:1,fi:0,prev:{x:L.worldW/2-180,y:L.start[1]-40,w:360,d:70,sh:440}};
   cam.y=clamp(P.y-(H-f.runLineH-160),0,Math.max(0,L.worldH-H)); run.graceT=Math.max(run.graceT||0,1.5);   // he starts 160 px over the burn line with a breath and a half before it bites
   run.scroll=f.runScroll; run.scrollY=cam.y; run.dist=0; run.miles=0; run.pods=[]; run.motes=[]; run.gulls=[]; run.seeds=f.runPouch; run.regenT=0; run.fireT=0; run.fireId=null;
   run.moteT=f.runMoteEvery; run.gullT=f.runGullEvery; run.flareT=0; run.lunge=runLunge(0,8); run.worldMask=1; run.pins=0; run.cacti=[]; run.decor=[];
@@ -956,7 +963,7 @@ function updateGulls(dt){ const f=run.feel, L=run.L; if(L.world>=1||run.gen.diff
     if(gl.x<cam.x-100||gl.x>cam.x+W+100) gl.dead=true; }
   if(run.gulls.some(g=>g.dead)) run.gulls=run.gulls.filter(g=>!g.dead); }
 function pruneBelow(yl){ const L=run.L; L.casters=L.casters.filter(c=>c[2]<yl); run.walls=[]; run.movers=run.movers.filter(m=>m.y<yl); run.clouds=run.clouds.filter(c=>c.y<yl);
-  run.wilts=run.wilts.filter(w=>w.y<yl); run.beams=run.beams.filter(b=>b.y<yl); run.pops=run.pops.filter(p=>p.y<yl); run.pods=run.pods.filter(p=>p.y<yl); run.pickups=(run.pickups||[]).filter(p=>p.y<yl);
+  run.wilts=run.wilts.filter(w=>w.y<yl); run.beams=run.beams.filter(b=>b.y<yl); run.pops=run.pops.filter(p=>p.y<yl); run.pods=run.pods.filter(p=>p.y<yl); run.pickups=(run.pickups||[]).filter(p=>p.y<yl); run.finds=run.finds.filter(f=>f.y<yl);
   for(let i=run.hot.length-1;i>=0;i--) if(run.hot[i][1]>=yl) run.hot.splice(i,1);
   run.critters=run.critters.filter(c=>c.kind==='mirage'||c.y<yl); run.saplings=run.saplings.filter(s=>s.y<yl); }
 function endRun(){ mode='win'; const f=run.feel, L=run.L; SFX.win(); stopMusic(); freeze=0; run.fireId=null;
@@ -969,10 +976,10 @@ function endRun(){ mode='win'; const f=run.feel, L=run.L; SFX.win(); stopMusic()
   addBeams(earn);
   $('winTitle').textContent='THE SUN WON'; $('winMedal').innerHTML='';
   $('winTime').innerHTML=`${m.toLocaleString()} m, ${WORLDS[world].name}`+(isNewBest?`  <span style="color:var(--beam)">NEW BEST</span>`:(save.runBest?`  <span style="opacity:.7">best ${save.runBest.toLocaleString()} m</span>`:''));
-  $('winDeaths').innerHTML=`${mk('aloe')} ${stars}  ·  ${pinned} pinned`;
+  $('winDeaths').innerHTML=`${mk('aloe')} ${stars}  ·  ${pinned} pinned`+(run.findsRun?`  ·  ${run.findsRun} ${run.findsRun===1?'treasure':'treasures'}`:'');
   $('winEarn').innerHTML=`<div class="earnLine">+ ${earn} aloe ${mk('aloe')}</div>`+(nw?`<div class="earnLine">${nw===1?'a new world reached':nw+' new worlds reached'}</div>`:'');
   $('winNext').style.display='none';
-  run.winInfo={name:L.name, world, t:run.t, par:0, medal:'bronze', isNewBest, deaths:0, finds:{have:0,total:0}, kind:collectOf(world).kind, endless:true, daily:!!dailyKey, run:true, m, stars, pinned};
+  run.winInfo={name:L.name, world, t:run.t, par:0, medal:'bronze', isNewBest, deaths:0, finds:{have:0,total:0}, kind:collectOf(world).kind, endless:true, daily:!!dailyKey, run:true, m, stars, pinned, fr:run.findsRun};
   run.winInfo.at=performance.now(); need('hero_victory_big'); need('cactus_wave'); need(dailyKey?'share_daily':'share_result');
   $('play-ui').classList.add('hidden'); showScreen('win'); updateWallet(); drawWinCard(); }
 
@@ -1179,6 +1186,8 @@ function jShake(a){ if(!save.settings.reduce) run.shake=Math.max(run.shake,a); }
 function popSquash(sx,sy){ P.sx=sx; P.sy=sy; }
 function collectFind(fnd){ fnd.got=true; run.findsRun++;
   const cd=collectOf(run.L.world);
+  if(run.isRun){ addBeams(12); SFX.pop(); spawnParts(fnd.x,fnd.y,22,'255,225,150',160,0.65); spawnRing(fnd.x,fnd.y,'255,225,150',52); floatText(fnd.x,fnd.y-6,'+12','255,230,150'); popSquash(0.78,1.26);
+    const rc=COLLECT.find(c=>c.kind===fnd.kind)||cd; toast(mk(rc.kind)+' '+rc.name+', +12','var(--beam)'); return; }   // THE PRESSURE step 5: a run find pays aloe and counts on the run card, nothing in the save
   let arr=save.finds[run.findId]; if(!arr){ arr=[]; save.finds[run.findId]=arr; } arr[fnd.i]=true;
   const total=run.finds.length, have=run.finds.filter(f=>f.got).length;
   addBeams(12);                                                    // bonus aloe per find (addBeams persists)
@@ -1652,7 +1661,7 @@ function drawPostcard(c,w,vf,cf){ if(vf==null) vf=3; if(cf==null) cf=2; const g=
     band(B[0],'DAILY CHALLENGE',bree(46)); band(B[1],d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear()+'   seed '+seedWord(dailyKey||dateKey())+'   rules '+RULES_V,atk(30));
     band(B[2],w.run?(w.m.toLocaleString()+' m   '+WORLDS[w.world].name):('Time '+w.t.toFixed(1)+' s   '+burns),atk(42)); return; }
   if(w.run){ const orn=A('run_card_ornament'); if(orn){ const ow=640*S, oh=80*S, ox2=(B[0][0]+B[0][2]/2)*S-ow/2, oy2=(B[0][1]+B[0][3]/2)*S-oh/2; g.drawImage(orn,ox2,oy2,ow,oh); band(B[0],'THE SUN WON',bree(30)); } else band(B[0],'THE SUN WON',bree(44));   // her line band, the words in its empty middle
-    band(B[1],w.m.toLocaleString()+' m   '+WORLDS[w.world].name+(w.isNewBest?'   new best':''),atk(40)); band(B[2],w.stars+' aloe   '+w.pinned+' pinned',atk(34)); return; }
+    band(B[1],w.m.toLocaleString()+' m   '+WORLDS[w.world].name+(w.isNewBest?'   new best':''),atk(40)); band(B[2],w.stars+' aloe   '+w.pinned+' pinned'+(w.fr?'   '+w.fr+(w.fr===1?' treasure':' treasures'):''),atk(34)); return; }
   band(B[0],w.endless?'Shadow Run':w.name,bree(44));
   const md=A('m_'+w.medal), ms=62*S;
   band(B[1],'Time '+w.t.toFixed(1)+' s'+(w.endless?'':'   par '+w.par+' s')+(w.isNewBest?'   new best':''),atk(40));
@@ -1849,7 +1858,7 @@ function render(){ const inPlay=(screen==='play');
       ctx.strokeStyle='rgba(130,190,150,.5)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x,y,8.5,0,TAU); ctx.stroke(); } }
 
   // collectibles (world-themed hidden treasure — shells / ice-cream / gems)
-  for(const fnd of run.finds){ if(fnd.got) continue; drawFindIcon(fnd.x+ox, fnd.y+oy+Math.sin(nowT*3+fnd.x*0.05)*3, collectOf(L.world).kind); }
+  for(const fnd of run.finds){ if(fnd.got) continue; drawFindIcon(fnd.x+ox, fnd.y+oy+Math.sin(nowT*3+fnd.x*0.05)*3, fnd.kind||collectOf(L.world).kind); }
 
   // checkpoints
   const cpA=A('checkpoints');
@@ -1937,6 +1946,11 @@ function render(){ const inPlay=(screen==='play');
   if(ex<0||ex>W||ey<0||ey>H){ const ax=clamp(ex,40,W-40),ay=clamp(ey,40,H-40),ang=Math.atan2(ey-H/2,ex-W/2);
     ctx.save(); ctx.translate(ax,ay); ctx.rotate(ang); ctx.fillStyle='rgba(79,181,106,.95)';
     ctx.beginPath(); ctx.moveTo(16,0); ctx.lineTo(-10,-10); ctx.lineTo(-10,10); ctx.closePath(); ctx.fill(); ctx.restore(); }
+  // THE PRESSURE step 5, the compass: the nearest find not yet taken, within 420 px of him and off the screen, gets an arrow at the edge in its colour
+  { let nf=null, nd=420; for(const f of run.finds){ if(f.got) continue; const d=dist(P.x,P.y,f.x,f.y); if(d<nd){ nd=d; nf=f; } }
+    if(nf){ const fx=nf.x+ox, fy=nf.y+oy; if(fx<0||fx>W||fy<0||fy>H){ const ax=clamp(fx,34,W-34), ay=clamp(fy,90,H-120), ang=Math.atan2(fy-ay,fx-ax), pu=1+0.08*Math.sin(nowT*5);
+      ctx.save(); ctx.translate(ax,ay); ctx.rotate(ang); ctx.scale(pu,pu); ctx.fillStyle=FIND_COL[nf.kind||collectOf(L.world).kind]||'#ffd23f'; ctx.strokeStyle='rgba(43,42,32,.85)'; ctx.lineWidth=3; ctx.lineJoin='round';
+      ctx.beginPath(); ctx.moveTo(18,0); ctx.lineTo(-10,-13); ctx.lineTo(-4,0); ctx.lineTo(-10,13); ctx.closePath(); ctx.stroke(); ctx.fill(); ctx.restore(); } } }
 
   sunToken(run.lunge);
 }
@@ -2204,7 +2218,7 @@ function openWorld(wi){ curWorld=wi; $('lvlWorldName').textContent=WORLDS[wi].na
     const kind=collectOf(L.world).kind, got=save.finds[id]||[], nF=(L.finds||[]).length;
     const socks=Array.from({length:nF},(_,k)=>`<img class="sock${got[k]?'':' off'}" src="${SOCK[kind]}?v=${ART_V}" alt="">`).join('');
     const md=['','bronze','silver','gold'][st]||'', medal=md?`<img class="lmedal" src="${MEDAL[md]}?v=${ART_V}" alt="${md} medal">`:'';
-    b.innerHTML=`<span class="lname">${L.name}</span><small>${L.sub}</small>${unlocked?`<div class="rec">${socks}${medal}<span class="lbest">${save.best[id]?save.best[id].toFixed(1)+'s':'Play'}</span></div>`:'<div class="rec">'+mk('lock')+' clear the one before</div>'}`;
+    b.innerHTML=`<span class="lname">${L.name}</span><small>${L.sub}</small>${unlocked?`<div class="rec">${socks}${medal}<span class="lbest">${save.best[id]?save.best[id].toFixed(1)+'s':'Play'}</span></div>${nF?`<div class="lfind">${nF} ${FIND_WORD[kind]||'treasures'} hidden, ${got.slice(0,nF).filter(Boolean).length} found</div>`:''}`:'<div class="rec">'+mk('lock')+' clear the one before</div>'}`;
     if(unlocked) b.addEventListener('click',()=>{SFX.click();startLevel(i);});
     grid.appendChild(o.b=b); });
   showScreen('levels'); }
@@ -2323,7 +2337,7 @@ const TUT=[
   {id:'sun', ic:'sun', lesson:true, callout:'heatWrap', x:'The sun burns. Keep to the shade. Out in the light your Exposure bar fills, and when it is full you burn.', t:()=>run.t>1.2&&!run.isRun&&sunGapAhead()!==null},
   {id:'aloe', ic:'aloe', lesson:true, x:'Aloe cools you. Grab it on your way across the sun.', t:()=>run.beams.some(b=>!b.got&&b.lit&&dist(P.x,P.y,b.x,b.y)<230),
     d:()=>run.beams.some(b=>b.got)},
-  {id:'find', ic:'shell', lesson:true, x:()=>{ const c=collectOf(run.L.world), n=c.name.toLowerCase(); return (/^[aeiou]/.test(n)?'An ':'A ')+n+'. Three hide in every level. Find them all in every level of a world to win its hat.'; }, t:()=>run.finds.some(f=>!f.got&&dist(P.x,P.y,f.x,f.y)<250)},
+  {id:'find', ic:'shell', lesson:true, x:()=>{ const c=collectOf(run.L.world), n=c.name.toLowerCase(); return (/^[aeiou]/.test(n)?'An ':'A ')+n+'. Three hide in every level. Find them all in every level of a world to win its hat.'; }, t:()=>!run.isRun&&run.finds.some(f=>!f.got&&dist(P.x,P.y,f.x,f.y)<250)},
   {id:'dash', ic:'dash', lesson:true, x:'Too far to walk. Tap DASH at the edge of the shade and cross it fast.', t:()=>{ const g=sunGapAhead(); return (g!==null&&g>=170)||(run.t>14&&LEVELS.indexOf(run.L)>0); },
     d:s=>(run.dashUses||0)>s.da},
   {id:'shadeDrop', ic:'shade-ready', x:'No shade ahead? Tap SHADE to drop your own.', t:()=>run.charges.shade>0 && run.t>4 && !shadedGeom(P.x,P.y),
@@ -2467,7 +2481,7 @@ if ('serviceWorker' in navigator && !window.SWS_EMBED) {
   <div class="lrow top"><button id="labPrev">&lt;</button><div class="lname" id="labName"></div><button id="labNext">&gt;</button><button id="labClose" class="warn">Close</button></div>
   <canvas id="labCv"></canvas>
   <div class="lrow"><button id="labPlay" class="on">Play it</button><button id="labSave">Save here</button><button id="labRevert">Shipped</button><button id="labCopy">Copy JSON</button><button id="labShare">Share</button></div>
-  <div class="lrow" id="labTools"><button data-t="move" class="on">Move</button><button data-t="R">+Awning</button><button data-t="U">+Umbrella</button><button data-t="beam">+Star</button><button data-t="cp">+Checkpoint</button><button data-t="del" class="warn">Delete</button></div>
+  <div class="lrow" id="labTools"><button data-t="move" class="on">Move</button><button data-t="R">+Awning</button><button data-t="U">+Umbrella</button><button data-t="beam">+Star</button><button data-t="cp">+Checkpoint</button><button data-t="find">Finds (F)</button><button data-t="del" class="warn">Delete</button></div>
   <div class="lrow"><label>time <input type="range" id="labT" min="0" max="40" step="0.25" value="0"><span id="labTv">0 s</span></label><label>sun dir <input type="range" id="labAz" min="0" max="6.28" step="0.01"></label></div>
   <div class="lrow"><label>swing <input type="range" id="labAmp" min="0" max="1.3" step="0.01"></label><label>speed <input type="range" id="labSpd" min="0.05" max="1.4" step="0.01"></label><label>height <input type="range" id="labEl" min="0.2" max="1.45" step="0.01"></label></div>
   <textarea id="labJson" readonly></textarea>
@@ -2500,6 +2514,7 @@ if ('serviceWorker' in navigator && !window.SWS_EMBED) {
   function items(){ const out=[]; L.casters.forEach((c,i)=>out.push(c[0]==='R'?{k:'R',i,ref:c,x:c[1],y:c[2],w:c[3],h:c[4]}:{k:'U',i,ref:c,x:c[1]-c[3],y:c[2]-c[3],w:c[3]*2,h:c[3]*2}));
     (L.beams||[]).forEach((b,i)=>out.push({k:'beam',i,ref:b,x:b[0]-30,y:b[1]-30,w:60,h:60}));
     (L.checkpoints||[]).forEach((c,i)=>out.push({k:'cp',i,ref:c,x:c[0]-40,y:c[1]-40,w:80,h:80}));
+    (L.finds||[]).forEach((f,i)=>out.push({k:'find',i,ref:f,x:f[0]-24,y:f[1]-24,w:48,h:48}));
     out.push({k:'start',ref:L.start,x:L.start[0]-40,y:L.start[1]-40,w:80,h:80}); out.push({k:'exit',ref:L.exit,x:L.exit[0]-40,y:L.exit[1]-40,w:80,h:80});
     return out; }
   function star(x,y,r){ g.beginPath(); for(let i=0;i<10;i++){ const a=-Math.PI/2+i*Math.PI/5, rr=i%2?r*0.45:r; g.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr); } g.closePath(); g.fill(); }
@@ -2516,6 +2531,7 @@ if ('serviceWorker' in navigator && !window.SWS_EMBED) {
       else if(it.k==='U'){ g.fillStyle='#ff6a2c'; g.beginPath(); g.arc(s[0]+it.w*sc/2,s[1]+it.h*sc/2,it.w*sc/2,0,Math.PI*2); g.fill(); }
       else if(it.k==='beam'){ g.fillStyle='#4fe08a'; star(s[0]+30*sc,s[1]+30*sc,Math.max(5,30*sc)); }
       else if(it.k==='cp'){ g.strokeStyle='#4fe08a'; g.lineWidth=2; g.beginPath(); g.arc(s[0]+40*sc,s[1]+40*sc,Math.max(5,40*sc),0,Math.PI*2); g.stroke(); }
+      else if(it.k==='find'){ g.fillStyle=({0:'#f28ab0',1:'#ffb35c',2:'#f28ab0'})[L.world]||'#37b6e0'; g.beginPath(); g.arc(s[0]+24*sc,s[1]+24*sc,Math.max(6,20*sc),0,Math.PI*2); g.fill(); g.fillStyle='#2b2a20'; g.font='700 11px system-ui'; g.fillText(String(it.i+1),s[0]+24*sc-3,s[1]+24*sc+4); }
       else if(it.k==='start'){ g.fillStyle='#214a4a'; g.beginPath(); g.arc(s[0]+40*sc,s[1]+40*sc,Math.max(6,14*sc),0,Math.PI*2); g.fill(); }
       else { g.fillStyle='#1f8a3a'; g.fillRect(s[0]+40*sc-2,s[1]+40*sc-14,3,18); g.fillRect(s[0]+40*sc,s[1]+40*sc-14,12,8); }
       if(sel&&sel.k===it.k&&sel.ref===it.ref){ g.strokeStyle='#fff'; g.lineWidth=2; g.strokeRect(s[0]-2,s[1]-2,it.w*sc+4,it.h*sc+4);
@@ -2529,6 +2545,9 @@ if ('serviceWorker' in navigator && !window.SWS_EMBED) {
     else if(tool==='U'){ const c=['U',wx,wy,90,az(),300]; L.casters.push(c); sel={k:'U',ref:c}; setTool('move'); }
     else if(tool==='beam'){ L.beams=L.beams||[]; const b=[wx,wy]; L.beams.push(b); sel={k:'beam',ref:b}; setTool('move'); }
     else if(tool==='cp'){ const c=[wx,wy]; L.checkpoints.push(c); sel={k:'cp',ref:c}; setTool('move'); }
+    else if(tool==='find'){ L.finds=L.finds||[]; let f;   // FINDS (key F): places the three, then moves the nearest one to the tap; saved with the level
+      if(L.finds.length<3){ f=[wx,wy]; L.finds.push(f); } else { f=L.finds.reduce((a,b)=>Math.hypot(b[0]-wx,b[1]-wy)<Math.hypot(a[0]-wx,a[1]-wy)?b:a); f[0]=wx; f[1]=wy; }
+      sel={k:'find',ref:f}; }
     else { const it=pick(w[0],w[1]); sel=it?{k:it.k,ref:it.ref}:null;
       if(it){ const s=W2S(it.x,it.y); const onHandle=it.k==='R'&&(e.clientX-r.left)>s[0]+it.w*sc-16&&(e.clientY-r.top)>s[1]+it.h*sc-16;
         drag={it,lx:w[0],ly:w[1],resize:onHandle}; } }
@@ -2546,6 +2565,7 @@ if ('serviceWorker' in navigator && !window.SWS_EMBED) {
     if(sel.k==='R'||sel.k==='U') L.casters.splice(L.casters.indexOf(c),1);
     else if(sel.k==='beam') L.beams.splice(L.beams.indexOf(c),1);
     else if(sel.k==='cp'&&L.checkpoints.length>1) L.checkpoints.splice(L.checkpoints.indexOf(c),1);
+    else if(sel.k==='find') L.finds.splice(L.finds.indexOf(c),1);
     sel=null; draw(); }
   $('labT').oninput=e=>{ t=+e.target.value; $('labTv').textContent=t.toFixed(2)+' s'; draw(); };
   $('labAz').oninput=e=>{ L.sun.azC=+e.target.value; draw(); }; $('labAmp').oninput=e=>{ L.sun.azAmp=+e.target.value; draw(); };
@@ -2560,6 +2580,7 @@ if ('serviceWorker' in navigator && !window.SWS_EMBED) {
     if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(()=>{ $('labCopy').textContent='Copied'; setTimeout(()=>{ $('labCopy').textContent='Copy JSON'; },1200); }).catch(()=>{}); };
   $('labShare').onclick=()=>{ if(navigator.share) navigator.share({title:'Tomato Man level '+L.name,text:json()}).catch(()=>{}); else $('labCopy').onclick(); };
   addEventListener('resize',()=>{ if($('lab').classList.contains('show')){ fit(); draw(); } });
+  addEventListener('keydown',e=>{ if($('lab').classList.contains('show')&&e.key&&e.key.toLowerCase()==='f'){ setTool('find'); draw(); } });
   window.__TM_LAB={open,close,json,level:()=>L,saved:()=>saved,setTool,add:(k,x,y)=>{ setTool(k); cv.dispatchEvent(new PointerEvent('pointerdown',{clientX:x,clientY:y,pointerId:1,bubbles:true})); }};
 })();
 </script>

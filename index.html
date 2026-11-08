@@ -664,6 +664,7 @@ const BASE_FEEL={
   runScroll:80, runScrollRamp:5, runScrollCap:200, runLineH:48, runFire:0.33, runSeedRange:260, runPouch:6, runRegen:1.5,
   runMoteFrom:30, runMoteEvery:6, runMoteSpeed:120, runMoteSting:30, runGullEvery:14, runGullSpeed:180, runCrabSting:20, runMile:6000, runFlare:20, runDark:3,   // a mile is 600 m of climb (6,000 px): the sun flares every 30 to 60 s
   pickupR:24,
+  lungeLockFrac:0.5, lungeReach:110, lungeGrace:0.35,   // THE FAIR LUNGE (8 Nov): the ring follows him for half its warning then locks; reach at most 110 px; a dash from inside a locked ring is immune 0.35 s
 };
 function FEEL(){ const u=save.upgrades; const f={...BASE_FEEL};
   f.burnSun=[150,128,112,100][u.thicker_skin||0];
@@ -1129,7 +1130,7 @@ function toast(msg,col){ const t=$('toast'); t.innerHTML=`<span class="tdot" sty
   t.style.transition='none'; t.style.opacity='1'; requestAnimationFrame(()=>{ t.style.transition='opacity .7s'; t.style.opacity='0'; }); }
 let cueKey='~';
 function cueNow(){ const L=run.L;
-  if(run.lunge&&run.lunge.state==='warn') return ['boss-target',run.seeds>0?'lunge coming, toss a seed':'lunge coming',1];
+  if(run.lunge&&run.lunge.state==='warn') return ['boss-target',run.lunge.locked?(run.seeds>0?'now, dash or toss a seed':'now, dash'):'lunge coming',1];
   for(const wlt of run.wilts) if(!wlt.closed&&wlt.under&&wlt.campT/(wlt.camp||3)>=0.25) return ['awning-warning','shade wilting',1];
   if(run.darkT>0) return ['eclipse-window','eclipse, cross now',0];
   if(run.act&&run.act.k==='cooling') return ['cooling','cooling down',0];
@@ -1192,6 +1193,7 @@ bind('bDash',queueDash); bind('bSeed',toss); bind('bShade',drop); bind('bScreen'
 function queueDash(){ if(P.dashCd<=0||P.dashStock>0) doDash(); else dashBuf=run.feel.inputBuffer; }
 function doDash(){ const f=run.feel; if(P.dashStock>0){P.dashStock--;} else { if(P.dashCd>0) return; P.dashCd=f.dashCd; }
   P.dashT=f.dashDur; dashBuf=0; run.dashUses=(run.dashUses||0)+1; SFX.dash();
+  const lg=run.lunge; if(lg&&lg.locked&&lg.state!=='idle'&&dist(P.x,P.y,lg.zx,lg.zy)<lg.reach) run.lungeGraceT=f.lungeGrace;   // the perfect time the sign promises
   const mv=mvVec(); if(Math.hypot(mv.x,mv.y)>0.05) P.face=Math.atan2(mv.y,mv.x);
   P.sx=1.4;P.sy=0.7; // stretch along axis
   spawnParts(P.x,P.y,9,'255,185,95',115,0.34); spawnRing(P.x,P.y,'255,195,110',30,0.28); jShake(0.08); fxAt('dash_puff',P.x,P.y+8,72,0.33); // dash burst
@@ -1477,12 +1479,12 @@ function update(dt){ const L=run.L, f=run.feel; run.t+=dt;
   let lungeBurn=0;
   if(run.lunge&&run.lunge.calm>0){ const lg=run.lunge; lg.calm-=dt; lg.state='idle'; if(lg.calm<=0){ lg.calm=0; lg.timer=0; } }
   else if(run.lunge){ const lg=run.lunge; lg.timer+=dt; const cyc=lg.period;
-    const ph=lg.timer%cyc;
-    if(ph<lg.warn){ lg.state='warn'; lg.zx=P.x; lg.zy=P.y; }
-    else if(ph<lg.warn+lg.dur){ lg.state='strike'; // lethal zone dives toward telegraphed spot then chases a bit
-      const k=(ph-lg.warn)/lg.dur; lg.zx=lerp(lg.zx,P.x,0.04); lg.zy=lerp(lg.zy,P.y,0.04);
-      if(dist(P.x,P.y,lg.zx,lg.zy)<lg.reach && run.screenT<=0 && run.darkT<=0 && run.graceT<=0) lungeBurn=420; }
-    else lg.state='idle'; }
+    const ph=lg.timer%cyc; if(lg.reach>f.lungeReach) lg.reach=f.lungeReach;
+    if(ph<lg.warn){ lg.state='warn'; lg.locked=ph>=lg.warn*f.lungeLockFrac; if(!lg.locked){ lg.zx=P.x; lg.zy=P.y; } }   // follows him for the first half, then locks
+    else if(ph<lg.warn+lg.dur){ lg.state='strike'; lg.locked=true;   // the strike never chases: it lands where the ring locked
+      if(dist(P.x,P.y,lg.zx,lg.zy)<lg.reach && run.screenT<=0 && run.darkT<=0 && run.graceT<=0 && !(run.lungeGraceT>0)) lungeBurn=420; }
+    else { lg.state='idle'; lg.locked=false; } }
+  if(run.lungeGraceT>0) run.lungeGraceT-=dt;
 
   updateSeeds(dt);
   if(run.cacti&&run.cacti.length&&run.t>=run.blinkNext){ run.blinkI=Math.floor(run.crnd()*run.cacti.length); run.blinkAt=run.t; run.blinkNext=run.t+4+run.crnd()*5; }
@@ -1842,9 +1844,10 @@ function render(){ const inPlay=(screen==='play');
   if(run.lunge && run.lunge.state!=='idle'){ const lg=run.lunge; const x=lg.zx+ox,y=lg.zy+oy, rb=A('ring_boss');
     if(lg.state==='warn'&&rb&&WORLD_FIT.boss_telegraph){ const ph=lg.timer%lg.period, f=save.settings.reduce?0:clamp(Math.floor(ph/lg.warn*4),0,3), k=lg.reach/WORLD_FIT.boss_telegraph;
       ctx.drawImage(rb,f*256,0,256,256,x-128*k,y-128*k,256*k,256*k);
+      if(lg.locked){ ctx.strokeStyle='rgba(255,60,40,.95)'; ctx.lineWidth=5; ctx.beginPath(); ctx.arc(x,y,lg.reach,0,TAU); ctx.stroke(); }
       const ln=A('lane'); if(ln){ const sp=sunXY(), ang=Math.atan2(y-sp.y,x-sp.x), d0=58+39, lw=78, lh=lw*ln.height/ln.width;   // just off the sun's disc, toward the zone
         ctx.save(); ctx.translate(sp.x+Math.cos(ang)*d0,sp.y+Math.sin(ang)*d0); ctx.rotate(ang); ctx.globalAlpha=0.9; ctx.drawImage(ln,-lw/2,-lh/2,lw,lh); ctx.restore(); } }
-    else if(lg.state==='warn'){ ctx.strokeStyle='rgba(255,60,40,.8)'; ctx.lineWidth=4; ctx.setLineDash([6,6]); ctx.beginPath(); ctx.arc(x,y,lg.reach,0,TAU); ctx.stroke(); ctx.setLineDash([]); }
+    else if(lg.state==='warn'){ ctx.strokeStyle='rgba(255,60,40,.8)'; ctx.lineWidth=lg.locked?5:4; if(!lg.locked) ctx.setLineDash([6,6]); ctx.beginPath(); ctx.arc(x,y,lg.reach,0,TAU); ctx.stroke(); ctx.setLineDash([]); }
     else { const rg=ctx.createRadialGradient(x,y,0,x,y,lg.reach); rg.addColorStop(0,'rgba(255,120,40,.7)'); rg.addColorStop(1,'rgba(255,40,20,0)');
       ctx.fillStyle=rg; ctx.beginPath(); ctx.arc(x,y,lg.reach,0,TAU); ctx.fill(); } }
 
@@ -2252,7 +2255,7 @@ const HOWTO=[
   {i:'check',t:'Flag & checkpoints',b:'Reach the green flag at the top to win. Ringed dots are checkpoints, touch them so a burn sends you back there, not to the start.'},
   {i:'sun',t:'Hot sand',b:'Glowing orange patches scorch you even out of direct sun. Don’t linger on them.'},
   {i:'shade',t:'Clouds & carts',b:'Cloud and cart shadows drift across the map. Step aboard and let them ferry you over the bright gaps.'},
-  {i:'sun',t:'Late game trouble',b:'Striped awnings wilt if you camp under them; the Angry Sun lunges where you’re standing (move when it flashes); an eclipse makes everything dark and safe for a moment, so fly.'},
+  {i:'sun',t:'Late game trouble',b:'Striped awnings wilt if you camp under them; the Angry Sun lunges where its ring locks (move off it, or dash at the flash); an eclipse makes everything dark and safe for a moment, so fly.'},
 ];
 const HOWTO_QUICK=[{i:'sun',b:'The sun burns you. Stay out of it.'},{i:'shade',b:'Shade is safe ground, and it moves with the sun.'},
   {i:'move',b:'Drag your left thumb to walk.'},{i:'dash',b:'Tap DASH to cross a thin strip of sun fast.'}];
@@ -2305,7 +2308,7 @@ const TUT=[
   {id:'umbrella', ic:'umbrella-turn', x:'Wind turns the umbrellas, and their shade swings with them.', t:()=>run.wind&&run.wind.spin&&run.L.casters.some(c=>c[0]==='U')&&run.t>1.5},
   {id:'ice', ic:'ice', x:'ICE slows the sun’s sweep. Sip it when the timing is brutal.', t:()=>run.charges.ice>0 && run.t>2,
     d:s=>run.charges.ice<s.ic2},
-  {id:'lunge', ic:'boss-target', x:'The Angry Sun is winding up a lunge. Move off the flashing ring, or throw a seed into it.', t:()=>run.lunge&&run.lunge.state==='warn'},
+  {id:'lunge', ic:'boss-target', x:'The Angry Sun is winding up a lunge. Move off the ring once it locks, dash at the flash, or throw a seed into it.', t:()=>run.lunge&&run.lunge.state==='warn'},
   {id:'eclipse', ic:'eclipse-window', x:'Eclipse. Everything is dark and safe for a moment, so sprint.', t:()=>run.darkT>0},
 ];
 function checkTut(dt){

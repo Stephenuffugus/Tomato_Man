@@ -800,6 +800,11 @@ let LEVELS=[
 {"name":"Reef Ferry","sub":"ride the tide-cart, then round the big awning","world":2,"worldW":2200,"worldH":2600,"start":[640,2460],"exit":[1480,300],"sun":{"azC":1.57,"azAmp":0.44,"azSpeed":0.5,"elev":0.72},"shade":0,"spf":0,"ice":1,"par":40,"pickups":[{"x":1460,"y":2060,"kind":"shade"},{"x":1515,"y":1740,"kind":"pod"},{"x":1430,"y":1220,"kind":"shade"}],"casters":[["R",460,2400,360,80,440],["U",640,2120,95,1.57,360],["U",640,1840,95,1.57,360],["U",1460,2060,95,1.57,360],["R",1120,1180,620,80,500],["U",1480,720,95,1.57,360],["R",1300,300,360,80,440]],"movers":[{"x":1360,"y":1900,"w":240,"d":60,"sh":440,"vx":-120,"minx":560,"maxx":1560}],"checkpoints":[[640,2460],[640,1700],[1460,1780],[1480,760]],"beams":[[1080,1740],[1748,1300],[900,2050]]},
 {"name":"The Long Dark","sub":"cross the blackout maze while the sun blinks","world":4,"worldW":1900,"worldH":2600,"start":[980,2460],"exit":[980,220],"sun":{"azC":1.57,"azAmp":0.24,"azSpeed":0.5,"elev":1.2,"dark":{"period":4,"dur":2.7}},"shade":0,"spf":1,"ice":0,"par":60,"pickups":[{"x":845,"y":1620,"kind":"shade"},{"x":1185,"y":1000,"kind":"pod"},{"x":1160,"y":345,"kind":"shade"}],"casters":[["R",510,415,300,80,460,0.9,1.25],["R",800,2400,360,90,470,0,1],["R",490,1780,340,90,490,1.8,0.8],["R",990,1160,340,90,490,2.7,1.1],["R",990,300,340,90,490,0.45,0.9],["R",800,150,360,90,460,0,1]],"checkpoints":[[980,2460],[790,1660],[1130,1040],[660,460]],"beams":[[1150,2050],[790,1420],[1150,900]]}
 ];
+/* THE PRESSURE step 7 (Stephen, 8 Nov: "all levels harder"), harder fairly, by world, once at load so the lab sees and saves the same:
+   par (the gold medal's time) x0.85 from the Tide Pools; the sun's sweep 10 percent faster in the Dunes and the Eclipse. Checkpoints keep
+   every level fair: a burn puts him back at the last one with his seeds full. Level ids, the save and every saved key unchanged. */
+const HARDER={parK:[1,1,0.85,0.85,0.85], sweepK:[1,1,1,1.1,1.1]};
+LEVELS.forEach(L=>{ const w=L.world||0; L.par=Math.round(L.par*HARDER.parK[w]); L.sun.azSpeed=+(L.sun.azSpeed*HARDER.sweepK[w]).toFixed(3); });
 /* per-world hidden collectibles: shells (beach worlds), ice cream (the blaze), gems (dunes and eclipse). 3 per campaign level. */
 const COLLECT=[
   {name:'Seashell',plural:'Seashells',kind:'shell'},   // W0 Morning Tide
